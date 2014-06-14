@@ -4,6 +4,7 @@ use Datawrapper\ORM\Action;
 use Datawrapper\ORM\ActionQuery;
 use Datawrapper\ORM\UserQuery;
 use Datawrapper\Session;
+use Datawrapper\Mailer;
 
 /* get session info */
 $app->get('/account', function() {
@@ -70,7 +71,7 @@ $app->post('/auth/logout', function() {
  *
  * expects payload { "email": "validemail@domain.tld" }
  */
-$app->post('/account/reset-password', function() use($app) {
+$app->post('/account/reset-password', function() use($app, $dw_config) {
     $payload = json_decode($app->request()->getBody());
     $user = UserQuery::create()->findOneByEmail($payload->email);
     if (!empty($user)) {
@@ -93,11 +94,12 @@ $app->post('/account/reset-password', function() use($app) {
         $user->save();
 
         $protocol = !empty($_SERVER['HTTPS']) ? "https" : "http";
-        $passwordResetLink = $protocol . '://' . $GLOBALS['dw_config']['domain'] . '/account/reset-password/' . $token;
+        $passwordResetLink = $protocol . '://' . $dw_config['domain'] . '/account/reset-password/' . $token;
 
         include(ROOT_PATH . 'lib/templates/password-reset-email.php');
 
-        dw_send_support_email(
+        $mailer = new Mailer($dw_config);
+        $mailer->sendSupportMail(
             $user->getEmail(),
             __('Datawrapper: You requested a reset of your password'),
             $password_reset_mail,
@@ -118,7 +120,7 @@ $app->post('/account/reset-password', function() use($app) {
 /*
  * endpoint for re-sending the activation link to a user
  */
-$app->post('/account/resend-activation', function() use($app) {
+$app->post('/account/resend-activation', function() use($app, $dw_config) {
     $user = Session::getUser();
     $token = $user->getActivateToken();
     if (!empty($token)) {
@@ -129,7 +131,7 @@ $app->post('/account/resend-activation', function() use($app) {
             ->filterByKey('resend-activation')
             ->find();
         if (count($r) > 2) {
-            error('avoid-spam', str_replace('%support_email%', $GLOBALS['dw_config']['email']['support'], __('You already resent the activation mail three times, now. Please <a href="mailto:%support_email%">contact an administrator</a> to proceed with your account activation.')));
+            error('avoid-spam', str_replace('%support_email%', $dw_config['email']['support'], __('You already resent the activation mail three times, now. Please <a href="mailto:%support_email%">contact an administrator</a> to proceed with your account activation.')));
             return false;
         }
 
@@ -137,13 +139,14 @@ $app->post('/account/resend-activation', function() use($app) {
         Action::logAction($user, 'resend-activation', $token);
 
         // send email with activation key
-        $domain   = $GLOBALS['dw_config']['domain'];
+        $domain   = $dw_config['domain'];
         $protocol = !empty($_SERVER['HTTPS']) ? "https" : "http";
         $activationLink = $protocol . '://' . $domain . '/account/activate/' . $token;
 
         include(ROOT_PATH . 'lib/templates/activation-email.php');
 
-        dw_send_support_email(
+        $mailer = new Mailer($dw_config);
+        $mailer->sendSupportMail(
             $user->getEmail(),
             __('Datawrapper: Please activate your email address'),
             $activation_mail,
@@ -165,7 +168,7 @@ $app->post('/account/resend-activation', function() use($app) {
  *
  * expects payload { "email": "validemail@domain.tld" }
  */
-$app->post('/account/resend-invitation', function() use($app) {
+$app->post('/account/resend-invitation', function() use($app, $dw_config) {
     $payload = json_decode($app->request()->getBody());
     $user    = UserQuery::create()->findOneByEmail($payload->email);
     $token   = $user->getActivateToken();
@@ -173,15 +176,16 @@ $app->post('/account/resend-invitation', function() use($app) {
         if (empty($token)) {
             return error("token-invalid", _("This activation token is invalid. Your email address is probably already activated."));
         }
-        // variables for `templates/invitation-email.php` 
-        $domain         = $GLOBALS['dw_config']['domain'];
+        // variables for `templates/invitation-email.php`
+        $domain         = $dw_config['domain'];
         $protocol       = !empty($_SERVER['HTTPS']) ? "https" : "http";
         $invitationLink = $protocol . '://' . $domain . '/account/invite/' . $token;
         $name           = $user->getEmail();
         include('../../lib/templates/invitation-email.php');
-        $from           = $GLOBALS['dw_config']['email']['invite'];
+        $from           = $dw_config['email']['invite'];
 
-        dw_send_support_email(
+        $mailer = new Mailer($dw_config);
+        $mailer->sendSupportMail(
             $user->getEmail(),
             __('You have been invited to Datawrapper!'),
             $invitation_mail,

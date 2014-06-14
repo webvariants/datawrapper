@@ -44,7 +44,7 @@ function email_exists($email) {
 /*
  * create a new user
  */
-$app->post('/users', function() use ($app) {
+$app->post('/users', function() use ($app, $dw_config) {
     $data = json_decode($app->request()->getBody());
     $currUser = Session::getUser();
     $invitation = empty($data->invitation)? false : (bool) $data->invitation;
@@ -102,7 +102,8 @@ $app->post('/users', function() use ($app) {
         // send account invitation link
         $invitationLink = $protocol . '://' . $domain . '/account/invite/' . $user->getActivateToken();
         include(ROOT_PATH . 'lib/templates/invitation-email.php');
-        dw_send_support_email(
+        $mailer = new Mailer($dw_config);
+        $mailer->sendSupportMail(
             $data->email,
             sprintf(__('You have been invited to Datawrapper on %s'), $domain),
             $invitation_mail,
@@ -116,7 +117,8 @@ $app->post('/users', function() use ($app) {
         // send account activation link
         $activationLink = $protocol . '://' . $domain . '/account/activate/' . $user->getActivateToken();
         include(ROOT_PATH . 'lib/templates/activation-email.php');
-        dw_send_support_email(
+        $mailer = new Mailer($dw_config);
+        $mailer->sendSupportMail(
             $data->email,
             __('Datawrapper: Please activate your email address'),
             $activation_mail,
@@ -139,7 +141,7 @@ $app->post('/users', function() use ($app) {
  * update user profile
  * @needs admin or existing user
  */
-$app->put('/users/:id', function($user_id) use ($app) {
+$app->put('/users/:id', function($user_id) use ($app, $dw_config) {
     $payload = json_decode($app->request()->getBody());
     $curUser = Session::getUser();
 
@@ -181,7 +183,8 @@ $app->put('/users/:id', function($user_id) use ($app) {
                             // send email with token
                             require(ROOT_PATH . 'lib/templates/email-change-email.php');
 
-                            dw_send_support_email(
+                            $mailer = new Mailer($dw_config);
+                            $mailer->sendSupportMail(
                                 $payload->email,
                                 __('Datawrapper: You requested a change of your email address'),
                                 $email_change_mail,
