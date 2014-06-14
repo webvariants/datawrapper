@@ -40,9 +40,10 @@ $plugin_urls = false;
 $env_dw_plugins = getenv('DATAWRAPPER_PLUGINS');
 
 if ($env_dw_plugins) {
-    try {  // to load and decode the json
-        $plugin_urls = json_decode(file_get_contents($env_dw_plugins), true);
-    } catch (Error $e) {
+    // try to load and decode the json
+    $plugin_urls = json_decode(file_get_contents($env_dw_plugins), true);
+
+    if (!is_array($plugin_urls)) {
         // didn't work, ignoring env
         print "NOTICE: Could not read plugins.json from ".$_ENV['DATAWRAPPER_PLUGINS'].". Ignoring...\n";
     }
@@ -117,12 +118,13 @@ function install($pattern) {
         exec('git clone '.$pattern.' '.$tmp_name.' 2>&1', $ret, $err);
         $pkg_info = $tmp_name . DIRECTORY_SEPARATOR . 'package.json';
         if (file_exists($pkg_info)) {
-            try {
-                $pkg_info = json_decode(file_get_contents($pkg_info), true);
-            } catch (Error $e) {
+            $pkg_info = json_decode(file_get_contents($pkg_info), true);
+
+            if (!$pkg_info) {
                 print 'Not a valid plugin: package.json could not be read.';
                 return true;
             }
+
             if (!empty($pkg_info['name'])) {
                 $plugin_path = ROOT_PATH . 'plugins' . DIRECTORY_SEPARATOR . $pkg_info['name'];
                 if (!file_exists($plugin_path)) {
