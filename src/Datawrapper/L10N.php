@@ -1,7 +1,10 @@
 <?php
 
-class Datawrapper_L10N {
+namespace Datawrapper;
 
+use Datawrapper\ORM\PluginQuery;
+
+class L10N {
     private $__messages = array();
 
     /*
@@ -92,14 +95,4 @@ class Datawrapper_L10N {
     private function clean_msgid($msgid) {
         return trim(str_replace("\n", "", $msgid));
     }
-
-}
-
-
-/*
- * adding translate function to global scope
- */
-function __($text, $domain = false, $fallback = '') {
-    global $__l10n;
-    return $__l10n->translate($text, $domain, $fallback);
 }

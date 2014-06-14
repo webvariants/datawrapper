@@ -1,11 +1,13 @@
 <?php
 
+use Datawrapper\Hooks;
+use Datawrapper\Session;
 
 function add_header_vars(&$page, $active = null, $page_css = null) {
 
     if (!function_exists('header_nav_hook')) {
         function header_nav_hook(&$headlinks, $part) {
-            $links = DatawrapperHooks::execute('header_nav_' . $part);
+            $links = Hooks::execute('header_nav_' . $part);
             if (!empty($links)) {
                 foreach ($links as $link) {
                     $headlinks[] = $link;
@@ -29,7 +31,7 @@ function add_header_vars(&$page, $active = null, $page_css = null) {
         $config['prevent_guest_access'] = false;
     }
 
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     $headlinks = array();
     if ($user->isLoggedIn() || empty($config['prevent_guest_charts'])) {
         $headlinks[] = array(
@@ -43,7 +45,7 @@ function add_header_vars(&$page, $active = null, $page_css = null) {
     header_nav_hook($headlinks, 'create');
 
     if (isset($config['navigation'])) foreach ($config['navigation'] as $item) {
-        $link = array('url' => str_replace('%lang%', substr(DatawrapperSession::getLanguage(), 0, 2), $item['url']), 'id' => $item['id'], 'title' => __($item['title']));
+        $link = array('url' => str_replace('%lang%', substr(Session::getLanguage(), 0, 2), $item['url']), 'id' => $item['id'], 'title' => __($item['title']));
         if (!empty($item['icon'])) $link['icon'] = $item['icon'];
         $headlinks[] = $link;
     }
@@ -56,7 +58,7 @@ function add_header_vars(&$page, $active = null, $page_css = null) {
             'url' => '',
             'id' => 'lang',
             'dropdown' => array(),
-            'title' => strtoupper(substr(DatawrapperSession::getLanguage(), 0, 2)),
+            'title' => strtoupper(substr(Session::getLanguage(), 0, 2)),
             'icon' => false,
             'tooltip' => __('Switch language')
         );
@@ -143,7 +145,7 @@ function add_header_vars(&$page, $active = null, $page_css = null) {
 
     // admin link
     if ($user->isLoggedIn() && $user->isAdmin()
-        && DatawrapperHooks::hookRegistered(DatawrapperHooks::GET_ADMIN_PAGES)) {
+        && Hooks::hookRegistered(Hooks::GET_ADMIN_PAGES)) {
         $headlinks[] = 'divider';
         $headlinks[] = array(
             'url' => '/admin',
@@ -156,8 +158,8 @@ function add_header_vars(&$page, $active = null, $page_css = null) {
 
     header_nav_hook($headlinks, 'admin');
 
-    if (DatawrapperHooks::hookRegistered(DatawrapperHooks::CUSTOM_LOGO)) {
-        $logos = DatawrapperHooks::execute(DatawrapperHooks::CUSTOM_LOGO);
+    if (Hooks::hookRegistered(Hooks::CUSTOM_LOGO)) {
+        $logos = Hooks::execute(Hooks::CUSTOM_LOGO);
         $page['custom_logo'] = $logos[0];
     }
 
@@ -166,9 +168,9 @@ function add_header_vars(&$page, $active = null, $page_css = null) {
         $headlinks[$i]['active'] = $headlinks[$i]['id'] == $active;
     }
     $page['headlinks'] = $headlinks;
-    $page['user'] = DatawrapperSession::getUser();
-    $page['language'] = substr(DatawrapperSession::getLanguage(), 0, 2);
-    $page['locale'] = DatawrapperSession::getLanguage();
+    $page['user'] = Session::getUser();
+    $page['language'] = substr(Session::getLanguage(), 0, 2);
+    $page['locale'] = Session::getLanguage();
     $page['DW_DOMAIN'] = $config['domain'];
     $page['DW_VERSION'] = DATAWRAPPER_VERSION;
     $page['ASSET_DOMAIN'] = $config['asset_domain'];
@@ -178,10 +180,10 @@ function add_header_vars(&$page, $active = null, $page_css = null) {
     $page['page_css'] = $page_css;
     $page['invert_navbar'] = isset($config['invert_header']) && $config['invert_header'] || substr($config['domain'], -4) == '.pro';
     $page['noSignup'] = $config['prevent_guest_access'];
-    $page['footer'] = DatawrapperHooks::execute(DatawrapperHooks::GET_FOOTER);
+    $page['footer'] = Hooks::execute(Hooks::GET_FOOTER);
 
     $uri = $app->request()->getResourceUri();
-    $plugin_assets = DatawrapperHooks::execute(DatawrapperHooks::GET_PLUGIN_ASSETS, $uri);
+    $plugin_assets = Hooks::execute(Hooks::GET_PLUGIN_ASSETS, $uri);
     if (!empty($plugin_assets)) {
         $plugin_js_files = array();
         $plugin_css_files = array();

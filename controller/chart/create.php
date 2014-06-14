@@ -1,13 +1,14 @@
 <?php
 
 use Datawrapper\ORM\ChartQuery;
+use Datawrapper\Session;
 
 $app->map('/chart/create', function() use ($app) {
     disable_cache($app);
 
     $cfg = $GLOBALS['dw_config'];
 
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     if (!$user->isLoggedIn() && isset($cfg['prevent_guest_charts']) && $cfg['prevent_guest_charts']) {
         error_access_denied();
     } else {

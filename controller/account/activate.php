@@ -1,6 +1,7 @@
 <?php
 
 use Datawrapper\ORM\UserQuery;
+use Datawrapper\Session;
 
 //GET route
 $app->get('/account/activate/:token', function ($token) use ($app) {
@@ -52,7 +53,7 @@ $app->post('/account/invite/:token', function($token) use ($app) {
         $user->setPwd($data->pwd);
         $user->setActivateToken('');
         $user->save();
-        DatawrapperSession::login($user);
+        Session::login($user);
         print json_encode(array('result' => 'ok'));
     });
 });

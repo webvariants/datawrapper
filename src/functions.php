@@ -1,12 +1,17 @@
 <?php
 
-/*
+/**
+ * adding translate function to global scope
+ */
+function __($text, $domain = false, $fallback = '') {
+    global $__l10n;
+    return $__l10n->translate($text, $domain, $fallback);
+}
+
+/**
  * parses the config and populates some defaults
  */
-
-function parse_config() {
-    $cfg = $GLOBALS['dw_config'];
-
+function parse_config(array $cfg) {
     // check that email adresses are set
     if (!isset($cfg['email']))
         $cfg['email'] = array();
@@ -23,5 +28,5 @@ function parse_config() {
     if (!isset($cfg['asset_domain']))
         $cfg['asset_domain'] = false;
 
-    $GLOBALS['dw_config'] = $cfg;
+    return $cfg;
 }

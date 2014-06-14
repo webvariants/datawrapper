@@ -1,6 +1,7 @@
 <?php
 
 use Datawrapper\ORM\UserQuery;
+use Datawrapper\Session;
 
 /**
  * Datawrapper JSON API
@@ -55,7 +56,7 @@ function get_user_ips() {
 }
 
 function if_is_admin($callback) {
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     if ($user->isAdmin()) {
         call_user_func($callback);
     } else {

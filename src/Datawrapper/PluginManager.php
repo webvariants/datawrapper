@@ -1,7 +1,10 @@
 <?php
 
-class DatawrapperPluginManager {
+namespace Datawrapper;
 
+use Datawrapper\ORM\PluginQuery;
+
+class PluginManager {
     protected static $loaded = array();
     // instances of all (real) plugin classes
     protected static $instances = array();
@@ -14,12 +17,12 @@ class DatawrapperPluginManager {
             ->filterByEnabled(true);
 
         if (!defined('NO_SESSION')) {
-            $user_id = DatawrapperSession::getUser()->getId();
+            $user_id = Session::getUser()->getId();
             if (!empty($user_id)) {
-                $plugins->where('Plugin.Id IN (SELECT plugin_id FROM plugin_organization WHERE organization_id IN (SELECT organization_id FROM user_organization WHERE user_id = ?))', $user_id)
+                $plugins->where('Datawrapper\ORM\Plugin.Id IN (SELECT plugin_id FROM plugin_organization WHERE organization_id IN (SELECT organization_id FROM user_organization WHERE user_id = ?))', $user_id)
                     ->_or();
             }
-            $plugins = $plugins->where('Plugin.IsPrivate = FALSE');
+            $plugins = $plugins->where('Datawrapper\ORM\Plugin.IsPrivate = FALSE');
         }
         $plugins = $plugins->find();
 
@@ -33,25 +36,6 @@ class DatawrapperPluginManager {
 
         $could_not_install = array();
 
-        if (!function_exists('load_plugin')) {
-            function load_plugin($plugin) {
-                $plugin_path = ROOT_PATH . 'plugins/' . $plugin->getName() . '/plugin.php';
-                if (file_exists($plugin_path)) {
-                    require $plugin_path;
-                    // init plugin class
-                    $className = $plugin->getClassName();
-                    $pluginClass = new $className();
-                } else {
-                    $pluginClass = new DatawrapperPlugin($plugin->getName());
-                }
-                // but before we load the libraries required by this lib
-                foreach ($pluginClass->getRequiredLibraries() as $lib) {
-                    require_once ROOT_PATH . 'plugins/' . $plugin->getName() . '/' . $lib;
-                }
-                $pluginClass->init();
-                return $pluginClass;
-            }
-        }
         while (count($not_loaded_yet) > 0) {
             $try = $not_loaded_yet;
             $not_loaded_yet = array();
@@ -61,6 +45,7 @@ class DatawrapperPluginManager {
                 $deps = $plugin->getDependencies();
                 unset($deps['core']);  // ignore core dependency
                 $can_load = true;
+
                 if (is_array($deps)) {
                     foreach ($deps as $dep => $version) {
                         if (!isset(self::$loaded[$dep])) {  // dependency not loaded
@@ -73,22 +58,40 @@ class DatawrapperPluginManager {
                         }
                     }
                 }
+
                 if (isset(self::$loaded[$id]) && self::$loaded[$id]) {
                     // plugin already loaded by now
                     continue;
                 }
+
                 if ($can_load) {
                     // load plugin
                     self::$loaded[$id] = true;
-                    self::$instances[$id] = load_plugin($plugin);
-                } else {
-                    if (!isset($could_not_install[$id])) {
-                        $not_loaded_yet[] = $plugin; // so try next time
-                    }
+                    self::$instances[$id] = static::loadPlugin($plugin);
+                }
+                elseif (!isset($could_not_install[$id])) {
+                    $not_loaded_yet[] = $plugin; // so try next time
                 }
             }
         }
+    }
 
+    public static function loadPlugin($plugin) {
+        $plugin_path = ROOT_PATH . 'plugins/' . $plugin->getName() . '/plugin.php';
+        if (file_exists($plugin_path)) {
+            require $plugin_path;
+            // init plugin class
+            $className = $plugin->getClassName();
+            $pluginClass = new $className();
+        } else {
+            $pluginClass = new Plugin($plugin->getName());
+        }
+        // but before we load the libraries required by this lib
+        foreach ($pluginClass->getRequiredLibraries() as $lib) {
+            require_once ROOT_PATH . 'plugins/' . $plugin->getName() . '/' . $lib;
+        }
+        $pluginClass->init();
+        return $pluginClass;
     }
 
     public static function loaded($plugin_id) {
@@ -101,6 +104,4 @@ class DatawrapperPluginManager {
         }
         return null;
     }
-
 }
-

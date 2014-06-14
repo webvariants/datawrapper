@@ -2,6 +2,7 @@
 
 use Datawrapper\ORM\Plugin;
 use Datawrapper\ORM\PluginQuery;
+use Datawrapper\Plugin as PluginObject;
 
 /*
  * Datawrapper Plugin Manager

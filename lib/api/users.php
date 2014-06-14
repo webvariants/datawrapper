@@ -3,13 +3,16 @@
 use Datawrapper\ORM\Action;
 use Datawrapper\ORM\User;
 use Datawrapper\ORM\UserQuery;
+use Datawrapper\Hooks;
+use Datawrapper\Mailer;
+use Datawrapper\Session;
 
 /*
  * get list of all users
  * @needs admin
  */
 $app->get('/users', function() use ($app) {
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     if ($user->isAdmin()) {
         $users = UserQuery::create()->filterByDeleted(false)->find();
         $res = array();
@@ -23,7 +26,7 @@ $app->get('/users', function() use ($app) {
 });
 
 $app->get('/users/:id', function($id) use ($app) {
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     if ($user->isAdmin()) {
         ok(UserQuery::create()->findPK($id)->toArray());
     } else {
@@ -43,7 +46,7 @@ function email_exists($email) {
  */
 $app->post('/users', function() use ($app) {
     $data = json_decode($app->request()->getBody());
-    $currUser = DatawrapperSession::getUser();
+    $currUser = Session::getUser();
     $invitation = empty($data->invitation)? false : (bool) $data->invitation;
     // check values
     $checks = array(
@@ -84,12 +87,12 @@ $app->post('/users', function() use ($app) {
         }
         $user->SetRole($data->role);
     }
-    $user->setLanguage(DatawrapperSession::getLanguage());
+    $user->setLanguage(Session::getLanguage());
     $user->setActivateToken(hash_hmac('sha256', $data->email.'/'.time(), DW_TOKEN_SALT));
     $user->save();
     $result = $user->toArray();
 
-    DatawrapperHooks::execute(DatawrapperHooks::USER_SIGNUP, $user);
+    Hooks::execute(Hooks::USER_SIGNUP, $user);
 
     // send an email
     $name     = $data->email;
@@ -125,7 +128,7 @@ $app->post('/users', function() use ($app) {
 
         // we don't need to annoy the user with a login form now,
         // so just log in..
-        DatawrapperSession::login($user);
+        Session::login($user);
     }
 
     ok($result);
@@ -138,7 +141,7 @@ $app->post('/users', function() use ($app) {
  */
 $app->put('/users/:id', function($user_id) use ($app) {
     $payload = json_decode($app->request()->getBody());
-    $curUser = DatawrapperSession::getUser();
+    $curUser = Session::getUser();
 
     if ($curUser->isLoggedIn()) {
         if ($user_id == 'current' || $curUser->getId() === $user_id) {
@@ -249,7 +252,7 @@ $app->put('/users/:id', function($user_id) use ($app) {
  * @needs admin or existing user
  */
 $app->delete('/users/:id', function($user_id) use ($app) {
-    $curUser = DatawrapperSession::getUser();
+    $curUser = Session::getUser();
     $payload = json_decode($app->request()->getBody());
     if (!isset($payload->pwd)) {
         $pwd = $app->request()->get('pwd');
@@ -272,7 +275,7 @@ $app->delete('/users/:id', function($user_id) use ($app) {
 
                 // Delete user
                 if (!$curUser->isAdmin()) {
-                    DatawrapperSession::logout();
+                    Session::logout();
                 }
                 $user->erase();
 

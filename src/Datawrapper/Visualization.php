@@ -1,43 +1,46 @@
 <?php
 
-class DatawrapperVisualization {
+namespace Datawrapper;
 
+class Visualization {
     private static $instance;
 
+    private $visualizations = array();
+    private $vis_asset_callbacks = array();
+
     public static function getInstance() {
-        if (!isset(self::$instance)) self::$instance = new DatawrapperVisualization();
+        if (!isset(self::$instance)) self::$instance = new static();
         return self::$instance;
     }
 
-    /*
+    /**
      * registers a new visualization, should be called by plugins
      */
     public static function register($plugin, $meta, $asset_callback = null) {
         return self::getInstance()->_register($plugin, $meta, $asset_callback);
     }
 
-    /*
+    /**
      * returns a list of all visualization meta arrays
      */
-    public static function all($sort = 'order') { return self::getInstance()->_all($sort); }
+    public static function all($sort = 'order') {
+        return self::getInstance()->_all($sort);
+    }
 
-    /*
+    /**
      * returns one specific visualization meta array
      */
-    public static function get($id) { return self::getInstance()->_get($id); }
+    public static function get($id) {
+        return self::getInstance()->_get($id);
+    }
 
-    /*
+    /**
      * returns a list of dynamic assets needed by a visualization
      * to render a specific chart
      */
-    public static function assets($vis_id, $chart) { return self::getInstance()->_assets($vis_id, $chart); }
-
-    //
-    // non-static definitions below
-    //
-
-    private $visualizations = array();
-    private $vis_asset_callbacks = array();
+    public static function assets($vis_id, $chart) {
+        return self::getInstance()->_assets($vis_id, $chart);
+    }
 
     public function _register($plugin, $meta, $asset_callback = null) {
         // we save the path to the static files of the visualization
@@ -71,7 +74,8 @@ class DatawrapperVisualization {
                 if (!isset($b['order'])) $b['order'] = 99999;
                 return $a['order'] - $b['order'];
             });
-        } else if ($sort == 'dependencies') {
+        }
+        else if ($sort == 'dependencies') {
             // sorting visualizations so that dependencies are coming fists
             $mysort = function ($a, $b) {
                 if (isset($a['extends']) && $a['extends'] == $b['id']) {
@@ -82,6 +86,7 @@ class DatawrapperVisualization {
                 }
                 return 0;
             };
+
             //TODO: we should probably use a dependency tree instead of this sort hack
             usort($res, $mysort);
             usort($res, $mysort);
@@ -96,14 +101,16 @@ class DatawrapperVisualization {
                 $data[$vis['id']] = $vis;
                 if (!empty($vis['extends'])) {
                     $index[$vis['extends']][] = $vis['id'];
-                } else {
+                }
+                else {
                     $roots[] = $vis['id'];
                 }
             }
+
             // sort visualizations by dep tree
             $res = array();
             function add_vis(&$res, $data, $index, $parent_id, $level) {
-                $parent_id = $parent_id === NULL ? "NULL" : $parent_id;
+                $parent_id = $parent_id === null ? 'NULL' : $parent_id;
                 // load this plugin
                 $vis = $data[$parent_id];
                 // require plugin class
@@ -115,7 +122,10 @@ class DatawrapperVisualization {
                     }
                 }
             }
-            foreach ($roots as $id) add_vis($res, $data, $index, $id, 0);
+
+            foreach ($roots as $id) {
+                add_vis($res, $data, $index, $id, 0);
+            }
         }
         return $res;
     }
@@ -127,5 +137,3 @@ class DatawrapperVisualization {
         return $meta;
     }
 }
-
-

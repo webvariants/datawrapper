@@ -23,19 +23,15 @@ $tmpDirPlugins = ROOT_PATH . 'scripts/tmpl_cache/plugins/';
 $loader = new Twig_Loader_Filesystem($tplDir);
 
 // force auto-reload to always have the latest version of the template
-$twig = new Twig_Environment($loader, array(
-    'cache' => $tmpDir,
-    'auto_reload' => true
-));
+$twig = new Twig_Environment($loader);
+dwInitTwigEnvironment($twig);
 
-if (!file_exists($tmpDirPlugins)) mkdir($tmpDirPlugins);
-
-require_once ROOT_PATH . 'lib/utils/twig-init.php';
-
+if (!file_exists($tmpDirPlugins)) {
+    mkdir($tmpDirPlugins);
+}
 
 // iterate over all your templates
-foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tplDir, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), RecursiveIteratorIterator::LEAVES_ONLY) as $file)
-{
+foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tplDir, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
     if (substr($file, -5) == ".twig") {
         // force compilation
         $tmplPath = str_replace($tplDir.'/', '', $file);
@@ -50,5 +46,6 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tplDir, R
         unlink($cacheFile);
     }
 }
+
 // clean up
-exec('rm -Rf ??');
+// exec('rm -Rf ??');

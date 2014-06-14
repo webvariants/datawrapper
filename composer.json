@@ -21,7 +21,7 @@
             "lib"
         ],
         "files": [
-            "lib/mail.php",
+            "src/functions.php",
             "lib/utils/add_editor_nav.php",
             "lib/utils/add_header_vars.php",
             "lib/utils/alphaID.php",
@@ -36,7 +36,6 @@
             "lib/utils/errors.php",
             "lib/utils/i18n.php",
             "lib/utils/pagination.php",
-            "lib/utils/parse_config.php",
             "lib/utils/themes.php",
             "lib/utils/twig-init.php",
             "lib/utils/vksprintf.php"

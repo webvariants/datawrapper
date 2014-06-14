@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\Session;
+
 define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
 define('NO_SLIM', 1);
 define('NO_SESSION', 1);
@@ -13,6 +15,6 @@ if (isset($dw_config['memcache'])) {
     print "memcache is not configured.\n";
 }
 
-DatawrapperSession::setLanguage("de_DE");
-print DatawrapperSession::getLanguage()."\n";
+Session::setLanguage("de_DE");
+print Session::getLanguage()."\n";
 print __("This little tool reduces the time needed to create a correct chart and embed it into any website from hours to seconds. It makes charting easy, and helps you avoiding common pitfalls.");

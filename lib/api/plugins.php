@@ -1,6 +1,7 @@
 <?php
 
 use Datawrapper\ORM\PluginQuery;
+use Datawrapper\Hooks;
 
 /*
  * this API endpoint allows plugins to provide custom
@@ -27,7 +28,7 @@ $app->put('/plugins/:id/:action', function($plugin_id, $action) use ($app) {
 })->conditions(array('action' => '(enable|disable|publish|unpublish)'));
 
 
-$pluginApiHooks = DatawrapperHooks::execute(DatawrapperHooks::PROVIDE_API);
+$pluginApiHooks = Hooks::execute(Hooks::PROVIDE_API);
 
 if (!empty($pluginApiHooks)) {
     foreach ($pluginApiHooks as $hook) {

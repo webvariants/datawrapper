@@ -1,5 +1,9 @@
 <?php
 
+use \CSSmin;
+use Datawrapper\Hooks;
+use Datawrapper\Visualization;
+
 function publish_chart($user, $chart, $fromCli = false) {
     $files = array();
     if (!$fromCli) _setPublishStatus($chart, 0);
@@ -32,8 +36,8 @@ function publish_chart($user, $chart, $fromCli = false) {
 
     $chart->redirectPreviousVersions();
 
-    DatawrapperHooks::execute(
-        DatawrapperHooks::POST_CHART_PUBLISH,
+    Hooks::execute(
+        Hooks::POST_CHART_PUBLISH,
         $chart, $user
     );
 }
@@ -198,7 +202,7 @@ function publish_css($user, $chart) {
 
     // copy visualization assets
     $vis = $data['visualization'];
-    $assets = DatawrapperVisualization::assets($vis['id'], $chart);
+    $assets = Visualization::assets($vis['id'], $chart);
     foreach ($assets as $asset) {
         $asset_src = ROOT_PATH . 'www/static/' . $asset;
         $asset_tgt = $static_path . '/assets/' . $asset;
@@ -222,7 +226,7 @@ function publish_data($user, $chart) {
 
 
 function publish_push_to_cdn($cdn_files, $chart) {
-    DatawrapperHooks::execute(DatawrapperHooks::PUBLISH_FILES, $cdn_files);
+    Hooks::execute(Hooks::PUBLISH_FILES, $cdn_files);
 }
 
 

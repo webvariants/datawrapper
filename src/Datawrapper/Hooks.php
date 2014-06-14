@@ -1,35 +1,37 @@
 <?php
 
+namespace Datawrapper;
+
 /**
  * This singleton handle hooks registration for plugins
  *
- * DatawrapperHooks::register('my_hook', 'hookFunction')
- * DatawrapperHooks::register('my_hook', array($this, 'hookFunction'))
+ * Datawrapper\Hooks::register('my_hook', 'hookFunction')
+ * Datawrapper\Hooks::register('my_hook', array($this, 'hookFunction'))
  *
  * To execute a hook function:
- * DatawrapperHooks::execute('my_hook', $parameter, ...)
+ * Datawrapper\Hooks::execute('my_hook', $parameter, ...)
  */
-class DatawrapperHooks {
-
+class Hooks {
     private static $instance;
 
-    public static function getInstance(){
-        if(!isset(self::$instance)){
-            self::$instance = new DatawrapperHooks();
+    public $hooks = array();
+
+    public static function getInstance() {
+        if (!isset(self::$instance)) {
+            self::$instance = new static();
         }
         return self::$instance;
     }
 
-    public $hooks = array();
-
     /**
      * Register a plugin hook
-     * @param $hookName - the name of hook to register (see Core::Hooks)
-     * @param $pluginFunc  - the plugin function that will be called on hook execution (see DatawrapperPlugins::executeHook)
+     *
+     * @param string $hookName    the name of hook to register (see Core::Hooks)
+     * @param mixed  $pluginFunc  the plugin function that will be called on hook execution (see DatawrapperPlugins::executeHook)
      */
-    public static function register($hookName, $pluginFunc){
-        $me = self::getInstance();
-        if(!isset($me->hooks[$hookName])){
+    public static function register($hookName, $pluginFunc) {
+        $me = static::getInstance();
+        if (!isset($me->hooks[$hookName])) {
             $me->hooks[$hookName] = array();
         }
         $me->hooks[$hookName][] = $pluginFunc;
@@ -37,12 +39,13 @@ class DatawrapperHooks {
 
     /**
      * Execute a core hook - will call every plugin function registred for a hook
-     * @param $hookName - the name of hook to register (see Core::Hooks)
-     * @param $params   - parameters that will be passed to plugin functions
+     *
+     * @param string $hookName  the name of hook to register (see Core::Hooks)
+     * @param mixed  $params    parameters that will be passed to plugin functions
      */
-    public static function execute($hookName){
-        $me = self::getInstance();
-        if(!isset($me->hooks[$hookName])){
+    public static function execute($hookName) {
+        $me = static::getInstance();
+        if (!isset($me->hooks[$hookName])) {
             return false;
         }
         $results = array();
@@ -52,13 +55,14 @@ class DatawrapperHooks {
         return $results;
     }
 
-    /*
+    /**
      * Checks whether a hook has been registered or if executing
      * that hook would lead to no action.
-     * @param $hookName - the name of hook to register (see Core::Hooks)
+     *
+     * @param string $hookName  the name of hook to register (see Core::Hooks)
      */
     public static function hookRegistered($hookName) {
-        $me = self::getInstance();
+        $me = static::getInstance();
         return isset($me->hooks[$hookName]);
     }
 
@@ -150,9 +154,6 @@ class DatawrapperHooks {
     const USER_SIGNUP = 'user_signup';
 
     const USER_ORGANIZATION_ADD = 'user_organization_add';
+
     const USER_ORGANIZATION_REMOVE = 'user_organization_remove';
-
-
 }
-
-

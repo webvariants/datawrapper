@@ -1,6 +1,7 @@
 <?php
 
 use Datawrapper\ORM\PluginQuery;
+use Datawrapper\Hooks;
 
 /*
  * render templates provided by plugins
@@ -21,4 +22,4 @@ $app->get('/plugins/:plugin/:template', function ($plugin_id, $template) use ($a
 
 // also execute plugin controller
 
-DatawrapperHooks::execute(DatawrapperHooks::GET_PLUGIN_CONTROLLER, $app);
+Hooks::execute(Hooks::GET_PLUGIN_CONTROLLER, $app);

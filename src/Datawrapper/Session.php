@@ -1,25 +1,30 @@
 <?php
 
+namespace Datawrapper;
+
+use Criteria;
+use Datawrapper\ORM\Action;
+use Datawrapper\ORM\ChartQuery;
+use Datawrapper\ORM\User;
+use Datawrapper\ORM\UserQuery;
+
 /*
  * Datawrapper
  *
  * this singleton object handles all data i/o
- *
  */
-
-class DatawrapperSession {
-
+class Session {
     protected static $datawrapper;
 
     public static function getInstance() {
-        if (self::$datawrapper === null) self::$datawrapper = new DatawrapperSession();
+        if (self::$datawrapper === null) self::$datawrapper = new static();
         return self::$datawrapper;
     }
 
     /**
      * creates a new instance
      */
-    function __construct() {
+    public function __construct() {
         $this->initUser();
     }
 
@@ -36,8 +41,9 @@ class DatawrapperSession {
         session_start();
 
         // Reset the expiration time upon page load
-        if (isset($_COOKIE[$ses]))
-            setcookie($ses, $_COOKIE[$ses], time() + $lifetime, "/");
+        if (isset($_COOKIE[$ses])) {
+            setcookie($ses, $_COOKIE[$ses], time() + $lifetime, '/');
+        }
     }
 
     /**
@@ -85,7 +91,8 @@ class DatawrapperSession {
             foreach ($GLOBALS['dw_config']['languages'] as $loc) {
                 $configured_languages[] = substr($loc['id'], 0, 2);
             }
-        } else {
+        }
+        else {
             $configured_languages = array('en');
         }
         return in_array(substr($locale, 0, 2), $configured_languages);
@@ -94,7 +101,7 @@ class DatawrapperSession {
     public static function getBrowserLocale() {
         // get list of available locales
         $available_locales = array('en_US');
-        foreach (glob('../locale/*_*.json') as $l) {
+        foreach (glob('../../locale/*_*.json') as $l) {
             $available_locales[] = substr($l, 10, 5);
         }
         // filter out locales that are not defined in
@@ -121,10 +128,9 @@ class DatawrapperSession {
         // otherwise use user preference, or browser language
         if (self::getUser()->isLoggedIn()) {
             return self::getUser()->getLanguage();
-        } else {
-            return isset($_SESSION['dw-lang']) ? $_SESSION['dw-lang'] : self::getBrowserLocale();
         }
-        return self::getDefaultLanguage();
+
+        return isset($_SESSION['dw-lang']) ? $_SESSION['dw-lang'] : self::getBrowserLocale();
     }
 
     /**
@@ -155,7 +161,7 @@ class DatawrapperSession {
 
         // reload plugins since there might be new plugins
         // becoming available after logins
-        DatawrapperPluginManager::load();
+        PluginManager::load();
 
         $_SESSION['persistent'] = $keepLoggedIn;
         $_SESSION['last_action_time'] = time();
@@ -203,5 +209,3 @@ class DatawrapperSession {
 
     }
 }
-
-

@@ -3,6 +3,9 @@
 use \Propel;
 use Datawrapper\ORM\ChartQuery;
 use Datawrapper\ORM\UserQuery;
+use Datawrapper\Session;
+use Datawrapper\Visualization;
+use Datawrapper\Theme;
 
 function nbChartsByMonth($user) {
     $con = Propel::getConnection();
@@ -22,8 +25,8 @@ function nbChartsByType($user) {
     $res = array();
 
     foreach ($rs as $r) {
-        $vis = DatawrapperVisualization::get($r['type']);
-        $lang = substr(DatawrapperSession::getLanguage(), 0, 2);
+        $vis = Visualization::get($r['type']);
+        $lang = substr(Session::getLanguage(), 0, 2);
         if (!isset($vis['title'])) continue;
         if (empty($vis['title'][$lang])) $lang = 'en';
         $res[] = array('count' => $r['c'], 'id' => $r['type'], 'name' => $vis['title']);
@@ -37,7 +40,7 @@ function nbChartsByLayout($user) {
     $rs = $con->query($sql);
     $res = array();
     foreach ($rs as $r) {
-        $theme = DatawrapperTheme::get($r['theme']);
+        $theme = Theme::get($r['theme']);
         if (!$theme) continue; // ignoring charts whose themes have been removed
         $res[] = array('count' => $r['c'], 'id' => $r['theme'], 'name' => $theme['title']);
     }
@@ -81,7 +84,7 @@ function user_charts($app, $user, $key, $val) {
         'mycharts_base' => '/mycharts'
     );
 
-    if (DatawrapperSession::getUser()->isAdmin() && $user != DatawrapperSession::getUser()) {
+    if (Session::getUser()->isAdmin() && $user != Session::getUser()) {
         $page['user2'] = $user;
         $page['mycharts_base'] = '/admin/charts/' . $user->getId();
         $page['all_users'] = UserQuery::create()->filterByDeleted(false)->orderByEmail()->find();
@@ -95,7 +98,7 @@ function user_charts($app, $user, $key, $val) {
 
 $app->get('/mycharts(/?|/by/:key/:val)', function ($key = false, $val = false) use ($app) {
     disable_cache($app);
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     if ($user->isLoggedIn()) {
         user_charts($app, $user, $key, $val);
     } else {
@@ -106,7 +109,7 @@ $app->get('/mycharts(/?|/by/:key/:val)', function ($key = false, $val = false) u
 
 $app->get('/admin/charts/:userid(/?|/by/:key/:val)', function($userid, $key = false, $val = false) use ($app) {
     disable_cache($app);
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     if ($user->isAdmin()) {
         $user2 = UserQuery::create()->findOneById($userid);
         if ($user2) {

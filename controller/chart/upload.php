@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\Hooks;
+
 /*
  * UPLOAD STEP
  */
@@ -11,7 +13,7 @@ $app->get('/chart/:id/upload', function ($id) use ($app) {
             'title' => $chart->getID() . ' :: '.__('Upload Data'),
             'chartData' => $chart->loadData(),
             'chart' => $chart,
-            'datasets' => DatawrapperHooks::execute(DatawrapperHooks::GET_DEMO_DATASETS)
+            'datasets' => Hooks::execute(Hooks::GET_DEMO_DATASETS)
         );
         add_header_vars($page, 'chart');
         add_editor_nav($page, 1);

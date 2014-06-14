@@ -1,5 +1,8 @@
 <?php
 
+use Datawrapper\Visualization;
+use Datawrapper\Theme;
+
 /*
  * VISUALIZE STEP
  */
@@ -11,11 +14,11 @@ $app->get('/chart/:id/visualize', function ($id) use ($app) {
             'title' => $chart->getID() . ' :: '.__('Visualize'),
             'chartData' => $chart->loadData(),
             'chart' => $chart,
-            'visualizations_deps' => DatawrapperVisualization::all('dependencies'),
-            'visualizations' => DatawrapperVisualization::all(),
-            'vis' => DatawrapperVisualization::get($chart->getType()),
-            'themes' => DatawrapperTheme::all(),
-            'theme' => DatawrapperTheme::get($chart->getTheme()),
+            'visualizations_deps' => Visualization::all('dependencies'),
+            'visualizations' => Visualization::all(),
+            'vis' => Visualization::get($chart->getType()),
+            'themes' => Theme::all(),
+            'theme' => Theme::get($chart->getTheme()),
             'debug' => !empty($GLOBALS['dw_config']['debug_export_test_cases']) ? '1' : '0'
         );
         add_header_vars($page, 'chart');

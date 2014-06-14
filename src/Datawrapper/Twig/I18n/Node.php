@@ -1,7 +1,9 @@
 <?php
 
-class Twig_I18n_Node extends Twig_Extensions_Node_Trans {
-    public function compile(Twig_Compiler $compiler) {
+namespace Datawrapper\Twig\I18n;
+
+class Node extends \Twig_Extensions_Node_Trans {
+    public function compile(\Twig_Compiler $compiler) {
         $compiler->addDebugInfo($this);
 
         list($msg, $vars) = $this->compileString($this->getNode('body'));

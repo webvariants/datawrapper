@@ -4,6 +4,7 @@ use Datawrapper\ORM\Chart;
 use Datawrapper\ORM\ChartQuery;
 use Datawrapper\ORM\User;
 use Datawrapper\ORM\UserQuery;
+use Datawrapper\Theme;
 
 /*
  * creates an large set of test charts in many different
@@ -42,7 +43,7 @@ $user->setRole('editor');
 $user->setCreatedAt(time());
 $user->save();
 
-$themes = DatawrapperTheme::all(true);
+$themes = Theme::all(true);
 
 foreach (glob("../test/test-charts/*.json") as $test) {
     $config = json_decode(file_get_contents($test), true);

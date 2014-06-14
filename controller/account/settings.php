@@ -2,6 +2,7 @@
 
 use Datawrapper\ORM\ActionQuery;
 use Datawrapper\ORM\UserQuery;
+use Datawrapper\Session;
 
 //GET route
 $app->get('/account/settings/', function () use ($app) {
@@ -10,7 +11,7 @@ $app->get('/account/settings/', function () use ($app) {
     $page = array('title' => __('Settings'), 'api_user' => 'current');
     add_header_vars($page, 'user');
 
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
 
      if ($user->getRole() == 'guest') {
         error_settings_need_login();

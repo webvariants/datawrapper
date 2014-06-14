@@ -1,16 +1,18 @@
 <?php
 
+use Datawrapper\Theme;
+
 /*
  * get list of all currently available themes
  *
  */
 
 $app->get('/themes', function() {
-    $res = DatawrapperTheme::all();
+    $res = Theme::all();
     ok($res);
 });
 
 $app->get('/themes/:themeid', function($themeid) {
-    $res = DatawrapperTheme::get($themeid);
+    $res = Theme::get($themeid);
     ok($res);
 });

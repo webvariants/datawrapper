@@ -8,6 +8,8 @@ use Datawrapper\ORM\PluginDataQuery;
 use Datawrapper\ORM\PluginQuery;
 use Datawrapper\ORM\UserOrganizationQuery;
 use Datawrapper\ORM\UserQuery;
+use Datawrapper\Hooks;
+use Datawrapper\Session;
 
 /*
  * creates new organization
@@ -94,7 +96,7 @@ $app->post('/organizations/:id/users', function($org_id) use ($app) {
                         $org->save();
                         $org->setRole($u, 'admin');
                     }
-                    DatawrapperHooks::execute(DatawrapperHooks::USER_ORGANIZATION_ADD, $org, $u);
+                    Hooks::execute(Hooks::USER_ORGANIZATION_ADD, $org, $u);
                 }
             }
             $org->save();
@@ -115,7 +117,7 @@ $app->delete('/organizations/:id/users/:uid', function($org_id, $user_id) use ($
         if ($org && $user) {
             $org->removeUser($user);
             $org->save();
-            DatawrapperHooks::execute(DatawrapperHooks::USER_ORGANIZATION_REMOVE, $org, $user);
+            Hooks::execute(Hooks::USER_ORGANIZATION_REMOVE, $org, $user);
             ok();
         } else {
             return error('unknown-organization-or-user', 'Organization or user not found');
@@ -174,7 +176,7 @@ $app->put('/organizations/:id/plugins/:op/:plugin_id', function($org_id, $op, $p
  * get charts of an organization
  */
 $app->get('/organizations/:id/charts', function($org_id) use ($app) {
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     $org = OrganizationQuery::create()->findPk($org_id);
     if ($org) {
         if ($org->hasUser($user) || $user->isAdmin()) {

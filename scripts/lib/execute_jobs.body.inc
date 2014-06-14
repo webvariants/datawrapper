@@ -1,6 +1,7 @@
 <?php
 
 use Datawrapper\ORM\JobQuery;
+use Datawrapper\Hooks;
 
 //require_once "lib/export_charts.inc";
 
@@ -34,9 +35,9 @@ function run() {
         if ($job) {
             _log("found one ".$job->getType(), $job);
 
-            if (DatawrapperHooks::hookRegistered($job->getType())) {
+            if (Hooks::hookRegistered($job->getType())) {
                 try {
-                    DatawrapperHooks::execute($job->getType(), $job);
+                    Hooks::execute($job->getType(), $job);
                 } catch (Exception $e) {
                     _log("job ".$job->getType()." threw exception:  ".$e->getMessage(), $job, 'WARNING');
                     $job->setStatus('failed');

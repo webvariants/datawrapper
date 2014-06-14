@@ -1,5 +1,9 @@
 <?php
 
+use Datawrapper\Session;
+use Datawrapper\Theme;
+use Datawrapper\Visualization;
+
 /*
  * these controllers return small pieces of the UI
  */
@@ -38,9 +42,9 @@ $app->get('/xhr/:chartid/vis-options', function($id) use ($app) {
 
     check_chart_writable($id, function($user, $chart) use ($app) {
         $page = array(
-            'vis' => DatawrapperVisualization::get($chart->getType()),
-            'theme' => DatawrapperTheme::get($chart->getTheme()),
-            'language' => substr(DatawrapperSession::getLanguage(), 0, 2)
+            'vis' => Visualization::get($chart->getType()),
+            'theme' => Theme::get($chart->getTheme()),
+            'language' => substr(Session::getLanguage(), 0, 2)
         );
         $app->render('chart/visualize/options.twig', $page);
     });

@@ -1,12 +1,14 @@
 <?php
 
 use Datawrapper\ORM\ChartQuery;
+use Datawrapper\Hooks;
+use Datawrapper\Session;
 
 /**
  * API: get list of all charts by the current user
  */
 $app->get('/charts', function() use ($app) {
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     if ($user->isLoggedIn()) {
         $filter = array();
         if ($app->request()->get('filter')) {
@@ -31,7 +33,7 @@ $app->get('/charts', function() use ($app) {
  * API: create a new empty chart
  */
 $app->post('/charts', function() {
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     try {
         $chart = ChartQuery::create()->createEmptyChart($user);
         $result = array($chart->serialize());
@@ -75,7 +77,7 @@ $app->get('/gallery', function() use ($app) {
  */
 $app->get('/charts/:id', function($id) use ($app) {
     $chart = ChartQuery::create()->findPK($id);
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     if (!empty($chart) && $chart->isReadable($user)) {
         ok($chart->serialize());
     } else {
@@ -94,7 +96,7 @@ $app->get('/charts/:id', function($id) use ($app) {
 function if_chart_is_writable($chart_id, $callback) {
     $chart = ChartQuery::create()->findPK($chart_id);
     if (!empty($chart)) {
-        $user = DatawrapperSession::getUser();
+        $user = Session::getUser();
         $res = $chart->isWritable($user);
         if ($res === true) {
             call_user_func($callback, $user, $chart);
@@ -239,7 +241,7 @@ $app->delete('/charts/:id', function($id) use ($app) {
 function if_chart_is_readable($chart_id, $callback) {
     $chart = ChartQuery::create()->findPK($chart_id);
     if ($chart) {
-        $user = DatawrapperSession::getUser();
+        $user = Session::getUser();
         if ($chart->isReadable($user) === true) {
             call_user_func($callback, $user, $chart);
         } else {
@@ -262,7 +264,7 @@ $app->post('/charts/:id/copy', function($chart_id) use ($app) {
     if_chart_is_readable($chart_id, function($user, $chart) use ($app) {
         try {
             $copy = ChartQuery::create()->copyChart($chart);
-            $copy->setUser(DatawrapperSession::getUser());
+            $copy->setUser(Session::getUser());
             $copy->save();
             ok(array('id' => $copy->getId()));
         } catch (Exception $e) {
@@ -299,7 +301,7 @@ $app->put('/charts/:id/thumbnail/:thumb', function($chart_id, $thumb) use ($app)
             $imgdata = base64_decode(substr($imgurl, strpos($imgurl, ",") + 1));
             $static_path = get_static_path($chart);
             file_put_contents($static_path . "/" . $thumb . '.png', $imgdata);
-            DatawrapperHooks::execute(DatawrapperHooks::PUBLISH_FILES, array(
+            Hooks::execute(Hooks::PUBLISH_FILES, array(
                 array(
                     $static_path . "/" . $thumb . '.png',
                     $chart->getID() . '/' . $thumb . '.png',

@@ -1,11 +1,12 @@
 <?php
 
 use Datawrapper\ORM\ChartQuery;
+use Datawrapper\Session;
 
 function check_chart_readable($id, $callback) {
     $chart = ChartQuery::create()->findPK($id);
     if ($chart) {
-        $user = DatawrapperSession::getUser();
+        $user = Session::getUser();
         if ($chart->isReadable($user) === true) {
             call_user_func($callback, $user, $chart);
         } else {
@@ -21,7 +22,7 @@ function check_chart_readable($id, $callback) {
 function check_chart_writable($id, $callback) {
     $chart = ChartQuery::create()->findPK($id);
     if ($chart) {
-        $user = DatawrapperSession::getUser();
+        $user = Session::getUser();
         if ($chart->isWritable($user) === true) {
             call_user_func($callback, $user, $chart);
         } else {

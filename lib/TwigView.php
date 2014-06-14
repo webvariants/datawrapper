@@ -39,12 +39,6 @@
  * - twigOptions
  */
 class TwigView extends Slim_View {
-
-    /**
-     * @var string The path to the Twig code directory WITHOUT the trailing slash
-     */
-    public static $twigDirectory = null;
-
     /**
      * @var array The options for the Twig environment, see
      * http://www.twig-project.org/book/03-Twig-for-Developers
@@ -69,9 +63,10 @@ class TwigView extends Slim_View {
      * @param   string $template The path to the Twig template, relative to the Twig templates directory.
      * @return  void
      */
-    public function render( $template ) {
+    public function render($template) {
         $env = $this->getEnvironment();
         $template = $env->loadTemplate($template);
+
         return $template->render($this->data);
     }
 
@@ -82,23 +77,10 @@ class TwigView extends Slim_View {
      */
     public function getEnvironment() {
         if ( !$this->twigEnvironment ) {
-            // Check for Composer Package Autoloader class loading
-            if (!class_exists('Twig_Autoloader')) {
-                require_once self::$twigDirectory . '/Autoloader.php';
-            }
-
-            Twig_Autoloader::register();
-            $loader = new Twig_Loader_Filesystem($this->getTemplatesDirectory());
             $this->twigEnvironment = new Twig_Environment(
-                $loader,
+                new Twig_Loader_Filesystem($this->getTemplatesDirectory()),
                 self::$twigOptions
             );
-
-            // Check for Composer Package Autoloader class loading
-            if (!class_exists('Twig_Extensions_Autoloader')) {
-                $extension_autoloader = dirname(__FILE__) . '/Extension/TwigAutoloader.php';
-                if (file_exists($extension_autoloader)) require_once $extension_autoloader;
-            }
 
             if (class_exists('Twig_Extensions_Autoloader')) {
                 Twig_Extensions_Autoloader::register();
@@ -111,5 +93,3 @@ class TwigView extends Slim_View {
         return $this->twigEnvironment;
     }
 }
-
-?>

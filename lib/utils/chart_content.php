@@ -1,5 +1,11 @@
 <?php
 
+use Datawrapper\Hooks;
+use Datawrapper\Session;
+use Datawrapper\Theme;
+use Datawrapper\Visualization;
+use \JSMin;
+
 function get_chart_content($chart, $user, $published = false, $debug = false) {
     $theme_css = array();
     $theme_js = array();
@@ -7,10 +13,10 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
 
     $next_theme_id = $chart->getTheme();
 
-    $locale = DatawrapperSession::getLanguage();
+    $locale = Session::getLanguage();
 
     while (!empty($next_theme_id)) {
-        $theme = DatawrapperTheme::get($next_theme_id);
+        $theme = Theme::get($next_theme_id);
         $theme_js[] = $theme['__static_path'] . $next_theme_id . '.js';
         if ($theme['hasStyles']) {
             $theme_css[] =  $theme['__static_path'] . $next_theme_id . '.css';
@@ -54,7 +60,7 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
     $vis_locale = array();  // visualizations may define localized strings, e.g. "other"
 
     while (!empty($next_vis_id)) {
-        $vis = DatawrapperVisualization::get($next_vis_id);
+        $vis = Visualization::get($next_vis_id);
         $vjs = array();
         if (!empty($vis['libraries'])) {
             foreach ($vis['libraries'] as $url) {
@@ -94,9 +100,9 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
         array_reverse($theme_css)
     );
 
-    $the_vis = DatawrapperVisualization::get($chart->getType());
+    $the_vis = Visualization::get($chart->getType());
     $the_vis['locale'] = $vis_locale;
-    $the_theme = DatawrapperTheme::get($chart->getTheme());
+    $the_theme = Theme::get($chart->getTheme());
 
     $the_vis_js = get_vis_js($the_vis, array_merge(array_reverse($vis_js), $vis_libs_local));
     $the_theme_js = get_theme_js($the_theme, array_reverse($theme_js));
@@ -114,7 +120,7 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
         );
         $stylesheets = array($chart->getID().'.all.css');
         // NOTE: replace `/static/` by `assets/` in the `__static_path` value,
-        //       since vis assets are handle by DatawrapperVisualization
+        //       since vis assets are handle by Visualization
         $replace_in = $the_vis['__static_path']; $replace_by = 'assets/'; $replace = '/static/';
         $the_vis['__static_path'] = substr_replace(
             $replace_in,                    // subject
@@ -136,7 +142,7 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
     }
 
     $cfg = $GLOBALS['dw_config'];
-    $published_urls = DatawrapperHooks::execute(DatawrapperHooks::GET_PUBLISHED_URL, $chart);
+    $published_urls = Hooks::execute(Hooks::GET_PUBLISHED_URL, $chart);
     if (empty($published_urls)) {
         $chart_url = $protocol . '://' . $cfg['chart_domain'] . '/' . $chart->getID() . '/';
     } else {
@@ -182,9 +188,9 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
 function get_vis_js($vis, $visJS) {
     // merge vis js into a single file
     $all = '';
-    $org = DatawrapperSession::getUser()->getCurrentOrganization();
+    $org = Session::getUser()->getCurrentOrganization();
     if (!empty($org)) $org = '/'.$org->getID(); else $org = '';
-    $keys = DatawrapperHooks::execute(DatawrapperHooks::GET_PUBLISH_STORAGE_KEY);
+    $keys = Hooks::execute(Hooks::GET_PUBLISH_STORAGE_KEY);
     if (is_array($keys)) $org .= '/' . join($keys, '/');
     foreach ($visJS as $js) {
         if (substr($js, 0, 7) != "http://" && substr($js, 0, 8) != "https://" && substr($js, 0, 2) != '//') {
@@ -206,9 +212,9 @@ function get_vis_js($vis, $visJS) {
  */
 function get_theme_js($theme, $themeJS) {
     $all = '';
-    $org = DatawrapperSession::getUser()->getCurrentOrganization();
+    $org = Session::getUser()->getCurrentOrganization();
     if (!empty($org)) $org = '/'.$org->getID(); else $org = '';
-    $keys = DatawrapperHooks::execute(DatawrapperHooks::GET_PUBLISH_STORAGE_KEY);
+    $keys = Hooks::execute(Hooks::GET_PUBLISH_STORAGE_KEY);
     if (is_array($keys)) $org .= '/' . join($keys, '/');
     foreach ($themeJS as $js) {
         if (substr($js, 0, 7) != "http://" && substr($js, 0, 8) != "https://" && substr($js, 0, 2) != '//') {

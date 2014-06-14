@@ -1,36 +1,33 @@
 <?php
 
-class DatawrapperTheme {
+namespace Datawrapper;
 
+class Theme {
     private static $instance;
 
+    private $themes = array();
+
     public static function getInstance() {
-        if (!isset(self::$instance)) self::$instance = new DatawrapperTheme();
+        if (!isset(self::$instance)) self::$instance = new static();
         return self::$instance;
     }
 
-    /*
+    /**
      * registers a new visualization, should be called by plugins
      */
     public static function register($plugin, $meta) {
         return self::getInstance()->_register($plugin, $meta);
     }
 
-    /*
+    /**
      * returns a list of all visualization meta arrays
      */
     public static function all($ignoreRestrictions = false) { return self::getInstance()->_all($ignoreRestrictions); }
 
-    /*
+    /**
      * returns one specific visualization meta array
      */
     public static function get($id) { return self::getInstance()->_get($id); }
-
-    //
-    // non-static definitions below
-    //
-
-    private $themes = array();
 
     public function _register($plugin, $meta) {
         // we save the path to the static files of the visualization
@@ -42,7 +39,7 @@ class DatawrapperTheme {
 
     private function _all($ignoreRestrictions) {
         $res = array_values($this->themes);
-        $user = DatawrapperSession::getInstance()->getUser();
+        $user = Session::getInstance()->getUser();
         $email = $user->getEmail();
         $domain = substr($email, strpos($email, '@'));
 
@@ -69,18 +66,19 @@ class DatawrapperTheme {
         if (isset($meta['extends'])) {
             $parent = $this->themes[$meta['extends']];
             $parent_tpl_file = $parent['__template_path'] . $parent['id'] . '.twig';
-        } else {
+        }
+        else {
             $meta['extends'] = false;
         }
 
         if (file_exists(ROOT_PATH . 'templates/' . $tpl_file)) {
             $meta['template'] = $tpl_file;
-        } else if ($parent && file_exists(ROOT_PATH . 'templates/' . $parent_tpl_file)) {
+        }
+        else if ($parent && file_exists(ROOT_PATH . 'templates/' . $parent_tpl_file)) {
             $meta['template'] = $parent_tpl_file;
         }
+
         $meta['hasStyles'] = file_exists(ROOT_PATH . 'www/' . $meta['__static_path'] . $id . '.css');
         return $meta;
     }
 }
-
-

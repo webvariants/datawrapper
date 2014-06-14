@@ -2,11 +2,12 @@
 
 use Datawrapper\ORM\User;
 use Datawrapper\ORM\UserQuery;
+use Datawrapper\Session;
 
 //GET route
 $app->get('/login', function () use ($app) {
     disable_cache($app);
-    if (DatawrapperSession::getUser()->isLoggedIn()) $app->redirect('/');
+    if (Session::getUser()->isLoggedIn()) $app->redirect('/');
 
     $page = array(
         'title' => 'Datawrapper',
@@ -24,7 +25,7 @@ $app->get('/login', function () use ($app) {
 $app->get('/setup', function () use ($app) {
 
     disable_cache($app);
-    if (DatawrapperSession::getUser()->isLoggedIn()
+    if (Session::getUser()->isLoggedIn()
         || UserQuery::create()->filterByRole(array('admin', 'sysadmin'))->count() > 0) $app->redirect('/');
 
     $page = array(
@@ -53,10 +54,10 @@ $app->post('/setup', function() use ($app) {
         $user->setEmail($data->email);
         $user->setRole('admin');
         $user->setPwd(secure_password($data->pwd));
-        $user->setLanguage(DatawrapperSession::getLanguage());
+        $user->setLanguage(Session::getLanguage());
         $user->save();
 
-        DatawrapperSession::login($user);
+        Session::login($user);
         $app->redirect('/');
     } else {
         print json_encode(array('status' => 'fail'));

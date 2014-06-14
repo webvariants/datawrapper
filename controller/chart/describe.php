@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\Session;
+
 /*
  * DESCRIBE STEP
  */
@@ -15,7 +17,7 @@ $app->get('/chart/:id/describe', function ($id) use ($app) {
         add_header_vars($page, 'chart', 'chart-editor/describe.css');
         add_editor_nav($page, 2);
 
-        switch(substr(DatawrapperSession::getLanguage(), 0, 2)) {
+        switch(substr(Session::getLanguage(), 0, 2)) {
             case 'de':
                 $k = '.';
                 $d = ',';

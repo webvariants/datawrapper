@@ -1,6 +1,9 @@
 <?php
 
 use Datawrapper\ORM\JobQuery;
+use Datawrapper\Visualization;
+use Datawrapper\Hooks;
+use Datawrapper\Theme;
 
 /*
  * PUBLISH STEP - shows progress of publishing action and thumbnail generation
@@ -17,13 +20,13 @@ $app->get('/chart/:id/publish', function ($id) use ($app) {
             'title' => $chart->getID() . ' :: '.__('Publish'),
             'chartData' => $chart->loadData(),
             'chart' => $chart,
-            'visualizations' => DatawrapperVisualization::all(),
-            'vis' => DatawrapperVisualization::get($chart->getType()),
+            'visualizations' => Visualization::all(),
+            'vis' => Visualization::get($chart->getType()),
             'chartUrl' => $chart->getPublicUrl(),
             'chartUrlLocal' => '/chart/' . $chart->getID() . '/preview',
-            'themes' => DatawrapperTheme::all(),
+            'themes' => Theme::all(),
             'exportStaticImage' => !empty($cfg['phantomjs']),
-            'chartActions' => DatawrapperHooks::execute(DatawrapperHooks::GET_CHART_ACTIONS, $chart),
+            'chartActions' => Hooks::execute(Hooks::GET_CHART_ACTIONS, $chart),
             'estExportTime' => ceil(JobQuery::create()->estimatedTime('export') / 60)
         );
         add_header_vars($page, 'chart', 'chart-editor/publish.css');

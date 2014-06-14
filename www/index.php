@@ -1,6 +1,7 @@
 <?php
 
 use Datawrapper\ORM\UserQuery;
+use Datawrapper\Session;
 
 /**
  * Datawrapper main index
@@ -58,7 +59,7 @@ if ($dw_config['debug']) {
  * if both is true we redirect to /login
  */
 $app->hook('slim.before.router', function () use ($app, $dw_config) {
-    $user = DatawrapperSession::getUser();
+    $user = Session::getUser();
     if (!$user->isLoggedIn() && !empty($dw_config['prevent_guest_access'])) {
         $req = $app->request();
         if (UserQuery::create()->filterByRole(array('admin', 'sysadmin'))->count() > 0) {

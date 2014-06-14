@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\Visualization;
+
 /*
  * get list of all currently available chart types
  * watch out: this request involves browsing in the file
@@ -17,7 +19,7 @@ $app->get('/visualizations', function() {
         $res = $_SESSION['dw-visualizations'];
     } else {
         // read from file system
-        $res = DatawrapperVisualization::all();
+        $res = Visualization::all();
         // store in cache
         $_SESSION['dw-visualizations'] = $res;
     }
@@ -31,7 +33,7 @@ $app->get('/visualizations/:visid', function($visid) {
         $res = $_SESSION['dw-visualizations-'.$visid];
     } else {
         // read from file system
-        $res = DatawrapperVisualization::get($visid);
+        $res = Visualization::get($visid);
         // store in cache
         $_SESSION['dw-visualizations-'.$visid] = $res;
     }

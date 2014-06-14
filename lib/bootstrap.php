@@ -4,13 +4,19 @@
  * bootstrap.php
  */
 
+use Datawrapper\L10N;
+use Datawrapper\Session;
+use Datawrapper\SessionHandler\DatabaseHandler;
+use Datawrapper\PluginManager;
+
 // if not done yet, include the autoloader
 require_once ROOT_PATH . 'vendor/autoload.php';
 
 // load YAML parser and config
-$GLOBALS['dw_config'] = $dw_config = Spyc::YAMLLoad(ROOT_PATH . 'config.yaml');
+$dw_config = Spyc::YAMLLoad(ROOT_PATH . 'config.yaml');
+$dw_config = parse_config($dw_config);
 
-if ($dw_config['debug'] == true) {
+if ($dw_config['debug']) {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 }
@@ -28,15 +34,18 @@ define('DW_AUTH_SALT', $dw_config['auth_salt']);
  */
 function secure_password($pwd) {
     global $dw_config;
+
     if (isset($dw_config['secure_auth_key'])) {
         return hash_hmac('sha256', $pwd, $dw_config['secure_auth_key']);
-    } else {
+    }
+    else {
         return $pwd;
     }
 }
 
 if (!defined('NO_SESSION')) {
-    DatawrapperSession::initSession();
+    DatabaseHandler::initialize();
+    Session::initSession();
 }
 
 function debug_log($txt) {
@@ -46,23 +55,18 @@ function debug_log($txt) {
 }
 
 // init l10n
-$locale = str_replace('-', '_', DatawrapperSession::getLanguage());
+$locale = str_replace('-', '_', Session::getLanguage());
 $domain = 'messages';
 putenv('LANGUAGE=' . $locale);
 setlocale(LC_ALL, $locale);
 setlocale(LC_TIME, $locale.'.utf8');
 
-$__l10n = new Datawrapper_L10N();
+$__l10n = new L10N();
 $__l10n->loadMessages($locale);
-
-parse_config();
 
 if (!defined('NO_SLIM')) {
     // Initialize Slim app..
     if (ROOT_PATH == '../') {
-        // ..either with TwigView for Datawrapper UI,...
-        TwigView::$twigDirectory = ROOT_PATH . 'vendor/Twig';
-
         $app = new Slim(array(
             'view' => new TwigView(),
             'templates.path' => '../templates',
@@ -80,4 +84,4 @@ if (isset($dw_config['memcache'])) {
     $memcache->connect($memcfg['host'], $memcfg['port']) or die ("Could not connect");
 }
 
-DatawrapperPluginManager::load();
+PluginManager::load();

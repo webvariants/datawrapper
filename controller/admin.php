@@ -1,8 +1,11 @@
 <?php
 
-if (DatawrapperHooks::hookRegistered(DatawrapperHooks::GET_ADMIN_PAGES)) {
+use Datawrapper\Hooks;
+use Datawrapper\Session;
+
+if (Hooks::hookRegistered(Hooks::GET_ADMIN_PAGES)) {
     // pull admin pages from plugins
-    $__dw_admin_pages = DatawrapperHooks::execute(DatawrapperHooks::GET_ADMIN_PAGES);
+    $__dw_admin_pages = Hooks::execute(Hooks::GET_ADMIN_PAGES);
 
     // order admin pages by index "order"
     usort($__dw_admin_pages, function($a, $b) {
@@ -15,7 +18,7 @@ if (DatawrapperHooks::hookRegistered(DatawrapperHooks::GET_ADMIN_PAGES)) {
         $app->map('/admin' . $admin_page['url'], function() use ($app, $admin_page, $__dw_admin_pages) {
             disable_cache($app);
 
-            $user = DatawrapperSession::getUser();
+            $user = Session::getUser();
             if ($user->isAdmin()) {
                 $page_vars = array(
                     'title' => $admin_page['title'],
