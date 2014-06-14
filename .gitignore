@@ -2,7 +2,8 @@
 .DS_Store
 *.sublime-workspace
 *.sublime-project
-lib/core/build/conf/datawrapper-conf.php
+db/build/conf/datawrapper-conf.php
+db/build/conf/classmap-datawrapper-conf.php
 lib/datawrapper/build/conf/datawrapper-conf.php
 charts/data/*
 charts/images/*
@@ -22,7 +23,5 @@ crowdin.yaml
 log.txt
 www/static/js/dw-2.0.min.js
 vendor/*
-
 scripts/lib/execute_jobs.lock
-
 scripts/execute_jobs.lock

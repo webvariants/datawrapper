@@ -36,7 +36,7 @@ function check_config() {
 }
 
 function connect_database() {
-    @include '../lib/core/build/conf/datawrapper-conf.php';
+    @include ROOT_PATH.'/db/build/conf/datawrapper-conf.php';
     $dbconn = $conf['datasources']['datawrapper']['connection'];
 
     return new PDO($dbconn['dsn'], $dbconn['user'], $dbconn['password']);
@@ -44,10 +44,10 @@ function connect_database() {
 
 
 function check_database() {
-    if (!file_exists('../lib/core/build/conf/datawrapper-conf.php')) {
+    if (!file_exists(ROOT_PATH.'/db/build/conf/datawrapper-conf.php')) {
         return '<h2>No database configuration found!</h2>'
-            . '<p>Please copy <code>lib/core/build/conf/datawrapper-conf.php.master</code> to <code>'
-            . 'lib/core/build/conf/datawrapper-conf.php</code> and update your database settings '
+            . '<p>Please copy <code>db/build/conf/datawrapper-conf.php.master</code> to <code>'
+            . 'db/build/conf/datawrapper-conf.php</code> and update your database settings '
             . 'according to your server configuration</p>';
     }
 
@@ -72,7 +72,7 @@ function check_database() {
             . '<p>The database could be accessed but seems not be initialized correctly. '
             . 'The following tables are missing:</p>'
             . '<ul><li><code>' . join('</li></code><li><code>', $missingTables) . '</code></li></ul>'
-            . '<p>Have you run the DB initialization in <code>lib/core/build/sql/schema.sql</code>?</p>';
+            . '<p>Have you run the DB initialization in <code>db/build/sql/schema.sql</code>?</p>';
     }
     return '';
 }
