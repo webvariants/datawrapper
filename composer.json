@@ -42,7 +42,8 @@
             "lib/utils/vksprintf.php"
         ],
         "psr-0": {
-            "Slim": "vendor/slim/slim"
+            "Slim": "vendor/slim/slim",
+            "Datawrapper": "src"
         }
     },
     "repositories": [
