@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\ChartQuery;
+
 /**
  * API: get list of all charts by the current user
  */

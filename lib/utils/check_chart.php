@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\ChartQuery;
+
 function check_chart_readable($id, $callback) {
     $chart = ChartQuery::create()->findPK($id);
     if ($chart) {

@@ -1,5 +1,10 @@
 <?php
 
+use Datawrapper\ORM\Chart;
+use Datawrapper\ORM\ChartQuery;
+use Datawrapper\ORM\User;
+use Datawrapper\ORM\UserQuery;
+
 /*
  * creates an large set of test charts in many different
  * combinations of datasets, visualizations and themes

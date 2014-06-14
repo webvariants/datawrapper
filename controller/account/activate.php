@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\UserQuery;
+
 //GET route
 $app->get('/account/activate/:token', function ($token) use ($app) {
     disable_cache($app);

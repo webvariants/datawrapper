@@ -1,5 +1,9 @@
 <?php
 
+use \Propel;
+use Datawrapper\ORM\ChartQuery;
+use Datawrapper\ORM\UserQuery;
+
 function nbChartsByMonth($user) {
     $con = Propel::getConnection();
     $sql = "SELECT DATE_FORMAT(created_at, '%Y-%m') ym, COUNT(*) c FROM chart WHERE author_id = ". $user->getId() ." AND deleted = 0 AND last_edit_step >= 2 GROUP BY ym ORDER BY ym DESC ;";

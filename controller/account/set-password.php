@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\UserQuery;
+
 /*
  * this page shows up if an user has been invited to
  * datawrapper and therefor only needs to pick a password

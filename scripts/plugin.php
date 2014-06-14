@@ -1,5 +1,8 @@
 <?php
 
+use Datawrapper\ORM\Plugin;
+use Datawrapper\ORM\PluginQuery;
+
 /*
  * Datawrapper Plugin Manager
  * --------------------------
@@ -384,5 +387,5 @@ function _loadPluginClass($plugin) {
         return new $className();
     }
     // no plugin.php
-    return new DatawrapperPlugin($plugin->getName());
+    return new PluginObject($plugin->getName());
 }

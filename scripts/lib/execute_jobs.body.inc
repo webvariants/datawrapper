@@ -1,5 +1,6 @@
 <?php
 
+use Datawrapper\ORM\JobQuery;
 
 //require_once "lib/export_charts.inc";
 

@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\UserQuery;
+
 /*
  * This scripts secures all passwords in the database with the
  * secure_auth_key that was introduced in 1.3.2.

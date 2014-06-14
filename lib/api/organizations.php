@@ -1,5 +1,13 @@
 <?php
 
+use Datawrapper\ORM\ChartQuery;
+use Datawrapper\ORM\Organization;
+use Datawrapper\ORM\OrganizationQuery;
+use Datawrapper\ORM\PluginData;
+use Datawrapper\ORM\PluginDataQuery;
+use Datawrapper\ORM\PluginQuery;
+use Datawrapper\ORM\UserOrganizationQuery;
+use Datawrapper\ORM\UserQuery;
 
 /*
  * creates new organization
@@ -180,7 +188,7 @@ $app->get('/organizations/:id/charts', function($org_id) use ($app) {
                 $vis = explode(',', $vis);
                 $conds = array();
                 foreach ($vis as $v) {
-                    $query->condition($conds[] = 'c'.count($conds), 'Chart.Type = ?', $v);
+                    $query->condition($conds[] = 'c'.count($conds), 'Datawrapper\ORM\Chart.Type = ?', $v);
                 }
                 $query->where($conds, 'or');
             }
@@ -190,7 +198,7 @@ $app->get('/organizations/:id/charts', function($org_id) use ($app) {
                 $months = explode(',', $months);
                 $conds = array();
                 foreach ($months as $m) {
-                    $query->condition($conds[] = 'c'.count($conds), 'DATE_FORMAT(Chart.CreatedAt, "%Y-%m") = DATE_FORMAT(?, "%Y-%m")', $m.'-01');
+                    $query->condition($conds[] = 'c'.count($conds), 'DATE_FORMAT(Datawrapper\ORM\Chart.CreatedAt, "%Y-%m") = DATE_FORMAT(?, "%Y-%m")', $m.'-01');
                 }
                 $query->where($conds, 'or');
             }
@@ -200,18 +208,18 @@ $app->get('/organizations/:id/charts', function($org_id) use ($app) {
                 $status = explode(',', $status);
                 $conds = array();
                 foreach ($status as $s) {
-                    $query->condition($conds[] = 'c'.count($conds), 'Chart.LastEditStep ' . ($s == 'published' ? ' >= 4' : '< 4'));
+                    $query->condition($conds[] = 'c'.count($conds), 'Datawrapper\ORM\Chart.LastEditStep ' . ($s == 'published' ? ' >= 4' : '< 4'));
                 }
                 $query->where($conds, 'or');
             }
             // filter by search query
             $q = $app->request()->get('search');
             if (!empty($q)) {
-                $query->join('Chart.User')
-                    ->condition('c1', 'Chart.Title LIKE ?', '%'.$q.'%')
-                    ->condition('c2', 'Chart.Metadata LIKE ?', '%"intro":"%'.$q.'%"%')
-                    ->condition('c3', 'Chart.Metadata LIKE ?', '%"source-name":"%'.$q.'%"%')
-                    ->condition('c4', 'Chart.Metadata LIKE ?', '%"source-url":"%'.$q.'%"%')
+                $query->join('Datawrapper\ORM\Chart.User')
+                    ->condition('c1', 'Datawrapper\ORM\Chart.Title LIKE ?', '%'.$q.'%')
+                    ->condition('c2', 'Datawrapper\ORM\Chart.Metadata LIKE ?', '%"intro":"%'.$q.'%"%')
+                    ->condition('c3', 'Datawrapper\ORM\Chart.Metadata LIKE ?', '%"source-name":"%'.$q.'%"%')
+                    ->condition('c4', 'Datawrapper\ORM\Chart.Metadata LIKE ?', '%"source-url":"%'.$q.'%"%')
                     ->condition('c5', 'User.Email LIKE ?', '%'.$q.'%')
                     ->condition('c6', 'User.Name LIKE ?', '%'.$q.'%')
                     ->where(array('c1','c2','c3','c4','c5','c6'), 'or');

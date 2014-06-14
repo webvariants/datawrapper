@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\ChartQuery;
+
 /**
  * API: get data to a chart
  *

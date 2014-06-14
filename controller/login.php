@@ -1,5 +1,8 @@
 <?php
 
+use Datawrapper\ORM\User;
+use Datawrapper\ORM\UserQuery;
+
 //GET route
 $app->get('/login', function () use ($app) {
     disable_cache($app);

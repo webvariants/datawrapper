@@ -124,10 +124,10 @@ class ChartQuery extends BaseChartQuery {
                 if ($key == 'vis') $query->filterByType($val);
                 if ($key == 'month') $query->filterByCreatedAt(array('min' => $val.'-01', 'max' => $val.'-31'));
                 if ($key == 'q') {
-                    $query->condition('in-title', 'Chart.Title LIKE ?', '%'.$val.'%');
-                    $query->condition('in-intro', 'Chart.Metadata LIKE ?', '%"intro":"%'.$val.'%"%');
-                    $query->condition('in-source', 'Chart.Metadata LIKE ?', '%"source-name":"%'.$val.'%"%');
-                    $query->condition('in-source-url', 'Chart.Metadata LIKE ?', '%"source-url":"%'.$val.'%"%');
+                    $query->condition('in-title', 'Datawrapper\ORM\Chart.Title LIKE ?', '%'.$val.'%');
+                    $query->condition('in-intro', 'Datawrapper\ORM\Chart.Metadata LIKE ?', '%"intro":"%'.$val.'%"%');
+                    $query->condition('in-source', 'Datawrapper\ORM\Chart.Metadata LIKE ?', '%"source-name":"%'.$val.'%"%');
+                    $query->condition('in-source-url', 'Datawrapper\ORM\Chart.Metadata LIKE ?', '%"source-url":"%'.$val.'%"%');
                     $query->where(array('in-title', 'in-intro', 'in-source', 'in-source-url'), 'or');
                 }
                 if ($key == 'status') {

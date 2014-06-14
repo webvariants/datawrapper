@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\PluginQuery;
+
 /*
  * this API endpoint allows plugins to provide custom
  * API actions
@@ -33,4 +35,3 @@ if (!empty($pluginApiHooks)) {
         $app->map('/plugin/' . $hook['url'], $hook['action'])->via($hook['method']);
     }
 }
-

@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\ChartQuery;
+
 $app->map('/chart/create', function() use ($app) {
     disable_cache($app);
 

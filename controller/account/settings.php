@@ -1,5 +1,8 @@
 <?php
 
+use Datawrapper\ORM\ActionQuery;
+use Datawrapper\ORM\UserQuery;
+
 //GET route
 $app->get('/account/settings/', function () use ($app) {
     disable_cache($app);

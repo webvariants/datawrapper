@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\JobQuery;
+
 /*
  * PUBLISH STEP - shows progress of publishing action and thumbnail generation
  * forwards to /chart/:id/finish

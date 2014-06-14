@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\UserQuery;
+
 /**
  * Datawrapper JSON API
  *

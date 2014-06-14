@@ -1,5 +1,7 @@
 <?php
 
+use Datawrapper\ORM\PluginQuery;
+
 /*
  * render templates provided by plugins
  */

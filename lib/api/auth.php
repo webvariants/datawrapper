@@ -1,5 +1,9 @@
 <?php
 
+use Datawrapper\ORM\Action;
+use Datawrapper\ORM\ActionQuery;
+use Datawrapper\ORM\UserQuery;
+
 /* get session info */
 $app->get('/account', function() {
     try {

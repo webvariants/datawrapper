@@ -1,5 +1,6 @@
 <?php
 
+use Datawrapper\ORM\JobQuery;
 
 /*
  * creates new job

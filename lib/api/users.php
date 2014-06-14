@@ -1,5 +1,9 @@
 <?php
 
+use Datawrapper\ORM\Action;
+use Datawrapper\ORM\User;
+use Datawrapper\ORM\UserQuery;
+
 /*
  * get list of all users
  * @needs admin
