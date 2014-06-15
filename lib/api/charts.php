@@ -3,6 +3,7 @@
 use Datawrapper\ORM\ChartQuery;
 use Datawrapper\Hooks;
 use Datawrapper\Session;
+use qqFileUploader\Uploader;
 
 /**
  * API: get list of all charts by the current user
@@ -176,7 +177,7 @@ $app->post('/charts/:id/data', function($chart_id) use ($app) {
         // max file size in bytes
         $sizeLimit = 2 * 1024 * 1024;
 
-        $uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
+        $uploader = new Uploader($allowedExtensions, $sizeLimit);
         $result = $uploader->handleUpload('../../charts/data/tmp/');
 
         // to pass data through iframe you will need to encode all html tags
