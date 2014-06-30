@@ -65,6 +65,21 @@ module.exports = function (grunt) {
                     'www/static/js/dw-2.0.min.js': ['tmp/dw.js']
                 }
             }
+        },
+
+        /************************************************************************\
+         * shell                                                                *
+        \************************************************************************/
+
+        shell: {
+            propel: {
+                command: 'phing -f ../../vendor/propel/propel1/generator/build.xml -Dproject.dir=../../lib/core/',
+                options: {
+                    execOptions: {
+                        cwd: 'vendor/bin'
+                    }
+                }
+            }
         }
     });
 
@@ -72,10 +87,12 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-shell');
 
     // register custom tasks
     grunt.registerTask('dwjs', ['clean:dwjs', 'concat:dwjs', 'uglify:dwjs']);
     grunt.registerTask('vendor', ['concat:vendor']);
+    grunt.registerTask('propel', ['shell:propel']);
 
     // register default task
     grunt.registerTask('default', ['dwjs', 'vendor']);
