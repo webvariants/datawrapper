@@ -14,5 +14,11 @@
             "chroma": true,
             "d3": true
         }
+    },
+    "devDependencies": {
+        "grunt": "~0.4",
+        "grunt-contrib-clean": "~0.5",
+        "grunt-contrib-concat": "~0.4",
+        "grunt-contrib-uglify": "~0.5"
     }
 }
