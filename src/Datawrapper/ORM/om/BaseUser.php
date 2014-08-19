@@ -23,10 +23,14 @@ use Datawrapper\ORM\Job;
 use Datawrapper\ORM\JobQuery;
 use Datawrapper\ORM\Organization;
 use Datawrapper\ORM\OrganizationQuery;
+use Datawrapper\ORM\Product;
+use Datawrapper\ORM\ProductQuery;
 use Datawrapper\ORM\User;
 use Datawrapper\ORM\UserOrganization;
 use Datawrapper\ORM\UserOrganizationQuery;
 use Datawrapper\ORM\UserPeer;
+use Datawrapper\ORM\UserProduct;
+use Datawrapper\ORM\UserProductQuery;
 use Datawrapper\ORM\UserQuery;
 
 /**

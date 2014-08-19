@@ -16,9 +16,11 @@ use Datawrapper\ORM\Action;
 use Datawrapper\ORM\Chart;
 use Datawrapper\ORM\Job;
 use Datawrapper\ORM\Organization;
+use Datawrapper\ORM\Product;
 use Datawrapper\ORM\User;
 use Datawrapper\ORM\UserOrganization;
 use Datawrapper\ORM\UserPeer;
+use Datawrapper\ORM\UserProduct;
 use Datawrapper\ORM\UserQuery;
 
 /**
@@ -1060,13 +1062,13 @@ abstract class BaseUserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   UserProductQuery A secondary query class using the current class as primary query
+     * @return   \Datawrapper\ORM\UserProductQuery A secondary query class using the current class as primary query
      */
     public function useUserProductQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinUserProduct($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'UserProduct', 'UserProductQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'UserProduct', '\Datawrapper\ORM\UserProductQuery');
     }
 
     /**

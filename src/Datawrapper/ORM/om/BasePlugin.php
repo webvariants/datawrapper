@@ -24,6 +24,10 @@ use Datawrapper\ORM\PluginOrganization;
 use Datawrapper\ORM\PluginOrganizationQuery;
 use Datawrapper\ORM\PluginPeer;
 use Datawrapper\ORM\PluginQuery;
+use Datawrapper\ORM\Product;
+use Datawrapper\ORM\ProductPlugin;
+use Datawrapper\ORM\ProductPluginQuery;
+use Datawrapper\ORM\ProductQuery;
 
 /**
  * Base class that represents a row from the 'plugin' table.

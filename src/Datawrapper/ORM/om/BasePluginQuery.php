@@ -18,6 +18,8 @@ use Datawrapper\ORM\PluginData;
 use Datawrapper\ORM\PluginOrganization;
 use Datawrapper\ORM\PluginPeer;
 use Datawrapper\ORM\PluginQuery;
+use Datawrapper\ORM\Product;
+use Datawrapper\ORM\ProductPlugin;
 
 /**
  * Base class that represents a query for the 'plugin' table.
@@ -592,13 +594,13 @@ abstract class BasePluginQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   ProductPluginQuery A secondary query class using the current class as primary query
+     * @return   \Datawrapper\ORM\ProductPluginQuery A secondary query class using the current class as primary query
      */
     public function useProductPluginQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinProductPlugin($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProductPlugin', 'ProductPluginQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'ProductPlugin', '\Datawrapper\ORM\ProductPluginQuery');
     }
 
     /**
