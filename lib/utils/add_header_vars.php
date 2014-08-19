@@ -85,9 +85,9 @@ function add_header_vars(&$page, $active = null, $page_css = null) {
             if (strlen($username) > 18) $username = substr($username, 0, 16).'…';
         }
         $headlinks[] = array(
-            'url' => '/mycharts/',
-            'id' => 'mycharts',
-            'title' => '<img style="height:22px;position:relative;top:-2px;border-radius:7px;margin-right:7px" src="http://www.gravatar.com/avatar/' . md5(strtolower(trim($user->getEmail()))) . '?s=44&amp;d=mm" /><b>'.htmlspecialchars($username, ENT_QUOTES, 'UTF-8').'</b>'
+            'url' => '/account/',
+            'id' => 'account',
+            'title' => '<img style="height:22px;position:relative;top:-2px;border-radius:7px;margin-right:7px" src="//www.gravatar.com/avatar/' . md5(strtolower(trim($user->getEmail()))) . '?s=44&amp;d=mm" /><b>'.htmlspecialchars($username, ENT_QUOTES, 'UTF-8').'</b>'
         );
 
         if ($user->hasCharts()) {
@@ -114,14 +114,10 @@ function add_header_vars(&$page, $active = null, $page_css = null) {
 
         header_nav_hook($headlinks, 'mycharts');
 
+        // the place where settings used to be
 
-        $headlinks[] = array(
-            'url' => '/account/settings',
-            'id' => 'signout',
-            'icon' => 'fa fa-wrench',
-            'justicon' => true,
-            'tooltip' => __('Settings')
-        );
+        header_nav_hook($headlinks, 'settings');
+
     } else {
         $headlinks[] = array(
             'url' => '#login',

@@ -140,4 +140,12 @@ class User extends BaseUser {
             'socialmedia' => $this->getSmProfile()
         );
     }
+
+	public function hasProduct(Product $product) {
+		return UserProductsQuery::create()
+			->filterByProduct($product)
+			->filterByUser($this)
+			->count() > 0;
+    }
 }
+

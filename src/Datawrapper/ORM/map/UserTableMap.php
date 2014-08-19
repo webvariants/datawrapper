@@ -75,7 +75,9 @@ class UserTableMap extends TableMap
         $this->addRelation('UserOrganization', 'Datawrapper\\ORM\\UserOrganization', RelationMap::ONE_TO_MANY, array('id' => 'user_id', ), null, null, 'UserOrganizations');
         $this->addRelation('Action', 'Datawrapper\\ORM\\Action', RelationMap::ONE_TO_MANY, array('id' => 'user_id', ), null, null, 'Actions');
         $this->addRelation('Job', 'Datawrapper\\ORM\\Job', RelationMap::ONE_TO_MANY, array('id' => 'user_id', ), null, null, 'Jobs');
+        $this->addRelation('UserProduct', 'Datawrapper\\ORM\\UserProduct', RelationMap::ONE_TO_MANY, array('id' => 'user_id', ), null, null, 'UserProducts');
         $this->addRelation('Organization', 'Datawrapper\\ORM\\Organization', RelationMap::MANY_TO_MANY, array(), null, null, 'Organizations');
+        $this->addRelation('Product', 'Datawrapper\\ORM\\Product', RelationMap::MANY_TO_MANY, array(), null, null, 'Products');
     } // buildRelations()
 
 } // UserTableMap

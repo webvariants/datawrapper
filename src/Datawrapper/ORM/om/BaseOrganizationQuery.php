@@ -52,6 +52,10 @@ use Datawrapper\ORM\UserOrganization;
  * @method OrganizationQuery rightJoinPluginOrganization($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PluginOrganization relation
  * @method OrganizationQuery innerJoinPluginOrganization($relationAlias = null) Adds a INNER JOIN clause to the query using the PluginOrganization relation
  *
+ * @method OrganizationQuery leftJoinOrganizationProduct($relationAlias = null) Adds a LEFT JOIN clause to the query using the OrganizationProduct relation
+ * @method OrganizationQuery rightJoinOrganizationProduct($relationAlias = null) Adds a RIGHT JOIN clause to the query using the OrganizationProduct relation
+ * @method OrganizationQuery innerJoinOrganizationProduct($relationAlias = null) Adds a INNER JOIN clause to the query using the OrganizationProduct relation
+ *
  * @method Organization findOne(PropelPDO $con = null) Return the first Organization matching the query
  * @method Organization findOneOrCreate(PropelPDO $con = null) Return the first Organization matching the query, or a new Organization object populated from the query conditions when no match is found
  *
@@ -606,6 +610,80 @@ abstract class BaseOrganizationQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related OrganizationProduct object
+     *
+     * @param   OrganizationProduct|PropelObjectCollection $organizationProduct  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 OrganizationQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByOrganizationProduct($organizationProduct, $comparison = null)
+    {
+        if ($organizationProduct instanceof OrganizationProduct) {
+            return $this
+                ->addUsingAlias(OrganizationPeer::ID, $organizationProduct->getOrganizationId(), $comparison);
+        } elseif ($organizationProduct instanceof PropelObjectCollection) {
+            return $this
+                ->useOrganizationProductQuery()
+                ->filterByPrimaryKeys($organizationProduct->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByOrganizationProduct() only accepts arguments of type OrganizationProduct or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the OrganizationProduct relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return OrganizationQuery The current query, for fluid interface
+     */
+    public function joinOrganizationProduct($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('OrganizationProduct');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'OrganizationProduct');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the OrganizationProduct relation OrganizationProduct object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   OrganizationProductQuery A secondary query class using the current class as primary query
+     */
+    public function useOrganizationProductQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinOrganizationProduct($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'OrganizationProduct', 'OrganizationProductQuery');
+    }
+
+    /**
      * Filter the query by a related User object
      * using the user_organization table as cross reference
      *
@@ -636,6 +714,23 @@ abstract class BaseOrganizationQuery extends ModelCriteria
         return $this
             ->usePluginOrganizationQuery()
             ->filterByPlugin($plugin, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Product object
+     * using the organization_product table as cross reference
+     *
+     * @param   Product $product the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return   OrganizationQuery The current query, for fluid interface
+     */
+    public function filterByProduct($product, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useOrganizationProductQuery()
+            ->filterByProduct($product, $comparison)
             ->endUse();
     }
 

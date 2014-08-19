@@ -14,6 +14,9 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
     $next_theme_id = $chart->getTheme();
 
     $locale = Session::getLanguage();
+    if ($chart->getLanguage() != '') {
+        $locale = $chart->getLanguage();
+    }
 
     while (!empty($next_theme_id)) {
         $theme = Theme::get($next_theme_id);
@@ -103,6 +106,7 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
     $the_vis = Visualization::get($chart->getType());
     $the_vis['locale'] = $vis_locale;
     $the_theme = Theme::get($chart->getTheme());
+    $l10n__domain = $the_theme['__static_path'];
 
     $the_vis_js = get_vis_js($the_vis, array_merge(array_reverse($vis_js), $vis_libs_local));
     $the_theme_js = get_theme_js($the_theme, array_reverse($theme_js));
@@ -154,7 +158,7 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
         'chart' => $chart,
         'lang' => strtolower(substr($locale, 0, 2)),
         'metricPrefix' => get_metric_prefix($locale),
-        'l10n__domain' => $the_theme['__static_path'],
+        'l10n__domain' => $l10n__domain,
         'origin' => !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '',
         'DW_DOMAIN' => $protocol . '://' . $cfg['domain'] . '/',
         'DW_CHART_DATA' => $protocol . '://' . $cfg['domain'] . '/chart/' . $chart->getID() . '/data.csv',
@@ -197,7 +201,7 @@ function get_vis_js($vis, $visJS) {
             $all .= "\n\n\n" . file_get_contents(ROOT_PATH . 'www' . $js);
         }
     }
-    $all = JSMin::minify($all);
+    $all = \JShrink\Minifier::minify($all);
     $all = file_get_contents(ROOT_PATH . 'www/static/js/dw-2.0.min.js') . "\n\n" . $all;
     // generate md5 hash of this file to get filename
     $vis_js_md5 = md5($all.$org);
@@ -221,7 +225,7 @@ function get_theme_js($theme, $themeJS) {
             $all .= "\n\n\n" . file_get_contents(ROOT_PATH . 'www' . $js);
         }
     }
-    $all = JSMin::minify($all);
+    $all = \JShrink\Minifier::minify($all);
     $theme_js_md5 = md5($all.$org);
     $theme_path = 'theme/' . $theme['id'] . '-' . $theme_js_md5 . '.min.js';
     return array($theme_path, $all);
@@ -229,7 +233,7 @@ function get_theme_js($theme, $themeJS) {
 
 function get_chart_js() {
     $js = file_get_contents(ROOT_PATH . 'www/static/js/dw/chart.base.js');
-    $min = JSMin::minify($js);
+    $min = \JShrink\Minifier::minify($js);
     $md5 = md5($min);
     return array('chart-'.$md5.'.min.js', $min);
 }

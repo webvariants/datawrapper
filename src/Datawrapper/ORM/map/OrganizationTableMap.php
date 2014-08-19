@@ -57,8 +57,10 @@ class OrganizationTableMap extends TableMap
         $this->addRelation('Chart', 'Datawrapper\\ORM\\Chart', RelationMap::ONE_TO_MANY, array('id' => 'organization_id', ), null, null, 'Charts');
         $this->addRelation('UserOrganization', 'Datawrapper\\ORM\\UserOrganization', RelationMap::ONE_TO_MANY, array('id' => 'organization_id', ), null, null, 'UserOrganizations');
         $this->addRelation('PluginOrganization', 'Datawrapper\\ORM\\PluginOrganization', RelationMap::ONE_TO_MANY, array('id' => 'organization_id', ), null, null, 'PluginOrganizations');
+        $this->addRelation('OrganizationProduct', 'Datawrapper\\ORM\\OrganizationProduct', RelationMap::ONE_TO_MANY, array('id' => 'organization_id', ), null, null, 'OrganizationProducts');
         $this->addRelation('User', 'Datawrapper\\ORM\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
         $this->addRelation('Plugin', 'Datawrapper\\ORM\\Plugin', RelationMap::MANY_TO_MANY, array(), null, null, 'Plugins');
+        $this->addRelation('Product', 'Datawrapper\\ORM\\Product', RelationMap::MANY_TO_MANY, array(), null, null, 'Products');
     } // buildRelations()
 
 } // OrganizationTableMap

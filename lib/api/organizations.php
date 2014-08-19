@@ -12,6 +12,25 @@ use Datawrapper\Hooks;
 use Datawrapper\Session;
 
 /*
+ * get list of all organizations
+ */
+$app->get('/organizations', function() use ($app) {
+    disable_cache($app);
+	if_is_admin(function() use ($app) {
+		try {
+			$organizations = OrganizationQuery::create()->filterByDeleted(false)->find();
+			$res           = array();
+			foreach ($organizations as $organization) {
+				$res[] = $organization->toArray();
+			}
+			ok($res);
+		} catch (Exception $e) {
+			error('io-error', $e->getMessage());
+		}
+	});
+});
+
+/*
  * creates new organization
  */
 $app->post('/organizations', function() use ($app) {

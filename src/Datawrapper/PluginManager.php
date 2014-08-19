@@ -3,6 +3,7 @@
 namespace Datawrapper;
 
 use Datawrapper\ORM\PluginQuery;
+use \Criteria;
 
 class PluginManager {
     protected static $loaded = array();
@@ -13,19 +14,15 @@ class PluginManager {
      * loads plugin
      */
     public static function load() {
-        $plugins = PluginQuery::create()
-            ->filterByEnabled(true);
-
-        if (!defined('NO_SESSION')) {
-            $user_id = Session::getUser()->getId();
-            if (!empty($user_id)) {
-                $plugins->where('Datawrapper\ORM\Plugin.Id IN (SELECT plugin_id FROM plugin_organization WHERE organization_id IN (SELECT organization_id FROM user_organization WHERE user_id = ?))', $user_id)
-                    ->_or();
-            }
-            $plugins = $plugins->where('Datawrapper\ORM\Plugin.IsPrivate = FALSE');
+        if (defined('NO_SESSION')) {
+            $plugins = PluginQuery::create()
+                ->distinct()
+                ->filterByEnabled(true)
+                ->filterByIsPrivate(false)
+                ->find();
+        } else {
+            $plugins = self::getUserPlugins(Session::getUser()->getId());
         }
-        $plugins = $plugins->find();
-
         $not_loaded_yet = array();
 
         foreach ($plugins as $plugin) {
@@ -79,7 +76,7 @@ class PluginManager {
     public static function loadPlugin($plugin) {
         $plugin_path = ROOT_PATH . 'plugins/' . $plugin->getName() . '/plugin.php';
         if (file_exists($plugin_path)) {
-            require $plugin_path;
+            require_once $plugin_path;
             // init plugin class
             $className = $plugin->getClassName();
             $pluginClass = new $className();
@@ -104,4 +101,43 @@ class PluginManager {
         }
         return null;
     }
+
+    public static function getUserPlugins($user_id, $include_public=true) {
+        $plugins = PluginQuery::create()
+                ->distinct()
+                ->filterByEnabled(true);
+
+        if ($include_public) $plugins->filterByIsPrivate(false)->_or();
+
+        if (!empty($user_id)) {
+            $plugins
+                ->useProductPluginQuery(null, Criteria::LEFT_JOIN)
+                    ->useProductQuery(null, Criteria::LEFT_JOIN)
+                        ->useOrganizationProductQuery(null, Criteria::LEFT_JOIN)
+                            ->useOrganizationQuery(null, Criteria::LEFT_JOIN)
+                                ->useUserOrganizationQuery(null, Criteria::LEFT_JOIN)
+                                ->endUse()
+                            ->endUse()
+                        ->endUse()
+                        ->useUserProductQuery(null, Criteria::LEFT_JOIN)
+                        ->endUse()
+                        ->where(
+                            '((product.deleted=? AND user_product.user_id=? AND user_product.expires >= NOW())
+                            OR (product.deleted=? AND user_organization.user_id=? AND organization_product.expires >= NOW()))',
+                            array(false, $user_id, false, $user_id)
+                        )
+                    ->endUse()
+                ->endUse();
+        }
+        return $plugins->find();
+    }
+
+    public static function listPlugins() {
+        $plugins = array();
+        foreach (self::$loaded as $id => $loaded) {
+            if ($loaded) $plugins[] = array('id' => $id);
+        }
+        return $plugins;
+    }
 }
+
