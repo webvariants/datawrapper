@@ -1,16 +1,14 @@
 <?php
 
-/**
- *
- */
 function error_page($step, $title, $message, $options = false, $status = 500) {
     global $app;
+
     $tmpl = array(
-        'title' => $title,
+        'title'   => $title,
         'message' => $message,
         'options' => $options,
-
     );
+
     $app->status($status);
     add_header_vars($tmpl, $step);
     $app->render('error.twig', $tmpl);
@@ -32,7 +30,6 @@ function error_chart_not_published() {
     );
 }
 
-
 function error_chart_deleted() {
     error_page('chart',
         __('Too late'),
@@ -41,7 +38,6 @@ function error_chart_deleted() {
         404
     );
 }
-
 
 function error_not_allowed_to_publish() {
     error_page('chart',
@@ -53,7 +49,6 @@ function error_not_allowed_to_publish() {
         403
     );
 }
-
 
 function error_chart_not_found($id) {
     error_page('chart',
@@ -112,4 +107,3 @@ function error_mycharts_user_not_found() {
         __('There is no user with the given user id.')
     );
 }
-
