@@ -44,13 +44,13 @@ class Visualization {
 
     public function _register($plugin, $meta, $asset_callback = null) {
         // we save the path to the static files of the visualization
-        $meta['__static_path'] =  '/static/plugins/' . $plugin->getName() . '/';
+        $meta['__static_path'] =  '/static/plugins/'.$plugin->getName().'/';
         $meta['version'] = $plugin->getVersion();
-        $icon = $meta['__static_path'] . '/' . $meta['id'];
-        if (file_exists(ROOT_PATH . 'www/' . $icon . '.svg')) {
-            $meta['icon'] = file_get_contents(ROOT_PATH . 'www/' . $icon . '.svg');
+        $icon = $meta['__static_path'].'/'.$meta['id'];
+        if (file_exists(ROOT_PATH.'www/'.$icon.'.svg')) {
+            $meta['icon'] = file_get_contents(ROOT_PATH.'www/'.$icon.'.svg');
         } else {
-            $meta['icon'] = '<img src="'. $icon . '.png" />';
+            $meta['icon'] = '<img src="'. $icon.'.png" />';
         }
         $this->visualizations[$meta['id']] = $meta;
         if ($asset_callback) {
@@ -133,7 +133,7 @@ class Visualization {
     private function _get($id) {
         if (!isset($this->visualizations[$id])) return false;
         $meta = $this->visualizations[$id];
-        $meta['hasCSS'] = file_exists(ROOT_PATH . 'www' . $meta['__static_path'] . $id. '.css');
+        $meta['hasCSS'] = file_exists(ROOT_PATH.'www'.$meta['__static_path'].$id. '.css');
         return $meta;
     }
 }

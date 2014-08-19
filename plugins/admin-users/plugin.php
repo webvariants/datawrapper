@@ -1,19 +1,23 @@
 <?php
 
+use Datawrapper\Hooks;
+use Datawrapper\ORM;
+use Datawrapper\Plugin;
+use Datawrapper\PluginManager;
+use Datawrapper\Session;
 
-class DatawrapperPlugin_AdminUsers extends DatawrapperPlugin {
-
+class DatawrapperPlugin_AdminUsers extends Plugin {
     public function init() {
         $plugin = $this;
         // register plugin controller
-        DatawrapperHooks::register(
-            DatawrapperHooks::GET_ADMIN_PAGES,
+        Hooks::register(
+            Hooks::GET_ADMIN_PAGES,
             function() use ($plugin) {
                 return array(
-                    'url' => '/users',
-                    'title' => __('Users', $plugin->getName()),
+                    'url'        => '/users',
+                    'title'      => __('Users', $plugin->getName()),
                     'controller' => array($plugin, 'users'),
-                    'order' => '2'
+                    'order'      => '2'
                 );
             }
         );
@@ -24,14 +28,14 @@ class DatawrapperPlugin_AdminUsers extends DatawrapperPlugin {
                 'dw.admin.users.js',
                 'users.css'
             ),
-            "|/admin/users|"
+            '|/admin/users|'
         );
 
-        $user = DatawrapperSession::getUser();
+        $user = Session::getUser();
         if ($user->isAdmin()) {
             $this->registerController(function($app) use ($plugin) {
                 $app->get('/admin/users/:user_id', function($uid) use ($app, $plugin) {
-                    $theUser = UserQuery::create()->findPk($uid);
+                    $theUser = ORM\UserQuery::create()->findPk($uid);
                     $page = array(
                         'title' => 'Users » '.$theUser->guessName()
                     );
@@ -42,7 +46,7 @@ class DatawrapperPlugin_AdminUsers extends DatawrapperPlugin {
                     }
                     add_header_vars($page, 'admin');
                     $page['the_user'] = $theUser;
-                    $page['userPlugins'] = DatawrapperPluginManager::getUserPlugins($theUser->getId(), false);
+                    $page['userPlugins'] = PluginManager::getUserPlugins($theUser->getId(), false);
 
                     $app->render('plugins/admin-users/admin-user-detail.twig', $page);
                 });
@@ -59,20 +63,20 @@ class DatawrapperPlugin_AdminUsers extends DatawrapperPlugin {
             'q' => $app->request()->params('q', '')
         ));
         $sort = $app->request()->params('sort', '');
-        $user = DatawrapperSession::getUser();
+        $user = Session::getUser();
         function getQuery($user) {
             global $app;
             $sort = $app->request()->params('sort', '');
-            $query = UserQuery::create()
-                ->leftJoin('User.Chart')
+            $query = ORM\UserQuery::create()
+                ->leftJoin('Datawrapper\ORM\User.Chart')
                 ->withColumn('COUNT(Chart.Id)', 'NbCharts')
-                ->groupBy('User.Id')
+                ->groupBy('Datawrapper\ORM\User.Id')
                 ->filterByDeleted(false);
             if ($app->request()->params('q')) {
                 $query->filterByEmail('%' . $app->request()->params('q') . '%');
             }
             if (!$user->isSysAdmin()) {
-                $query->filterByRole('sysadmin', Criteria::NOT_EQUAL);
+                $query->filterByRole('sysadmin', \Criteria::NOT_EQUAL);
             }
             switch ($sort) {
                 case 'email': $query->orderByEmail('asc'); break;
@@ -96,5 +100,4 @@ class DatawrapperPlugin_AdminUsers extends DatawrapperPlugin {
 
         $app->render('plugins/admin-users/admin-users.twig', $page);
     }
-
 }

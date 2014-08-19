@@ -1,18 +1,15 @@
 <?php
 
-/**
- * Datawrapper Piwik Analytics Plugin
- *
- */
+use Datawrapper\Plugin;
+use Datawrapper\Hooks;
 
-class DatawrapperPlugin_AnalyticsPiwik extends DatawrapperPlugin {
-
+class DatawrapperPlugin_AnalyticsPiwik extends Plugin {
     public function init() {
-        DatawrapperHooks::register(DatawrapperHooks::CHART_AFTER_BODY, array($this, 'getTrackingCode'));
-        DatawrapperHooks::register(DatawrapperHooks::CORE_AFTER_BODY, array($this, 'getTrackingCode'));
+        Hooks::register(Hooks::CHART_AFTER_BODY, array($this, 'getTrackingCode'));
+        Hooks::register(Hooks::CORE_AFTER_BODY,  array($this, 'getTrackingCode'));
     }
 
-  	public function getTrackingCode($chart = null) {
+    public function getTrackingCode($chart = null) {
         $config = $this->getConfig();
         if (empty($config)) return false;
 
@@ -44,5 +41,4 @@ class DatawrapperPlugin_AnalyticsPiwik extends DatawrapperPlugin {
 </script>
 <!-- End Piwik Code -->';
     }
-
 }

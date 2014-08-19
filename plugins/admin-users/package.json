@@ -2,5 +2,8 @@
     "name": "admin-users",
     "author": "Edouard Richard",
     "version": "1.1.0",
-    "description": "For managing user accounts. Very important sometimes..."
+    "description": "For managing user accounts. Very important sometimes...",
+    "dependencies": {
+        "core": "2.0.0-alpha"
+    }
 }

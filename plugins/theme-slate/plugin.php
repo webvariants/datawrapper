@@ -1,19 +1,20 @@
 <?php
 
-class DatawrapperPlugin_ThemeSlate extends DatawrapperPlugin {
+use Datawrapper\Plugin;
+use Datawrapper\Theme;
 
+class DatawrapperPlugin_ThemeSlate extends Plugin {
     public function init() {
-        DatawrapperTheme::register($this, $this->getMeta());
+        Theme::register($this, $this->getMeta());
     }
 
     private function getMeta() {
-        return array (
-          'id' => 'slate',
-          'title' => 'Noir',
-          'link' => 'http://bootswatch.com/slate/',
-          'restricted' => NULL,
-          'version' => '1.5.0',
+        return array(
+            'id'         => 'slate',
+            'title'      => 'Noir',
+            'link'       => 'http://bootswatch.com/slate/',
+            'restricted' => null,
+            'version'    => '1.5.0',
         );
     }
-
 }

@@ -1,14 +1,19 @@
 <?php
 
-class DatawrapperPlugin_Gallery extends DatawrapperPlugin {
+use Datawrapper\Plugin;
+use Datawrapper\Hooks;
+use Datawrapper\ORM;
+use Datawrapper\Session;
+use Datawrapper\Visualization;
 
+class DatawrapperPlugin_Gallery extends Plugin {
     public function init() {
         // register plugin controller under /gallery/
         $this->registerController($this, 'controller');
 
         // show link 'show in gallery'
-        DatawrapperHooks::register(
-            DatawrapperHooks::PUBLISH_AFTER_CHART_ACTIONS,
+        Hooks::register(
+            Hooks::PUBLISH_AFTER_CHART_ACTIONS,
             function() {
                 global $app;
                 $app->render('plugins/gallery/show-in-gallery.twig');
@@ -16,20 +21,20 @@ class DatawrapperPlugin_Gallery extends DatawrapperPlugin {
         );
 
         // show link to gallery in mycharts page
-        DatawrapperHooks::register(
-            DatawrapperHooks::MYCHARTS_AFTER_SIDEBAR,
+        Hooks::register(
+            Hooks::MYCHARTS_AFTER_SIDEBAR,
             function($chart, $user) {
                 global $app;
                 $app->render('plugins/gallery/take-a-look.twig');
             }
         );
 
-        if (!DatawrapperSession::getUser()->isLoggedIn()) {
+        if (!Session::getUser()->isLoggedIn()) {
             $this->addHeaderNav('mycharts', array(
-                'url' => '/gallery/',
-                'id' => 'gallery',
+                'url'   => '/gallery/',
+                'id'    => 'gallery',
                 'title' => __('Gallery'),
-                'icon' => 'signal'
+                'icon'  => 'signal'
             ));
         }
     }
@@ -39,21 +44,21 @@ class DatawrapperPlugin_Gallery extends DatawrapperPlugin {
         $app->get('/gallery(/?|/by/:key/:val)', function ($key = false, $val = false) use ($app, $plugin) {
             disable_cache($app);
 
-            $user = DatawrapperSession::getUser();
+            $user = Session::getUser();
             $curPage = $app->request()->params('page');
             if (empty($curPage)) $curPage = 0;
             $perPage = 12;
             $filter = !empty($key) ? array($key => $val) : array();
 
-            $charts =  ChartQuery::create()->getGalleryCharts($filter, $curPage * $perPage, $perPage);
-            $total = ChartQuery::create()->countGalleryCharts($filter);
+            $charts = ORM\ChartQuery::create()->getGalleryCharts($filter, $curPage * $perPage, $perPage);
+            $total  = ORM\ChartQuery::create()->countGalleryCharts($filter);
 
             $page = array(
-                'charts' => $charts,
+                'charts'  => $charts,
                 'bymonth' => $plugin->nbChartsByMonth(),
-                'byvis' => $plugin->nbChartsByType(),
-                'key' => $key,
-                'val' => $val
+                'byvis'   => $plugin->nbChartsByType(),
+                'key'     => $key,
+                'val'     => $val
             );
             add_pagination_vars($page, $total, $curPage, $perPage);
             add_header_vars($page, 'gallery');
@@ -64,7 +69,7 @@ class DatawrapperPlugin_Gallery extends DatawrapperPlugin {
     public function nbChartsByMonth() {
         $con = Propel::getConnection();
         $sql = "SELECT DATE_FORMAT(created_at, '%Y-%m') ym, COUNT(*) c FROM chart WHERE show_in_gallery = 1 AND last_edit_step >= 4 and deleted = 0 GROUP BY ym ORDER BY ym DESC ;";
-        $rs = $con->query($sql);
+        $rs  = $con->query($sql);
         $res = array();
         $max = 0;
         foreach ($rs as $r) {
@@ -80,13 +85,13 @@ class DatawrapperPlugin_Gallery extends DatawrapperPlugin {
     public function nbChartsByType() {
         $con = Propel::getConnection();
         $sql = "SELECT type, COUNT(*) c FROM chart WHERE show_in_gallery = 1 AND last_edit_step >= 4 and deleted = 0 GROUP BY type ORDER BY c DESC ;";
-        $rs = $con->query($sql);
+        $rs  = $con->query($sql);
         $res = array();
 
         $max = 0;
         foreach ($rs as $r) {
-            $vis = DatawrapperVisualization::get($r['type']);
-            $lang = substr(DatawrapperSession::getLanguage(), 0, 2);
+            $vis = Visualization::get($r['type']);
+            $lang = substr(Session::getLanguage(), 0, 2);
             $res[] = array('count' => $r['c'], 'id' => $r['type'], 'name' => $vis['title']);
             $max = max($max, $r['c']);
         }
@@ -95,5 +100,4 @@ class DatawrapperPlugin_Gallery extends DatawrapperPlugin {
         }
         return $res;
     }
-
 }

@@ -1,9 +1,11 @@
 <?php
 
-class DatawrapperPlugin_Phantomjs extends DatawrapperPlugin {
+use Datawrapper\Plugin;
+use Datawrapper\Hooks;
 
+class DatawrapperPlugin_Phantomjs extends Plugin {
     public function init() {
-        DatawrapperHooks::register('phantomjs_exec', array($this, 'executeScript'));
+        Hooks::register('phantomjs_exec', array($this, 'executeScript'));
     }
 
     public function executeScript() {

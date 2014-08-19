@@ -1,9 +1,9 @@
 {
     "name": "visualization-bar-chart",
-    "version": "1.7.8",
+    "version": "1.8.0",
     "author": "Gregor Aisch",
     "dependencies": {
-        "core": "1.5.0",
+        "core": "2.0.0-alpha",
         "visualization": "*",
         "visualization-raphael-chart": "*"
     },

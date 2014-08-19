@@ -8,7 +8,7 @@ use Datawrapper\Session;
  *
  */
 
-define('DATAWRAPPER_VERSION', '2.0.alpha');  // must match with package.json
+define('DATAWRAPPER_VERSION', '2.0.0-alpha');  // must match with package.json
 
 define('ROOT_PATH', '../');
 

@@ -1,18 +1,22 @@
 <?php
 
-class DatawrapperPlugin_ExportImage extends DatawrapperPlugin {
+use Datawrapper\Plugin;
+use Datawrapper\Hooks;
+use Datawrapper\Session;
+
+class DatawrapperPlugin_ExportImage extends Plugin {
 
     public function init() {
         $plugin = $this;
         // hook into chart publication
-        DatawrapperHooks::register(DatawrapperHooks::GET_CHART_ACTIONS, function() use ($plugin) {
+        Hooks::register(Hooks::GET_CHART_ACTIONS, function() use ($plugin) {
             // no export possible without email
-            $user = DatawrapperSession::getUser();
+            $user = Session::getUser();
             if ($user->getEmail() == '') return array();
             return array(
-                'id' => 'export-image',
+                'id'    => 'export-image',
                 'title' => __("Export to static image for printing", $plugin->getName()),
-                'icon' => 'print'
+                'icon'  => 'print'
             );
         });
 
@@ -23,8 +27,7 @@ class DatawrapperPlugin_ExportImage extends DatawrapperPlugin {
         );
 
         // hook into job execution
-        DatawrapperHooks::register('export_image',
-            array($this, 'exportImage'));
+        Hooks::register('export_image', array($this, 'exportImage'));
     }
 
     public function exportImage($job) {
@@ -39,20 +42,21 @@ class DatawrapperPlugin_ExportImage extends DatawrapperPlugin {
 
         $params = $job->getParameter();
         $format = $params['format'];
-        $imgFile = ROOT_PATH . 'charts/exports/' . $chart->getId() . '-' . $params['ratio'] . '.' . $format;
+        $imgFile = ROOT_PATH.'charts/exports/'.$chart->getId().'-'.$params['ratio'].'.'.$format;
         // execute hook provided by phantomjs plugin
         // this calls phantomjs with the provided arguments
-        $res = DatawrapperHooks::execute(
+        $res = Hooks::execute(
             'phantomjs_exec',
             // path to the script
-            ROOT_PATH . 'plugins/' . $this->getName() . '/export_chart.js',
+            ROOT_PATH.'plugins/'.$this->getName().'/export_chart.js',
             // 1) url of the chart
-            'http://' . $GLOBALS['dw_config']['domain'] . '/chart/'. $chart->getId() .'/',
+            'http://'.$GLOBALS['dw_config']['domain'].'/chart/'. $chart->getId() .'/',
             // 2) path to the image
             $imgFile,
             // 3) output width
             $params['ratio']
         );
+
         if (empty($res[0])) {
             $job->setStatus('done');
 
@@ -77,16 +81,17 @@ Datawrapper', $this->getName()), array(
                     )
                 )
             );
-        } else {
+        }
+        else {
             // error message received, send log email
             dw_send_error_mail(
                 sprintf('Image export of chart [%s] failed!', $chart->getId()),
-                print_r($job->toArray()) . "\n\nError:\n" . $res[0]
+                print_r($job->toArray())."\n\nError:\n".$res[0]
             );
             $job->setStatus('failed');
             $job->setFailReason($res[0]);
         }
+
         $job->save();
     }
-
 }

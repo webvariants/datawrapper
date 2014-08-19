@@ -1,27 +1,26 @@
 <?php
 
-class DatawrapperPlugin_ThemeAutumn extends DatawrapperPlugin {
+use Datawrapper\Plugin;
+use Datawrapper\Theme;
 
+class DatawrapperPlugin_ThemeAutumn extends Plugin {
     public function init() {
-        DatawrapperTheme::register($this, $this->getMeta());
+        Theme::register($this, $this->getMeta());
     }
 
     private function getMeta() {
-        return array (
-          'id' => 'autumn',
-          'title' => 'Playfair',
-          'link' => 'http://www.datawrapper.de',
-          'extends' => 'default',
-          'restricted' => NULL,
-          'version' => '1.5.0',
-          'option-filter' => 
-          array (
-            'line-chart' => 
-            array (
-              'show-grid' => true,
-            ),
-          ),
+        return array(
+            'id'            => 'autumn',
+            'title'         => 'Playfair',
+            'link'          => 'http://www.datawrapper.de',
+            'extends'       => 'default',
+            'restricted'    => null,
+            'version'       => '1.5.0',
+            'option-filter' => array(
+                'line-chart' => array(
+                    'show-grid' => true
+                )
+            )
         );
     }
-
 }
