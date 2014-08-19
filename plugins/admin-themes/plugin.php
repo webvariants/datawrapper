@@ -28,8 +28,21 @@ class DatawrapperPlugin_AdminThemes extends Plugin {
         $page = array_merge($page, array(
             'title'  => 'Themes',
             'themes' => Theme::all(),
-            'count'  => count_charts_per_themes()
+            'count'  => $this->countChartsPerThemes()
         ));
         $app->render('plugins/admin-themes/admin-themes.twig', $page);
+    },
+
+    protected function countChartsPerThemes() {
+        $con = Propel::getConnection();
+        $sql = "SELECT theme, COUNT(*) c FROM chart WHERE deleted = 0 GROUP BY theme;";
+        $res = $con->query($sql);
+        $ret = array();
+
+        foreach ($res as $r) {
+            $ret[$r['theme']] = $r['c'];
+        }
+
+        return $ret;
     }
 }

@@ -35,7 +35,6 @@
             "lib/utils/errors.php",
             "lib/utils/i18n.php",
             "lib/utils/pagination.php",
-            "lib/utils/themes.php",
             "lib/utils/twig-init.php",
             "lib/utils/vksprintf.php"
         ],
