@@ -31,7 +31,7 @@ class DatawrapperPlugin_AdminThemes extends Plugin {
             'count'  => $this->countChartsPerThemes()
         ));
         $app->render('plugins/admin-themes/admin-themes.twig', $page);
-    },
+    }
 
     protected function countChartsPerThemes() {
         $con = Propel::getConnection();
