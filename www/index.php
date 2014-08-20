@@ -18,10 +18,6 @@ use Datawrapper\Session;
 define('DATAWRAPPER_VERSION', '2.0.0-alpha');  // must match with package.json
 define('ROOT_PATH', '../');
 
-require_once ROOT_PATH.'vendor/autoload.php';
-
-check_server();
-
 require ROOT_PATH.'lib/bootstrap.php';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,13 +113,7 @@ $app->hook('slim.before.router', function () use ($app, $dw_config) {
     }
 });
 
-
-/**
- * Step 4: Run the Slim application
- *
- * This method should be called last. This is responsible for executing
- * the Slim application using the settings and routes defined above.
- */
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// go!
 
 $app->run();
-

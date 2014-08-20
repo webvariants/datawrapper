@@ -11,10 +11,14 @@ use Datawrapper\PluginManager;
 use Slim\Slim;
 
 // if not done yet, include the autoloader
-require_once ROOT_PATH . 'vendor/autoload.php';
+require_once ROOT_PATH.'vendor/autoload.php';
+
+if (!defined('NO_SLIM')) {
+    check_server();
+}
 
 // load YAML parser and config
-$dw_config = Spyc::YAMLLoad(ROOT_PATH . 'config.yaml');
+$dw_config = Spyc::YAMLLoad(ROOT_PATH.'config.yaml');
 $dw_config = parse_config($dw_config);
 
 if ($dw_config['debug']) {
@@ -24,7 +28,7 @@ if ($dw_config['debug']) {
 
 // Include the main Propel script
 // Initialize Propel with the runtime configuration
-Propel::init(ROOT_PATH . 'db/conf/datawrapper-conf.php');
+Propel::init(ROOT_PATH.'db/conf/datawrapper-conf.php');
 
 // this salt is used to hash the passwords in database
 if (!isset($dw_config['auth_salt'])) $dw_config['auth_salt'] = 'uRPAqgUJqNuBdW62bmq3CLszRFkvq4RW';
@@ -52,7 +56,7 @@ if (!defined('NO_SESSION')) {
 // init l10n
 $locale = str_replace('-', '_', Session::getLanguage());
 $domain = 'messages';
-putenv('LANGUAGE=' . $locale);
+putenv('LANGUAGE='.$locale);
 setlocale(LC_ALL, $locale);
 setlocale(LC_TIME, $locale.'.utf8');
 
