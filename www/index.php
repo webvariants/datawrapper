@@ -70,7 +70,7 @@ $app->get ('/chart/:id/nojs.png',                     $ns.'Chart\PreviewControll
 $app->get ('/chart/:id/publish',                      $ns.'Chart\PublishController:publishAction');
 $app->get ('/chart/:id/static',                       $ns.'Chart\StaticController:staticAction');
 $app->get ('/chart/:id/upload',                       $ns.'Chart\UploadController:uploadAction');
-$app->get ('/chart/:id/visualize',                    $ns.'Chart\VisualizeController:visualize');
+$app->get ('/chart/:id/visualize',                    $ns.'Chart\VisualizeController:visualizeAction');
 
 Hooks::execute(Hooks::GET_PLUGIN_CONTROLLER, $app);
 
