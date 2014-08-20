@@ -4,8 +4,10 @@ CHANGELOG
 ### 2.0.0
 * Slim has been updated from 1.6.7 to 2.4.3.
 * introduced 'Datawrapper' namespace for PHP code, moved most of the code into src/
+* PHP code is now PSR-4 compatible and being autoloaded by Composer.
 * turned controllers into classes
 * Propel configuration now happens in db/ (i.e. in db/conf/datawrapper-conf.php).
+* Grunt is used as the build tool now.
 
 ### 1.8.0
 * added product system
