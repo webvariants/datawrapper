@@ -49,12 +49,6 @@ if (!defined('NO_SESSION')) {
     Session::initSession();
 }
 
-function debug_log($txt) {
-    $h = fopen(ROOT_PATH . 'log.txt', 'a+');
-    fwrite($h, microtime(true).': '.$txt."\n");
-    fclose($h);
-}
-
 // init l10n
 $locale = str_replace('-', '_', Session::getLanguage());
 $domain = 'messages';
