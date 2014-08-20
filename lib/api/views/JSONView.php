@@ -1,8 +1,7 @@
 <?php
 
-class JSONView extends Slim_View {
-
-    public function render( $template ) {
+class JSONView extends Slim\View {
+    public function render($template, $data = null) {
         // $env = $this->getEnvironment();
         // $template = $env->loadTemplate($template);
         unset($this->data['flash']);
@@ -14,9 +13,9 @@ class JSONView extends Slim_View {
         if ( !file_exists($templatePath) ) {
             throw new RuntimeException('View cannot render template `' . $templatePath . '`. Template does not exist.');
         }
+
         ob_start();
         require $templatePath;
         return ob_get_clean();
     }
-
 }

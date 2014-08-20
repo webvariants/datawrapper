@@ -38,7 +38,7 @@
  * - twigDirectory
  * - twigOptions
  */
-class TwigView extends Slim_View {
+class TwigView extends Slim\View {
     /**
      * @var array The options for the Twig environment, see
      * http://www.twig-project.org/book/03-Twig-for-Developers
@@ -60,14 +60,15 @@ class TwigView extends Slim_View {
      *
      * This method will output the rendered template content
      *
-     * @param   string $template The path to the Twig template, relative to the Twig templates directory.
+     * @param   string $template  The path to the Twig template, relative to the Twig templates directory.
+     * @param   mixed  $data      Is ignored
      * @return  void
      */
-    public function render($template) {
-        $env = $this->getEnvironment();
+    public function render($template, $data = null) {
+        $env      = $this->getEnvironment();
         $template = $env->loadTemplate($template);
 
-        return $template->render($this->data);
+        return $template->render($this->data->all());
     }
 
     /**
@@ -76,7 +77,7 @@ class TwigView extends Slim_View {
      * @return Twig_Environment
      */
     public function getEnvironment() {
-        if ( !$this->twigEnvironment ) {
+        if (!$this->twigEnvironment ) {
             $this->twigEnvironment = new Twig_Environment(
                 new Twig_Loader_Filesystem($this->getTemplatesDirectory()),
                 self::$twigOptions
@@ -90,6 +91,7 @@ class TwigView extends Slim_View {
                 }
             }
         }
+
         return $this->twigEnvironment;
     }
 }

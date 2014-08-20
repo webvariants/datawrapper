@@ -8,6 +8,7 @@ use Datawrapper\L10N;
 use Datawrapper\Session;
 use Datawrapper\SessionHandler\DatabaseHandler;
 use Datawrapper\PluginManager;
+use Slim\Slim;
 
 // if not done yet, include the autoloader
 require_once ROOT_PATH . 'vendor/autoload.php';
