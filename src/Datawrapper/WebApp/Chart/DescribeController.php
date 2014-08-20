@@ -24,7 +24,7 @@ class DescribeController extends BaseController {
                 'chart'     => $chart
             );
 
-            add_header_vars($page, 'chart', 'chart-editor/describe.css');
+            add_header_vars($page, 'chart', 'chart-editor/describe.min.css');
             add_editor_nav($page, 2);
 
             switch (substr(Session::getLanguage(), 0, 2)) {

@@ -40,7 +40,7 @@ class PublishController extends BaseController {
                 'estExportTime'     => ceil(ORM\JobQuery::create()->estimatedTime('export') / 60)
             );
 
-            add_header_vars($page, 'chart', 'chart-editor/publish.css');
+            add_header_vars($page, 'chart', 'chart-editor/publish.min.css');
             add_editor_nav($page, 4);
 
             if ($user->isAbleToPublish() && ($chart->getLastEditStep() == 3 || $app->request()->get('republish') == 1)) {

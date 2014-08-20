@@ -98,7 +98,7 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
     }
 
     $stylesheets = array_merge(
-        array('/static/css/chart.base.css'),
+        array('/static/css/chart-base.min.css'),
         $vis_css,
         array_reverse($theme_css)
     );
@@ -140,7 +140,7 @@ function get_chart_content($chart, $user, $published = false, $debug = false) {
                 array_reverse($theme_js),
                 array_reverse($vis_js),
                 $vis_libs,
-                array('/static/js/dw/chart.base.js')
+                array('/static/js/dw/chart-base.min.js')
             )
         );
     }
@@ -232,7 +232,7 @@ function get_theme_js($theme, $themeJS) {
 }
 
 function get_chart_js() {
-    $js = file_get_contents(ROOT_PATH . 'www/static/js/dw/chart.base.js');
+    $js = file_get_contents(ROOT_PATH . 'www/static/js/dw/chart-base.min.js');
     $min = \JShrink\Minifier::minify($js);
     $md5 = md5($min);
     return array('chart-'.$md5.'.min.js', $min);

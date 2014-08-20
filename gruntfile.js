@@ -1,5 +1,6 @@
 module.exports = function (grunt) {
-    var dwSrc = 'dw.js/src/';
+    var dwSrc  = 'dw.js/src/';
+    var cssDir = 'www/static/css/';
 
     grunt.initConfig({
         pkg:     grunt.file.readJSON('package.json'),
@@ -10,7 +11,8 @@ module.exports = function (grunt) {
         \************************************************************************/
 
         clean: {
-            dwjs: ['dw.js/dist/', 'www/static/js/vendors.min.js', 'www/static/js/dw-2.0.min.js']
+            dwjs:   ['dw.js/dist/', 'www/static/js/vendors.min.js', 'www/static/js/dw-2.0.min.js'],
+            assets: [cssDir + '**/*.min.css']
         },
 
         /************************************************************************\
@@ -66,6 +68,20 @@ module.exports = function (grunt) {
         },
 
         /************************************************************************\
+         * cssmin                                                               *
+        \************************************************************************/
+
+        cssmin: {
+            assets: {
+                expand: true,
+                cwd: cssDir,
+                src: ['**/*.css', '!*.min.css'],
+                dest: cssDir,
+                ext: '.min.css'
+            }
+        },
+
+        /************************************************************************\
          * uglify                                                               *
         \************************************************************************/
 
@@ -100,12 +116,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-shell');
 
     grunt.registerTask('default', ['dwjs', 'assets']);
 
     grunt.registerTask('dwjs', ['clean:dwjs', 'concat:dwjs', 'uglify:dwjs']);
-    grunt.registerTask('assets', ['concat:vendor', 'copy:dwjs']);
+    grunt.registerTask('assets', ['concat:vendor', 'copy:dwjs', 'cssmin:assets']);
     grunt.registerTask('propel', ['shell:propel']);
 };
