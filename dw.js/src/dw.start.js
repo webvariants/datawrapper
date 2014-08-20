@@ -1,9 +1,9 @@
 //
-// NOTE: This file is auto-generated using /dw.js/make
-// from the source files /dw.js/src/*.js.
+// NOTE: This file is auto-generated using grunt
+// from the source files in /dw.js/src/.
 //
 // If you want to change anything you need to change it
-// in the source files and then re-run /dw.js/make, or
+// in the source files and then re-run `grunt`, or
 // otherwise your changes will be lost on the make.
 //
 

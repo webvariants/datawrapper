@@ -1,8 +1,8 @@
 {
     "name": "dw.js",
+    "version": "2.0",
     "description": "The JavaScript core library used in Datawrapper charts.",
     "devDependencies": {
-        "uglify-js": "2.3.6",
         "vows": "0.7.x",
         "coffee-script": "1.6.x"
     }
