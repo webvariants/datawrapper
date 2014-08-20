@@ -1,39 +1,55 @@
 <?php
 
-use Datawrapper\ORM\ChartQuery;
+namespace Datawrapper\WebApp\Chart;
+
+use Datawrapper\ORM;
 use Datawrapper\Session;
+use Datawrapper\WebApp\BaseController;
 
-$app->map('/chart/create', function() use ($app) {
-    disable_cache($app);
+class CreateController extends BaseController {
+    public function createAction() {
+        $app  = $this->disableCache()->getApp();
+        $cfg  = $this->getConfig();
+        $user = Session::getUser();
 
-    $cfg = $GLOBALS['dw_config'];
+        if (!$user->isLoggedIn() && isset($cfg['prevent_guest_charts']) && $cfg['prevent_guest_charts']) {
+            error_page('chart',
+                __('Access denied.'),
+                __('You need to be signed in.')
+            );
 
-    $user = Session::getUser();
-    if (!$user->isLoggedIn() && isset($cfg['prevent_guest_charts']) && $cfg['prevent_guest_charts']) {
-        error_access_denied();
-    } else {
-        $chart = ChartQuery::create()->createEmptyChart($user);
-        $req = $app->request();
-        $step = 'upload';
+            return;
+        }
+
+        $chart = ORM\ChartQuery::create()->createEmptyChart($user);
+        $req   = $app->request();
+        $step  = 'upload';
+
         if ($req->post('data') != null) {
             $chart->writeData($req->post('data'));
+
             $step = 'describe';
+
             if ($req->post('source-name') != null) {
                 $chart->updateMetadata('describe.source-name', $req->post('source-name'));
                 $step = 'visualize';
             }
+
             if ($req->post('source-url') != null) {
                 $chart->updateMetadata('describe.source-url', $req->post('source-url'));
                 $step = 'visualize';
             }
+
             if ($req->post('type') != null) {
                 $chart->setType($req->post('type'));
             }
+
             if ($req->post('title') != null) {
                 $chart->setTitle($req->post('title'));
             }
         }
+
         $chart->save();
         $app->redirect('/chart/'.$chart->getId().'/'.$step);
     }
-})->via('GET', 'POST');
+}

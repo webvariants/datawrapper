@@ -2,21 +2,21 @@
 
 namespace Datawrapper\WebApp;
 
-use Datawrapper\ORM\ChartQuery;
+use Datawrapper\ORM;
 
 class HomeController extends BaseController {
     public function indexAction() {
-        $app = $this->getApp();
+        $app = $this->disableCache()->getApp();
 
-        disable_cache($app);
+        // found link to a legacy chart
+        $chartID = $app->request()->get('c');
 
-        if ($app->request()->get('c')) {
-            // found link to a legacy chart
-            $app->redirect('/legacy/'.$app->request()->get('c').'.html');
+        if ($chartID) {
+            $app->redirect('/legacy/'.$chartID.'.html');
         }
 
-        $chart_ids = array('RXoKw', 'a4Yyf', '78iap', 'weD23');
-        $charts    = ChartQuery::create()->findPKs($chart_ids);
+        $chartIDs = array('RXoKw', 'a4Yyf', '78iap', 'weD23');
+        $charts   = ORM\ChartQuery::create()->findPKs($chartIDs);
 
         $page = array(
             'title'         => '',

@@ -2,17 +2,14 @@
 
 namespace Datawrapper\WebApp;
 
-use Datawrapper\ORM\User;
-use Datawrapper\ORM\UserQuery;
+use Datawrapper\ORM;
 use Datawrapper\Session;
 
 class SetupController extends BaseController {
     public function indexAction() {
-        $app = $this->getApp();
+        $app = $this->disableCache()->getApp();
 
-        disable_cache($app);
-
-        if (Session::getUser()->isLoggedIn() || UserQuery::create()->filterByRole(array('admin', 'sysadmin'))->count() > 0) {
+        if (Session::getUser()->isLoggedIn() || ORM\UserQuery::create()->filterByRole(array('admin', 'sysadmin'))->count() > 0) {
             $app->redirect('/');
         }
 
@@ -30,15 +27,12 @@ class SetupController extends BaseController {
     }
 
     public function setupAction() {
-        $app = $this->getApp();
-
-        disable_cache($app);
-
+        $app  = $this->disableCache()->getApp();
         $data = json_decode($app->request()->getBody());
 
         // check that there is no admin user yet (only true right after setup)
-        if (UserQuery::create()->count() == 0) {
-            $user = new User();
+        if (ORM\UserQuery::create()->count() == 0) {
+            $user = new ORM\User();
             $user->setCreatedAt(time());
             $user->setEmail($data->email);
             $user->setRole('admin');

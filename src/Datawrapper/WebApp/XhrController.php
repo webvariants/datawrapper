@@ -14,9 +14,7 @@ class XhrController extends BaseController {
      * reloads the header menu after login/logout
      */
     public function headerAction($active) {
-        $app = $this->getApp();
-
-        disable_cache($app);
+        $app = $this->disableCache()->getApp();
 
         $res = $app->response();
         $res['Cache-Control'] = 'max-age=0';
@@ -31,9 +29,7 @@ class XhrController extends BaseController {
      * reloads the header menu after login/logout
      */
     public function homeLoginAction() {
-        $app = $this->getApp();
-
-        disable_cache($app);
+        $app = $this->disableCache()->getApp();
 
         $res = $app->response();
         $res['Cache-Control'] = 'max-age=0';
@@ -49,9 +45,7 @@ class XhrController extends BaseController {
      * changed the visualization type
      */
     public function visOptionsAction($id) {
-        $app = $this->getApp();
-
-        disable_cache($app);
+        $app = $this->disableCache()->getApp();
 
         check_chart_writable($id, function($user, $chart) use ($app) {
             $page = array(

@@ -6,9 +6,7 @@ use Datawrapper\Session;
 
 class LoginController extends BaseController {
     public function indexAction() {
-        $app = $this->getApp();
-
-        disable_cache($app);
+        $app = $this->disableCache()->getApp();
 
         if (Session::getUser()->isLoggedIn()) {
             $app->redirect('/');
