@@ -1,6 +1,7 @@
 <?php
 
 use Datawrapper\ORM\UserQuery;
+use Datawrapper\Hooks;
 use Datawrapper\Session;
 
 /**
@@ -9,7 +10,6 @@ use Datawrapper\Session;
  */
 
 define('DATAWRAPPER_VERSION', '2.0.0-alpha');  // must match with package.json
-
 define('ROOT_PATH', '../');
 
 require_once ROOT_PATH . 'vendor/autoload.php';
@@ -21,9 +21,19 @@ require ROOT_PATH . 'lib/bootstrap.php';
 $twig = $app->view()->getEnvironment();
 dwInitTwigEnvironment($twig);
 
-require_once ROOT_PATH . 'controller/plugin-templates.php';
-require_once ROOT_PATH . 'controller/home.php';
-require_once ROOT_PATH . 'controller/login.php';
+$ns = 'Datawrapper\\WebApp\\';
+
+$app->get ('/',                          $ns.'HomeController:indexAction');
+$app->get ('/login',                     $ns.'LoginController:indexAction');
+$app->get ('/setup',                     $ns.'SetupController:indexAction');
+$app->post('/setup',                     $ns.'SetupController:setupAction');
+$app->get ('/plugins/:plugin/:template', $ns.'PluginTemplatesController:templateAction');
+$app->get ('/xhr/header/:page',          $ns.'XhrController:headerAction');
+$app->get ('/xhr/home-login',            $ns.'XhrController:homeLoginAction');
+$app->get ('/xhr/:chartid/vis-options',  $ns.'XhrController:visOptionsAction');
+
+Hooks::execute(Hooks::GET_PLUGIN_CONTROLLER, $app);
+
 require_once ROOT_PATH . 'controller/account.php';
 require_once ROOT_PATH . 'controller/chart/create.php';
 require_once ROOT_PATH . 'controller/chart/edit.php';
@@ -36,9 +46,7 @@ require_once ROOT_PATH . 'controller/chart/embed.php';
 require_once ROOT_PATH . 'controller/chart/publish.php';
 require_once ROOT_PATH . 'controller/chart/static.php';
 require_once ROOT_PATH . 'controller/mycharts.php';
-require_once ROOT_PATH . 'controller/xhr.php';
 require_once ROOT_PATH . 'controller/admin.php';
-
 
 $app->notFound(function() {
     error_not_found();
