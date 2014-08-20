@@ -24,7 +24,7 @@ if ($dw_config['debug']) {
 
 // Include the main Propel script
 // Initialize Propel with the runtime configuration
-Propel::init(ROOT_PATH . 'db/build/conf/datawrapper-conf.php');
+Propel::init(ROOT_PATH . 'db/conf/datawrapper-conf.php');
 
 // this salt is used to hash the passwords in database
 if (!isset($dw_config['auth_salt'])) $dw_config['auth_salt'] = 'uRPAqgUJqNuBdW62bmq3CLszRFkvq4RW';

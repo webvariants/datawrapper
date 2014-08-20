@@ -5,7 +5,7 @@ CHANGELOG
 * Slim has been updated from 1.6.7 to 2.4.3.
 * introduced 'Datawrapper' namespace for PHP code, moved most of the code into src/
 * turned controllers into classes
-* Propel configuration now happens in db/ (i.e. in db/build/conf/datawrapper-conf.php).
+* Propel configuration now happens in db/ (i.e. in db/conf/datawrapper-conf.php).
 
 ### 1.8.0
 * added product system

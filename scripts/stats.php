@@ -14,7 +14,7 @@
  *
  */
 
-require_once "../lib/core/build/conf/datawrapper-conf.php";
+require_once '../db/conf/datawrapper-conf.php';
 
 // connect to database
 $dbconn  = $conf['datasources']['datawrapper']['connection'];

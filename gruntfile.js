@@ -102,7 +102,7 @@ module.exports = function (grunt) {
 
         shell: {
             propel: {
-                command: 'phing -f ../../vendor/propel/propel1/generator/build.xml -Dproject.dir=../../lib/core/',
+                command: 'phing -f ../../vendor/propel/propel1/generator/build.xml -Dproject.dir=../../db/',
                 options: {
                     execOptions: {
                         cwd: 'vendor/bin'
