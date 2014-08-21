@@ -10,11 +10,11 @@
 
 namespace Datawrapper\RestApp;
 
-use Slim\Slim;
+use Datawrapper\Application;
 
 class BaseController {
-    public function __construct() {
-        $this->disableCache();
+    protected function getApp() {
+        return Application::getInstance();
     }
 
     protected function getApp() {

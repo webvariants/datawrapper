@@ -82,6 +82,7 @@ class PluginManager {
     }
 
     public static function loadPlugin($plugin) {
+        $app = Application::getInstance();
         $plugin_path = ROOT_PATH . 'plugins/' . $plugin->getName() . '/plugin.php';
         if (file_exists($plugin_path)) {
             require_once $plugin_path;
@@ -95,7 +96,7 @@ class PluginManager {
         foreach ($pluginClass->getRequiredLibraries() as $lib) {
             require_once ROOT_PATH . 'plugins/' . $plugin->getName() . '/' . $lib;
         }
-        $pluginClass->init();
+        $pluginClass->init($app);
         return $pluginClass;
     }
 

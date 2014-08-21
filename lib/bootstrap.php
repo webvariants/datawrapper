@@ -4,11 +4,11 @@
  * bootstrap.php
  */
 
+use Datawrapper\Application;
 use Datawrapper\L10N;
 use Datawrapper\Session;
 use Datawrapper\SessionHandler\DatabaseHandler;
 use Datawrapper\PluginManager;
-use Slim\Slim;
 
 // if not done yet, include the autoloader
 require_once ROOT_PATH.'vendor/autoload.php';
@@ -66,14 +66,14 @@ $__l10n->loadMessages($locale);
 if (!defined('NO_SLIM')) {
     // Initialize Slim app..
     if (ROOT_PATH == '../') {
-        $app = new Slim(array(
+        $app = new Application(array(
             'view' => new TwigView(),
             'templates.path' => '../templates',
             'session.handler' => null
         ));
     } else {
         // ..or with JSONView for API.
-        $app = new Slim(array( 'view' => 'JSONView' ));
+        $app = new Application(array( 'view' => 'JSONView' ));
     }
 }
 

@@ -10,11 +10,11 @@
 
 namespace Datawrapper\WebApp;
 
-use Slim\Slim;
+use Datawrapper\Application;
 
 class BaseController {
     protected function getApp() {
-        return Slim::getInstance();
+        return Application::getInstance();
     }
 
     protected function getI18N() {
