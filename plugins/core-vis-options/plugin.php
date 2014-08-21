@@ -8,29 +8,23 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-use Datawrapper\Plugin;
+use Datawrapper\Application;
 use Datawrapper\Hooks;
+use Datawrapper\Plugin;
 
 class DatawrapperPlugin_CoreVisOptions extends Plugin {
-    public function init() {
+    public function init(Application $app) {
         $plugin = $this;
-        global $app;
 
-        Hooks::register(
-            Hooks::VIS_OPTION_CONTROLS,
-            function($o, $k) use ($app, $plugin) {
-                $env = array('option' => $o, 'key' => $k);
-                $app->render('plugins/'.$plugin->getName().'/controls.twig', $env);
-            }
-        );
+        Hooks::register(Hooks::VIS_OPTION_CONTROLS, function($o, $k) use ($app, $plugin) {
+            $env = array('option' => $o, 'key' => $k);
+            $app->render('plugins/'.$plugin->getName().'/controls.twig', $env);
+        });
 
-        Hooks::register(
-            Hooks::VIS_OPTION_CONTROLS,
-            function($o, $k) use ($app, $plugin) {
-                $env = array('option' => $o, 'key' => $k);
-                $app->render('plugins/'.$plugin->getName().'/colorselector.twig', $env);
-            }
-        );
+        Hooks::register(Hooks::VIS_OPTION_CONTROLS, function($o, $k) use ($app, $plugin) {
+            $env = array('option' => $o, 'key' => $k);
+            $app->render('plugins/'.$plugin->getName().'/colorselector.twig', $env);
+        });
 
         $this->declareAssets(array(
             'sync-controls.js',

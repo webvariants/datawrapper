@@ -8,18 +8,19 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-use Datawrapper\Plugin;
+use Datawrapper\Application;
 use Datawrapper\Hooks;
+use Datawrapper\Plugin;
 
 class DatawrapperPlugin_EmailNative extends Plugin {
-    public function init() {
+    public function init(Application $app) {
         Hooks::register(Hooks::SEND_EMAIL, array($this, 'sendMail'));
     }
 
     /**
      * Send an email
      */
-    function sendMail($to, $subject, $body, $headers = '') {
+    public function sendMail($to, $subject, $body, $headers = '') {
         if (empty($headers)) {
             $headers = 'From: noreply@'.$GLOBALS['dw_config']['domain'];
         }

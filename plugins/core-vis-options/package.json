@@ -1,6 +1,6 @@
 {
     "name": "core-vis-options",
-    "version": "1.4.4",
+    "version": "1.5.0",
     "description": "The core visualization options. Not a good idea to disable this, unless you know what you're doing!",
     "dependencies": {
         "core": "2.0.0-alpha"
