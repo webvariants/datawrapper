@@ -45,10 +45,21 @@ class AccountController extends BaseController {
         }
 
         foreach ($pages as $p) {
+            // set title and adminactive if the controller code before us has not already set it
             if ($p['url'] === $page) {
-                $data['title'] = $p['title'];
-                $data['pages'] = $pages;
-                $data['url']   = $p['url'];
+                if (!isset($data['title'])) {
+                    $data['title'] = $p['title'];
+                }
+
+                if (!isset($data['pages'])) {
+                    $data['pages'] = $pages;
+                }
+
+                if (!isset($data['url'])) {
+                    $data['url'] = $p['url'];
+                }
+
+                break;
             }
         }
 

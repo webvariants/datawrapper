@@ -39,9 +39,15 @@ class AdminController extends BaseController {
         $data['adminmenu'] = array();
 
         foreach ($pages as $p) {
+            // set title and adminactive if the controller code before us has not already set it
             if ($p['url'] === $page) {
-                $data['title']       = $p['title'];
-                $data['adminactive'] = $p['url'];
+                if (!isset($data['title'])) {
+                    $data['title'] = $p['title'];
+                }
+
+                if (!isset($data['adminactive'])) {
+                    $data['adminactive'] = $p['url'];
+                }
             }
 
             // add admin pages to menu
