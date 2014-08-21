@@ -4,31 +4,34 @@
 
 function check_path_permissions() {
     $paths = array();
-    $rel = '..';
+    $rel   = ROOT_PATH;
+    $err   = array();
+
     $paths[] = '/charts/static';
     $paths[] = '/charts/data';
     $paths[] = '/charts/images';
     $paths[] = '/charts/data/tmp';
     $paths[] = '/tmp';
-    $err = array();
+
     foreach ($paths as $path) {
-        if (!is_writable($rel . $path)) $err[] = $path;
+        if (!is_writable($rel.$path)) $err[] = $path;
     }
+
     if (count($err) > 0) {
         $msg = '<h2>The following folders on your server need to be writable:</h2><ul>';
         foreach ($paths as $path) {
-            # code...
-            $msg .= '<li><code>'.dirname(dirname(dirname(__FILE__))).$path.'</code></li>';
+            $msg .= '<li><code>'.ROOT_PATH.$path.'</code></li>';
         }
         $msg .= '</ul>';
         $msg .= 'Read more about <a href="http://codex.wordpress.org/Changing_File_Permissions#Using_an_FTP_Client">how to change file permissions</a>';
         return $msg;
     }
+
     return '';
 }
 
 function check_config() {
-    if (!file_exists('../config.yaml')) {
+    if (!file_exists(ROOT_PATH.'config.yaml')) {
         return '<h2>Could not find <b>config.yaml</b></h2>'
           . '<p>Please copy the template configuration from <code>config.template.yaml</code> to <code>config.yaml</code> and change the configuration according to your server.</p>';
     }
