@@ -1,9 +1,9 @@
 {
     "name": "export-static-png",
     "version": "1.1.0",
+    "description": "Automatically creates a static PNG snapshot of every chart soon after publication",
     "dependencies": {
         "phantomjs": "*",
         "core": "2.0.0-alpha"
-    },
-    "description": "Automatically creates a static PNG snapshot of every chart soon after publication"
+    }
 }

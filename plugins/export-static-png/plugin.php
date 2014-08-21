@@ -8,13 +8,17 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+use Datawrapper\Application;
 use Datawrapper\Plugin;
 use Datawrapper\Hooks;
 use Datawrapper\ORM;
 
 class DatawrapperPlugin_ExportStaticPng extends Plugin {
+    protected $app;
 
-    public function init() {
+    public function init(Application $app) {
+        $this->app = $app;
+
         // hook into chart publication
         Hooks::register(Hooks::POST_CHART_PUBLISH, array($this, 'triggerExportJob'));
 
@@ -22,18 +26,20 @@ class DatawrapperPlugin_ExportStaticPng extends Plugin {
         Hooks::register('export_static_chart', array($this, 'exportStaticPng'));
     }
 
-    public function triggerExportJob($chart, $user) {
+    public function triggerExportJob(ORM\Chart $chart, ORM\User $user) {
         // queue a job for thumbnail generation
         $params = array(
             'width'  => $chart->getMetadata('publish.embed-width'),
             'height' => $chart->getMetadata('publish.embed-height')
         );
+
         $job = ORM\JobQuery::create()->createJob('export_static_chart', $chart, $user, $params);
     }
 
-    public function exportStaticPng($job) {
-        $chart = $job->getChart();
-        $params = $job->getParameter();
+    public function exportStaticPng(ORM\Job $job) {
+        $domain      = $this->app->getConfig('domain');
+        $chart       = $job->getChart();
+        $params      = $job->getParameter();
         $static_path = ROOT_PATH.'charts/static/'.$chart->getId().'/';
 
         // execute hook provided by phantomjs plugin
@@ -43,7 +49,7 @@ class DatawrapperPlugin_ExportStaticPng extends Plugin {
             // path to the script
             ROOT_PATH.'plugins/'.$this->getName().'/gen_static_fallback.js',
             // url of the chart
-            'http://'.$GLOBALS['dw_config']['domain'].'/chart/'. $chart->getId() .'/',
+            'http://'.$domain.'/chart/'.$chart->getId().'/',
             // path to the image
             $static_path,
             // output width
@@ -54,6 +60,7 @@ class DatawrapperPlugin_ExportStaticPng extends Plugin {
 
         if (empty($res[0])) {
             $job->setStatus('done');
+
             // upload to CDN if possible
             Hooks::execute(Hooks::PUBLISH_FILES, array(
                 array(
@@ -83,6 +90,7 @@ class DatawrapperPlugin_ExportStaticPng extends Plugin {
             $job->setStatus('failed');
             $job->setFailReason($res[0]);
         }
+
         $job->save();
     }
 }

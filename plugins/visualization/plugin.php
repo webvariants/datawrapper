@@ -8,11 +8,12 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+use Datawrapper\Application;
 use Datawrapper\Plugin;
 use Datawrapper\Visualization;
 
 class DatawrapperPlugin_Visualization extends Plugin {
-    public function init() {
+    public function init(Application $app) {
         $meta = $this->getMeta();
         if (!empty($meta)) Visualization::register($this, $meta);
     }

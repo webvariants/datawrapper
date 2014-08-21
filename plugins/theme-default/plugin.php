@@ -8,11 +8,12 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+use Datawrapper\Application;
 use Datawrapper\Plugin;
 use Datawrapper\Theme;
 
 class DatawrapperPlugin_ThemeDefault extends Plugin {
-    public function init() {
+    public function init(Application $app) {
         Theme::register($this, $this->getMeta());
     }
 
@@ -20,7 +21,7 @@ class DatawrapperPlugin_ThemeDefault extends Plugin {
         return array(
             'id'      => 'default',
             'title'   => 'Datawrapper',
-            'version' => '1.5.2'
+            'version' => '1.6.0'
         );
     }
 }

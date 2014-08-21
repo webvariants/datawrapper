@@ -8,10 +8,11 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+use Datawrapper\Application;
 use Datawrapper\Visualization;
 
 class DatawrapperPlugin_VisualizationColumnCharts extends DatawrapperPlugin_Visualization {
-    public function init() {
+    public function init(Application $app) {
         Visualization::register($this, $this->getMeta_Simple());
         Visualization::register($this, $this->getMeta_Grouped());
         Visualization::register($this, $this->getMeta_Stacked());

@@ -1,11 +1,11 @@
 {
     "name": "visualization-bar-chart",
     "version": "1.8.0",
+    "description": "The lovely bar chart in Datawrapper",
     "author": "Gregor Aisch",
     "dependencies": {
         "core": "2.0.0-alpha",
         "visualization": "*",
         "visualization-raphael-chart": "*"
-    },
-    "description": "The lovely bar chart in Datawrapper"
+    }
 }
