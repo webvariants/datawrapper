@@ -8,6 +8,10 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+/**
+ * Datawrapper Web App
+ */
+
 use Datawrapper\ORM\UserQuery;
 use Datawrapper\Hooks;
 use Datawrapper\Session;
@@ -15,16 +19,10 @@ use Datawrapper\Session;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // boot the main system
 
-define('DATAWRAPPER_VERSION', '2.0.0-alpha');  // must match with package.json
-define('ROOT_PATH', '../');
+define('ROOT_PATH', dirname(__DIR__).DIRECTORY_SEPARATOR);
+define('DW_VIEW', 'twig');
 
 require ROOT_PATH.'lib/bootstrap.php';
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// setup Twig
-
-$twig = $app->view()->getEnvironment();
-dwInitTwigEnvironment($twig);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // setup routing
