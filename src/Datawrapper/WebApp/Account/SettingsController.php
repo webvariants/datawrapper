@@ -93,6 +93,6 @@ class SettingsController extends AccountController {
             $page['activation_email_date'] = strftime('%x', $t);
         }
 
-        $app->render('settings.twig', $page);
+        $this->render('settings', 'settings.twig', $page);
     }
 }

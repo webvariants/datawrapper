@@ -36,18 +36,22 @@ class AccountController extends BaseController {
 
         return array_values($pages);
     }
-}
 
-/*
+    protected function render($page, $template, array $data = array()) {
+        $pages = $this->getAccountPages();
 
+        if (!isset($data['DW_DOMAIN'])) {
+            add_header_vars($data, 'account');
+        }
 
-    foreach ($pages as $page) {
-        $context = array(
-            'title' => $page['title'],
-            'pages' => $pages,
-            'active' => $page['url']
-        );
-        add_header_vars($context, 'account');
-        $app->get('/account/' . $page['url'], $page['controller']($app, $context));
+        foreach ($pages as $p) {
+            if ($p['url'] === $page) {
+                $data['title'] = $p['title'];
+                $data['pages'] = $pages;
+                $data['url']   = $p['url'];
+            }
+        }
+
+        $this->getApp()->render($template, $data);
     }
- */
+}
