@@ -17,12 +17,12 @@ class BaseController {
         return Application::getInstance();
     }
 
-    protected function getApp() {
-        return Slim::getInstance();
+    protected function getI18N() {
+        return $this->getApp()->getI18N();
     }
 
-    protected function getI18N() {
-        return $GLOBALS['__l10n'];
+    protected function getConfig($key = null) {
+        return $this->getApp()->getConfig($key);
     }
 
     protected function disableCache() {
@@ -30,15 +30,5 @@ class BaseController {
         disable_cache($app);
 
         return $this;
-    }
-
-    protected function getConfig($key = null) {
-        $config = $GLOBALS['dw_config'];
-
-        if ($key !== null) {
-            return array_key_exists($key, $config) ? $config[$key] : null;
-        }
-
-        return $config;
     }
 }

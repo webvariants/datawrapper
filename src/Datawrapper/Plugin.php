@@ -28,7 +28,7 @@ class Plugin {
 	 *
 	 * @return boolean
 	 */
-	public function init() {
+	public function init(Application $app) {
 		return true;
 	}
 
