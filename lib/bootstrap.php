@@ -10,6 +10,9 @@ use Datawrapper\Session;
 use Datawrapper\SessionHandler\DatabaseHandler;
 use Datawrapper\PluginManager;
 
+// must match with package.json
+define('DATAWRAPPER_VERSION', '2.0.0-alpha');
+
 // if not done yet, include the autoloader
 require_once ROOT_PATH.'vendor/autoload.php';
 

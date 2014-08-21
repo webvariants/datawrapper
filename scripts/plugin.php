@@ -32,7 +32,7 @@ use Datawrapper\Plugin as PluginObject;
  */
 
 define('ROOT_PATH', dirname(__DIR__).'/');
-define('NO_SLIM', 1);
+#define('NO_SLIM', 1);
 
 date_default_timezone_set('Europe/Berlin');
 

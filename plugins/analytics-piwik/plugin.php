@@ -8,23 +8,24 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-use Datawrapper\Plugin;
+use Datawrapper\Application;
 use Datawrapper\Hooks;
+use Datawrapper\ORM\Chart;
+use Datawrapper\Plugin;
 
 class DatawrapperPlugin_AnalyticsPiwik extends Plugin {
-    public function init() {
+    public function init(Application $app) {
         Hooks::register(Hooks::CHART_AFTER_BODY, array($this, 'getTrackingCode'));
         Hooks::register(Hooks::CORE_AFTER_BODY,  array($this, 'getTrackingCode'));
     }
 
-    public function getTrackingCode($chart = null) {
+    public function getTrackingCode(Chart $chart) {
         $config = $this->getConfig();
         if (empty($config)) return false;
 
-        $url = $config['url'];
+        $url    = $config['url'];
         $idSite = $config['idSite'];
-
-        $user = $chart->getUser();
+        $user   = $chart->getUser();
 
         print '<!-- Piwik -->
 <script type="text/javascript">
