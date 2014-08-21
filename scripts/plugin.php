@@ -31,8 +31,8 @@ use Datawrapper\Plugin as PluginObject;
  *    php plugin.php enable "visualization-*"
  */
 
-define('ROOT_PATH', dirname(__DIR__).'/');
-#define('NO_SLIM', 1);
+define('ROOT_PATH', dirname(__DIR__).DIRECTORY_SEPARATOR);
+define('DW_VIEW', 'json');
 
 date_default_timezone_set('Europe/Berlin');
 
