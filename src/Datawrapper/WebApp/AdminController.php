@@ -14,7 +14,7 @@ use Datawrapper\Hooks;
 use Datawrapper\Session;
 
 class AdminController extends BaseController {
-    protected function getAccountPages() {
+    protected function getAdminPages() {
         $user  = Session::getUser();
         $pages = Hooks::execute(Hooks::GET_ADMIN_PAGES);
 
@@ -28,33 +28,26 @@ class AdminController extends BaseController {
 
         return array_values($pages);
     }
-}
 
-/*
-foreach ($__dw_admin_pages as $admin_page) {
-    $app->map('/admin' . $admin_page['url'], function() use ($app, $admin_page, $__dw_admin_pages) {
-        disable_cache($app);
+    protected function render($page, $template, array $data = array()) {
+        $pages = $this->getAdminPages();
 
-        $user = Session::getUser();
+        if (!isset($data['DW_DOMAIN'])) {
+            add_header_vars($data, 'admin');
+        }
 
-        if ($user->isAdmin()) {
-            $page_vars = array(
-                'title'       => $admin_page['title'],
-                'adminmenu'   => array(),
-                'adminactive' => $admin_page['url']
-            );
+        $data['adminmenu'] = array();
 
-            // add admin pages to menu
-            foreach ($__dw_admin_pages as $adm_pg) {
-                $page_vars['adminmenu'][$adm_pg['url']] = $adm_pg['title'];
+        foreach ($pages as $p) {
+            if ($p['url'] === $page) {
+                $data['title']       = $p['title'];
+                $data['adminactive'] = $p['url'];
             }
 
-            add_header_vars($page_vars, 'admin');
-            call_user_func_array($admin_page['controller'], array($app, $page_vars));
+            // add admin pages to menu
+            $data['adminmenu'][$p['url']] = $p['title'];
         }
-        else {
-            $app->notFound();
-        }
-    })->via('GET', 'POST');
+
+        $this->getApp()->render($template, $data);
+    }
 }
- */
