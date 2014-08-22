@@ -69,17 +69,16 @@ class AccountController extends BaseController {
             $protocol = !empty($_SERVER['HTTPS']) ? "https" : "http";
             $passwordResetLink = $protocol . '://' . $dw_config['domain'] . '/account/reset-password/' . $token;
 
-            include(ROOT_PATH . 'lib/templates/password-reset-email.php');
+            $mailBody = $app->render('emails/password-reset.twig', array(
+                'name'                => $user->guessName(),
+                'password_reset_link' => $passwordResetLink
+            ));
 
             $mailer = new Mailer($dw_config);
             $mailer->sendSupportMail(
                 $user->getEmail(),
                 __('Datawrapper: You requested a reset of your password'),
-                $password_reset_mail,
-                array(
-                    'name' => $user->guessName(),
-                    'password_reset_link' => $passwordResetLink
-                )
+                $mailBody
             );
 
             ok(__('You should soon receive an email with further instructions.'));
@@ -139,17 +138,16 @@ class AccountController extends BaseController {
             $protocol = !empty($_SERVER['HTTPS']) ? "https" : "http";
             $activationLink = $protocol . '://' . $domain . '/account/activate/' . $token;
 
-            include(ROOT_PATH . 'lib/templates/activation-email.php');
+            $mailBody = $app->render('emails/activation.twig', array(
+                'name'            => $user->guessName(),
+                'activation_link' => $activationLink
+            ));
 
             $mailer = new Mailer($dw_config);
             $mailer->sendSupportMail(
                 $user->getEmail(),
                 __('Datawrapper: Please activate your email address'),
-                $activation_mail,
-                array(
-                    'name' => $user->guessName(),
-                    'activation_link' => $activationLink
-                )
+                $mailBody
             );
 
             ok(__('The activation email has been send to your email address, again.'));
@@ -177,21 +175,23 @@ class AccountController extends BaseController {
             $protocol       = !empty($_SERVER['HTTPS']) ? "https" : "http";
             $invitationLink = $protocol . '://' . $domain . '/account/invite/' . $token;
             $name           = $user->getEmail();
-            include('../../lib/templates/invitation-email.php');
             $from           = $dw_config['email']['invite'];
+
+            $mailBody = $app->render('emails/invitation.twig', array(
+                'name'            => $user->guessName(),
+                'invitation_link' => $invitationLink
+            ));
 
             $mailer = new Mailer($dw_config);
             $mailer->sendSupportMail(
                 $user->getEmail(),
                 __('You have been invited to Datawrapper!'),
-                $invitation_mail,
-                array(
-                    'name' => $user->guessName(),
-                    'invitation_link' => $invitationLink
-                )
+                $mailBody
             );
+
             ok(__('You should soon receive an email with further instructions.'));
-        } else {
+        }
+        else {
             error('login-email-unknown', __('The email is not registered yet.'));
         }
     }

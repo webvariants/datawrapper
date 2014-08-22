@@ -105,31 +105,33 @@ class UserController extends BaseController {
         if ($invitation) {
             // send account invitation link
             $invitationLink = $protocol . '://' . $domain . '/account/invite/' . $user->getActivateToken();
-            include(ROOT_PATH . 'lib/templates/invitation-email.php');
+
+            $mailBody = $app->render('emails/invitation.twig', array(
+                'name'            => $user->guessName(),
+                'invitation_link' => $invitationLink
+            ));
+
             $mailer = new Mailer($dw_config);
             $mailer->sendSupportMail(
                 $data->email,
                 sprintf(__('You have been invited to Datawrapper on %s'), $domain),
-                $invitation_mail,
-                array(
-                    'name' => $user->guessName(),
-                    'invitation_link' => $invitationLink
-                )
+                $mailBody
             );
-
-        } else {
+        }
+        else {
             // send account activation link
             $activationLink = $protocol . '://' . $domain . '/account/activate/' . $user->getActivateToken();
-            include(ROOT_PATH . 'lib/templates/activation-email.php');
+
+            $mailBody = $app->render('emails/activation.twig', array(
+                'name'            => $user->guessName(),
+                'activation_link' => $activationLink
+            ));
+
             $mailer = new Mailer($dw_config);
             $mailer->sendSupportMail(
                 $data->email,
                 __('Datawrapper: Please activate your email address'),
-                $activation_mail,
-                array(
-                    'name' => $user->guessName(),
-                    'activation_link' => $activationLink
-                )
+                $mailBody
             );
 
             // we don't need to annoy the user with a login form now,
@@ -183,21 +185,22 @@ class UserController extends BaseController {
                                 // non-admins need to confirm new emails addresses
                                 $token = hash_hmac('sha256', $user->getEmail().'/'.$payload->email.'/'.time(), DW_TOKEN_SALT);
                                 $token_link = 'http://' . $GLOBALS['dw_config']['domain'] . '/account/settings?token='.$token;
+
                                 // send email with token
-                                require(ROOT_PATH . 'lib/templates/email-change-email.php');
+                                $mailBody = $app->render('emails/email-change.twig', array(
+                                    'name'                    => $user->guessName(),
+                                    'email_change_token_link' => $token_link,
+                                    'old_email'               => $user->getEmail(),
+                                    'new_email'               => $payload->email
+                                ));
 
                                 $mailer = new Mailer($dw_config);
                                 $mailer->sendSupportMail(
                                     $payload->email,
                                     __('Datawrapper: You requested a change of your email address'),
-                                    $email_change_mail,
-                                    array(
-                                        'name' => $user->guessName(),
-                                        'email_change_token_link' => $token_link,
-                                        'old_email' => $user->getEmail(),
-                                        'new_email' => $payload->email
-                                    )
+                                    $mailBody
                                 );
+
                                 // log action for later confirmation
                                 Action::logAction($curUser, 'email-change-request', array(
                                     'old-email' => $user->getEmail(),
