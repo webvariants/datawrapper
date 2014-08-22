@@ -93,9 +93,7 @@ if (!defined('NO_SLIM')) {
     }
     else {
         // ..or with JSONView for the API
-        $app = new Application(array(
-            'view' => new JSONView()
-        ));
+        $app = new Application();
     }
 }
 
