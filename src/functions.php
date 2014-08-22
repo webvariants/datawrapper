@@ -110,3 +110,17 @@ function array_merge_recursive_simple() {
 
     return $merged;
 }
+
+/**
+ * secure passwords with secure_auth_key, if configured
+ */
+function secure_password($pwd) {
+    global $dw_config;
+
+    if (isset($dw_config['secure_auth_key'])) {
+        return hash_hmac('sha256', $pwd, $dw_config['secure_auth_key']);
+    }
+    else {
+        return $pwd;
+    }
+}

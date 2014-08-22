@@ -31,28 +31,17 @@ if ($dw_config['debug']) {
     ini_set('display_errors', 1);
 }
 
+// this salt is used to hash the passwords before sending them from the client via HTTP
+if (!isset($dw_config['auth_salt'])) {
+    $dw_config['auth_salt'] = 'uRPAqgUJqNuBdW62bmq3CLszRFkvq4RW';
+}
+
+define('DW_AUTH_SALT', $dw_config['auth_salt']);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // boot Propel
 
 Propel::init(ROOT_PATH.'db/conf/datawrapper-conf.php');
-
-// this salt is used to hash the passwords in database
-if (!isset($dw_config['auth_salt'])) $dw_config['auth_salt'] = 'uRPAqgUJqNuBdW62bmq3CLszRFkvq4RW';
-define('DW_AUTH_SALT', $dw_config['auth_salt']);
-
-/*
- * secure passwords with secure_auth_key, if configured
- */
-function secure_password($pwd) {
-    global $dw_config;
-
-    if (isset($dw_config['secure_auth_key'])) {
-        return hash_hmac('sha256', $pwd, $dw_config['secure_auth_key']);
-    }
-    else {
-        return $pwd;
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // init session
@@ -92,7 +81,6 @@ if (!defined('NO_SLIM')) {
         dwInitTwigEnvironment($app->view()->getEnvironment());
     }
     else {
-        // ..or with JSONView for the API
         $app = new Application();
     }
 }
