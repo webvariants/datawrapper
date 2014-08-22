@@ -66,15 +66,15 @@ class AccountController extends BaseController {
             $user->setResetPasswordToken($token);
             $user->save();
 
+            $mailer = new Mailer($dw_config);
             $protocol = !empty($_SERVER['HTTPS']) ? "https" : "http";
             $passwordResetLink = $protocol . '://' . $dw_config['domain'] . '/account/reset-password/' . $token;
 
-            $mailBody = $app->render('emails/password-reset.twig', array(
+            $mailBody = $mailer->renderBody($app, 'password-reset.twig', array(
                 'name'                => $user->guessName(),
                 'password_reset_link' => $passwordResetLink
             ));
 
-            $mailer = new Mailer($dw_config);
             $mailer->sendSupportMail(
                 $user->getEmail(),
                 __('Datawrapper: You requested a reset of your password'),
@@ -138,12 +138,12 @@ class AccountController extends BaseController {
             $protocol = !empty($_SERVER['HTTPS']) ? "https" : "http";
             $activationLink = $protocol . '://' . $domain . '/account/activate/' . $token;
 
-            $mailBody = $app->render('emails/activation.twig', array(
+            $mailer   = new Mailer($dw_config);
+            $mailBody = $mailer->renderBody($app, 'activation.twig', array(
                 'name'            => $user->guessName(),
                 'activation_link' => $activationLink
             ));
 
-            $mailer = new Mailer($dw_config);
             $mailer->sendSupportMail(
                 $user->getEmail(),
                 __('Datawrapper: Please activate your email address'),
@@ -170,19 +170,17 @@ class AccountController extends BaseController {
             if (empty($token)) {
                 return error("token-invalid", _("This activation token is invalid. Your email address is probably already activated."));
             }
-            // variables for `templates/invitation-email.php`
+
             $domain         = $dw_config['domain'];
             $protocol       = !empty($_SERVER['HTTPS']) ? "https" : "http";
             $invitationLink = $protocol . '://' . $domain . '/account/invite/' . $token;
-            $name           = $user->getEmail();
-            $from           = $dw_config['email']['invite'];
 
-            $mailBody = $app->render('emails/invitation.twig', array(
+            $mailer   = new Mailer($dw_config);
+            $mailBody = $mailer->renderBody($app, 'invitation.twig', array(
                 'name'            => $user->guessName(),
                 'invitation_link' => $invitationLink
             ));
 
-            $mailer = new Mailer($dw_config);
             $mailer->sendSupportMail(
                 $user->getEmail(),
                 __('You have been invited to Datawrapper!'),

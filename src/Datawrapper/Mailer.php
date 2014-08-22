@@ -27,27 +27,30 @@ class Mailer {
         $this->errorAddr   = $config['email']['error'];
     }
 
+    public function renderBody(Application $app, $template, array $data = array()) {
+        // auto-replace support email address and domain
+        if (empty($data['support_email'])) {
+            $data['support_email'] = $this->supportAddr;
+        }
+
+        if (empty($data['domain'])) {
+            $data['domain'] = $this->domain;
+        }
+
+        return $app->render('emails/'.$template, $data);
+    }
+
     /**
      * use this to send email to our users
      */
-    public function sendSupportMail($to, $subject, $message, array $replacements = array()) {
-        // auto-replace support email address and domain
-        if (empty($replacements['support_email'])) {
-            $replacements['support_email'] = $this->supportAddr;
-        }
-
-        $replacements['domain'] = $this->domain;
-
-        $subject = $this->replace($subject, $replacements);
-        $message = $this->replace($message, $replacements);
-
+    public function sendSupportMail($to, $subject, $message) {
         $this->executeSendHook(
             $to,
             $subject,
             $message,
-            'From: noreply@'.$this->domain . "\r\n" .
-            'Reply-To: '.$this->supportAddr . "\r\n" .
-            'X-Mailer: PHP/' . phpversion()
+            'From: noreply@'.$this->domain."\r\n" .
+            'Reply-To: '.$this->supportAddr."\r\n" .
+            'X-Mailer: PHP/'.phpversion()
         );
     }
 
@@ -72,7 +75,7 @@ class Mailer {
     function sendMailAttachment($to, $from, $subject, $body, array $files) {
         $random_hash = md5(date('r', time()));
            // $random_hash = md5(date('r', time()));
-        $random_hash = '-----=' . md5(uniqid(mt_rand()));
+        $random_hash = '-----='.md5(uniqid(mt_rand()));
 
         // headers
         $headers =  'From: '.$from."\n";
@@ -98,24 +101,11 @@ class Mailer {
             $message .= '--'.$random_hash."\n";
             $message .= 'Content-Type: '. $format .'; name="'. $fn .'"'."\n";
             $message .= 'Content-Transfer-Encoding: base64'."\n";
-            $message .= 'Content-Disposition:attachement; filename="'. $fn . '"'."\n\n";
+            $message .= 'Content-Disposition:attachement; filename="'. $fn.'"'."\n\n";
             $message .= $attachment."\n";
         }
 
         $this->executeSendHook($to, $subject, $message, $headers);
-    }
-
-    /**
-     * replaces %keys% in strings with the provided replacement
-     *
-     * e.g. dw_email_replace("Hello %name%!", array('name' => $user->getName()))
-     */
-    public function replace($body, $replacements) {
-        foreach ($replacements as $key => $value) {
-            $body = str_replace('%'.$key.'%', $value, $body);
-        }
-
-        return $body;
     }
 
     protected function executeSendHook($to, $subject, $message, $headers) {

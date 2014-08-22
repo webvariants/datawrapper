@@ -99,21 +99,22 @@ class UserController extends BaseController {
         Hooks::execute(Hooks::USER_SIGNUP, $user);
 
         // send an email
+        $mailer   = new Mailer($dw_config);
         $name     = $data->email;
         $domain   = $GLOBALS['dw_config']['domain'];
         $protocol = !empty($_SERVER['HTTPS']) ? "https" : "http";
+
         if ($invitation) {
             // send account invitation link
             $invitationLink = $protocol . '://' . $domain . '/account/invite/' . $user->getActivateToken();
 
-            $mailBody = $app->render('emails/invitation.twig', array(
+            $mailBody = $mailer->renderBody($app, 'invitation.twig', array(
                 'name'            => $user->guessName(),
                 'invitation_link' => $invitationLink
             ));
 
-            $mailer = new Mailer($dw_config);
             $mailer->sendSupportMail(
-                $data->email,
+                $name,
                 sprintf(__('You have been invited to Datawrapper on %s'), $domain),
                 $mailBody
             );
@@ -122,14 +123,13 @@ class UserController extends BaseController {
             // send account activation link
             $activationLink = $protocol . '://' . $domain . '/account/activate/' . $user->getActivateToken();
 
-            $mailBody = $app->render('emails/activation.twig', array(
+            $mailBody = $mailer->renderBody($app, 'activation.twig', array(
                 'name'            => $user->guessName(),
                 'activation_link' => $activationLink
             ));
 
-            $mailer = new Mailer($dw_config);
             $mailer->sendSupportMail(
-                $data->email,
+                $name,
                 __('Datawrapper: Please activate your email address'),
                 $mailBody
             );
@@ -187,14 +187,14 @@ class UserController extends BaseController {
                                 $token_link = 'http://' . $GLOBALS['dw_config']['domain'] . '/account/settings?token='.$token;
 
                                 // send email with token
-                                $mailBody = $app->render('emails/email-change.twig', array(
+                                $mailer   = new Mailer($dw_config);
+                                $mailBody = $mailer->renderBody($app, 'email-change.twig', array(
                                     'name'                    => $user->guessName(),
                                     'email_change_token_link' => $token_link,
                                     'old_email'               => $user->getEmail(),
                                     'new_email'               => $payload->email
                                 ));
 
-                                $mailer = new Mailer($dw_config);
                                 $mailer->sendSupportMail(
                                     $payload->email,
                                     __('Datawrapper: You requested a change of your email address'),
