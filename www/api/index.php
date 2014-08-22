@@ -66,56 +66,89 @@ function if_is_admin($callback) {
 $config = $dw_config;
 $ns     = 'Datawrapper\\RestApp\\';
 
+$app->get ('/account',                                    $ns.'AccountController:indexAction');
+$app->get ('/account/lang',                               $ns.'AccountController:getLanguageAction');
+$app->put ('/account/lang',                               $ns.'AccountController:updateLanguageAction');
+$app->post('/account/reset-password',                     $ns.'AccountController:sendPasswordResetMailAction');
+$app->put ('/account/reset-password',                     $ns.'AccountController:resetPasswordAction');
+$app->post('/account/resend-activation',                  $ns.'AccountController:resendActivationAction');
+$app->post('/account/resend-invitation',                  $ns.'AccountController:resendInvitationAction');
+$app->post('/account/invitation/:token',                  $ns.'AccountController:validateInvitationAction');
+
 // TODO: turn this into a sessions resource (POST /sessions = login, DELETE /sessions/mine = logout)
-$app->post('/auth/login',  $ns.'AuthController:loginAction');
-$app->get ('/auth/salt',   $ns.'AuthController:saltAction');
-$app->post('/auth/logout', $ns.'AuthController:logoutAction');
+$app->post('/auth/login',                                 $ns.'AuthController:loginAction');
+$app->get ('/auth/salt',                                  $ns.'AuthController:saltAction');
+$app->post('/auth/logout',                                $ns.'AuthController:logoutAction');
 
-$app->get ('/account',                   $ns.'AccountController:indexAction');
-$app->get ('/account/lang',              $ns.'AccountController:getLanguageAction');
-$app->put ('/account/lang',              $ns.'AccountController:updateLanguageAction');
-$app->post('/account/reset-password',    $ns.'AccountController:sendPasswordResetMailAction');
-$app->put ('/account/reset-password',    $ns.'AccountController:resetPasswordAction');
-$app->post('/account/resend-activation', $ns.'AccountController:resendActivationAction');
-$app->post('/account/resend-invitation', $ns.'AccountController:resendInvitationAction');
-$app->post('/account/invitation/:token', $ns.'AccountController:validateInvitationAction');
+$app->get   ('/charts',                                   $ns.'ChartController:indexAction');
+$app->post  ('/charts',                                   $ns.'ChartController:createAction');
+$app->get   ('/charts/:id',                               $ns.'ChartController:getAction');
+$app->put   ('/charts/:id',                               $ns.'ChartController:updateAction');
+$app->delete('/charts/:id',                               $ns.'ChartController:deleteAction');
+$app->get   ('/charts/:id/data',                          $ns.'ChartController:getDataAction');
+$app->put   ('/charts/:id/data',                          $ns.'ChartController:putDataAction');
+$app->post  ('/charts/:id/data',                          $ns.'ChartController:postDataAction');
+$app->post  ('/charts/:id/copy',                          $ns.'ChartController:copyAction');
+$app->post  ('/charts/:id/publish',                       $ns.'ChartController:publishAction');
+$app->get   ('/charts/:id/publish/status',                $ns.'ChartController:publishStatusAction');
+$app->put   ('/charts/:id/thumbnail/:thumb',              $ns.'ChartController:putThumbnailAction');
+$app->put   ('/charts/:id/store_snapshot',                $ns.'ChartController:snapshotAction');
 
-$app->get   ('/users',             $ns.'UserController:indexAction');
-$app->post  ('/users',             $ns.'UserController:createAction');
-$app->get   ('/users/:id',         $ns.'UserController:getAction');
-$app->put   ('/users/:id',         $ns.'UserController:updateAction');
-$app->delete('/users/:id',         $ns.'UserController:deleteAction');
-$app->post  ('/user/:id/products', $ns.'UserController:addProductsAction');
+$app->get   ('/gallery',                                  $ns.'GalleryController:indexAction');
 
-$app->get   ('/gallery', $ns.'GalleryController:indexAction');
+$app->post  ('/jobs/:type/:id',                           $ns.'JobController:createAction');
+$app->get   ('/jobs/:type/estimate',                      $ns.'JobController:estimateAction');
+$app->put   ('/jobs/:id',                                 $ns.'JobController:updateAction');
 
-$app->get   ('/charts',                      $ns.'ChartController:indexAction');
-$app->post  ('/charts',                      $ns.'ChartController:createAction');
-$app->get   ('/charts/:id',                  $ns.'ChartController:getAction');
-$app->put   ('/charts/:id',                  $ns.'ChartController:updateAction');
-$app->delete('/charts/:id',                  $ns.'ChartController:deleteAction');
-$app->get   ('/charts/:id/data',             $ns.'ChartController:getDataAction');
-$app->put   ('/charts/:id/data',             $ns.'ChartController:putDataAction');
-$app->post  ('/charts/:id/data',             $ns.'ChartController:postDataAction');
-$app->post  ('/charts/:id/copy',             $ns.'ChartController:copyAction');
-$app->post  ('/charts/:id/publish',          $ns.'ChartController:publishAction');
-$app->get   ('/charts/:id/publish/status',   $ns.'ChartController:publishStatusAction');
-$app->put   ('/charts/:id/thumbnail/:thumb', $ns.'ChartController:putThumbnailAction');
-$app->put   ('/charts/:id/store_snapshot',   $ns.'ChartController:snapshotAction');
+$app->get   ('/organizations',                            $ns.'OrganizationController:indexAction');
+$app->post  ('/organizations',                            $ns.'OrganizationController:createAction');
+$app->put   ('/organizations/:id',                        $ns.'OrganizationController:updateAction');
+$app->delete('/organizations/:id',                        $ns.'OrganizationController:deleteAction');
+$app->post  ('/organizations/:id/users',                  $ns.'OrganizationController:addUserAction');
+$app->delete('/organizations/:id/users/:uid',             $ns.'OrganizationController:removeUserAction');
+$app->put   ('/organizations/:id/plugins/:op/:plugin_id', $ns.'OrganizationController:togglePermissionAction')->conditions(array('op' => '(remove|add|toggle|config)'));
+$app->get   ('/organizations/:id/charts',                 $ns.'OrganizationController:chartsAction');
 
-$app->post  ('/jobs/:type/:id',      $ns.'JobController:createAction');
-$app->get   ('/jobs/:type/estimate', $ns.'JobController:estimateAction');
-$app->put   ('/jobs/:id',            $ns.'JobController:updateAction');
+$app->put   ('/plugins/:id/:action'                       $ns.'PluginController:toggleAction');
+
+$app->get   ('/products',                                 $ns.'ProductController:indexAction');
+$app->post  ('/products',                                 $ns.'ProductController:createAction');
+$app->put   ('/products/:id',                             $ns.'ProductController:updateAction');
+$app->delete('/products/:id',                             $ns.'ProductController:deleteAction');
+$app->post  ('/products/:id/plugins',                     $ns.'ProductController:addPluginAction');
+$app->delete('/products/:id/plugins',                     $ns.'ProductController:removePluginAction');
+$app->post  ('/products/:id/users',                       $ns.'ProductController:addToUsersAction');
+$app->put   ('/products/:id/users',                       $ns.'ProductController:updateUsersAction');
+$app->delete('/products/:id/users',                       $ns.'ProductController:deleteFromUsersAction');
+$app->post  ('/products/:id/organizations',               $ns.'ProductController:addToOrganizationsAction');
+$app->put   ('/products/:id/organizations',               $ns.'ProductController:updateOrganizationsAction');
+$app->delete('/products/:id/organizations',               $ns.'ProductController:deleteFromOrganizationsAction');
+
+$app->get   ('/themes',                                   $ns.'ThemeController:indexAction');
+$app->get   ('/themes/:id',                               $ns.'ThemeController:getAction');
+
+$app->get   ('/users',                                    $ns.'UserController:indexAction');
+$app->post  ('/users',                                    $ns.'UserController:createAction');
+$app->get   ('/users/:id',                                $ns.'UserController:getAction');
+$app->put   ('/users/:id',                                $ns.'UserController:updateAction');
+$app->delete('/users/:id',                                $ns.'UserController:deleteAction');
+$app->post  ('/user/:id/products',                        $ns.'UserController:addProductsAction');
+
+$app->get   ('/visualizations',                           $ns.'VisualizationController:indexAction');
+$app->get   ('/visualizations/:id',                       $ns.'VisualizationController:getAction');
+
+$pluginApiHooks = Hooks::execute(Hooks::PROVIDE_API);
+
+if (!empty($pluginApiHooks)) {
+    foreach ($pluginApiHooks as $hook) {
+        if (!isset($hook['method'])) $hook['method'] = 'GET';
+        $app->map('/plugin/' . $hook['url'], $hook['action'])->via($hook['method']);
+    }
+}
 
 $app->notFound(function() {
     error('not-found', 'Not Found');
 });
-
-require_once '../../lib/api/visualizations.php';
-require_once '../../lib/api/themes.php';
-require_once '../../lib/api/plugins.php';
-require_once '../../lib/api/organizations.php';
-require_once '../../lib/api/products.php';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // go!
