@@ -30,8 +30,7 @@
             "lib/utils/copy_recursively.php",
             "lib/utils/errors.php",
             "lib/utils/pagination.php",
-            "lib/utils/twig-init.php",
-            "lib/utils/vksprintf.php"
+            "lib/utils/twig-init.php"
         ],
         "psr-0": {
             "Slim": "vendor/slim/slim",
