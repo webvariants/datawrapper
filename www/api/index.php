@@ -14,6 +14,7 @@
 
 use Datawrapper\ORM\UserQuery;
 use Datawrapper\Session;
+use Datawrapper\Hooks;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // boot the main system
@@ -109,7 +110,7 @@ $app->delete('/organizations/:id/users/:uid',             $ns.'OrganizationContr
 $app->put   ('/organizations/:id/plugins/:op/:plugin_id', $ns.'OrganizationController:togglePermissionAction')->conditions(array('op' => '(remove|add|toggle|config)'));
 $app->get   ('/organizations/:id/charts',                 $ns.'OrganizationController:chartsAction');
 
-$app->put   ('/plugins/:id/:action'                       $ns.'PluginController:toggleAction');
+$app->put   ('/plugins/:id/:action',                      $ns.'PluginController:toggleAction');
 
 $app->get   ('/products',                                 $ns.'ProductController:indexAction');
 $app->post  ('/products',                                 $ns.'ProductController:createAction');
