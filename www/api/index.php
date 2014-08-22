@@ -23,7 +23,7 @@ define('ROOT_PATH', dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR);
 define('DW_VIEW', 'json');
 define('DW_TOKEN_SALT', 'aVyyrmc2UpoZGJ3SthaKyGrFzaV3Z37iuFU4x5oLb_aKmhopz5md62UHn25Gf4ti');
 
-require ROOT_PATH.'lib/bootstrap.php';
+require ROOT_PATH.'src/bootstrap.php';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // helper functions

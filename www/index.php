@@ -22,7 +22,7 @@ use Datawrapper\Session;
 define('ROOT_PATH', dirname(__DIR__).DIRECTORY_SEPARATOR);
 define('DW_VIEW', 'twig');
 
-require ROOT_PATH.'lib/bootstrap.php';
+require ROOT_PATH.'src/bootstrap.php';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // setup routing

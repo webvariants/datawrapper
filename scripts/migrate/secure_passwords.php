@@ -23,7 +23,7 @@ use Datawrapper\ORM\UserQuery;
 define('ROOT_PATH', '../../');
 define('NO_SLIM', 1);
 
-require_once ROOT_PATH . 'lib/bootstrap.php';
+require_once ROOT_PATH . 'src/bootstrap.php';
 
 if (empty($dw_config['secure_auth_key'])) {
     die("You need to specify a secure auth key in config.yaml");

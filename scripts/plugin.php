@@ -36,7 +36,7 @@ define('DW_VIEW', 'json');
 
 date_default_timezone_set('Europe/Berlin');
 
-require_once ROOT_PATH.'lib/bootstrap.php';
+require_once ROOT_PATH.'src/bootstrap.php';
 
 // load plugins.json from environment
 $plugin_urls    = false;

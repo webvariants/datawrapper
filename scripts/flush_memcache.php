@@ -14,7 +14,7 @@ define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
 define('NO_SLIM', 1);
 define('NO_SESSION', 1);
 
-require ROOT_PATH . 'lib/bootstrap.php';
+require ROOT_PATH . 'src/bootstrap.php';
 
 if (isset($dw_config['memcache'])) {
     $memcache->flush();

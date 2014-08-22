@@ -17,7 +17,7 @@
 define('ROOT_PATH', dirname(__DIR__).DIRECTORY_SEPARATOR);
 define('NO_SLIM', 1);
 
-require_once ROOT_PATH.'lib/bootstrap.php';
+require_once ROOT_PATH.'src/bootstrap.php';
 
 class CustomTwigEnvironment extends Twig_Environment {
     public function getCacheFilename($name) {
