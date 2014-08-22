@@ -16,9 +16,6 @@
         "tedivm/jshrink": "~1.0"
     },
     "autoload": {
-        "classmap": [
-            "lib"
-        ],
         "files": [
             "src/functions.php",
             "lib/utils/add_editor_nav.php",
@@ -33,7 +30,6 @@
             "lib/utils/twig-init.php"
         ],
         "psr-0": {
-            "Slim": "vendor/slim/slim",
             "Datawrapper": "src"
         }
     },
