@@ -8,6 +8,7 @@
         "ezyang/htmlpurifier": "4.*",
         "propel/propel1": "1.6.*",
         "slim/slim": "2.4.*",
+        "slim/views": "0.1.*",
         "mustangostang/spyc": "0.5.*",
         "twig/twig": "1.13.*",
         "twig/extensions": "1.0.*",

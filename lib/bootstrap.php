@@ -82,7 +82,7 @@ if (!defined('NO_SLIM')) {
     if (DW_VIEW === 'twig') {
         // ... with Twig-based templates for the webapp
         $app = new Application(array(
-            'view'            => new TwigView(),
+            'view'            => new Slim\Views\Twig(),
             'templates.path'  => ROOT_PATH.'templates',
             'session.handler' => null
         ));
