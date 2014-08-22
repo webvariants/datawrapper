@@ -76,7 +76,7 @@ class Plugin {
 		}
 
 		// copy static files to that directory
-		copy_recursively($source_path, $plugin_static_path);
+		$this->copyRecursively($source_path, $plugin_static_path);
 	}
 
 	/**
@@ -100,7 +100,7 @@ class Plugin {
 			mkdir($plugin_template_path);
 		}
 
-		copy_recursively($source_path, $plugin_template_path);
+		$this->copyRecursively($source_path, $plugin_template_path);
 	}
 
 	private function getPluginOM() {
@@ -301,5 +301,30 @@ class Plugin {
             Hooks::GET_PLUGIN_CONTROLLER,
             is_callable($obj) ? $obj : array($obj, $func)
         );
+	}
+
+	/**
+	 * Recursively copies all the files in $source_path to $target_path
+	 * e.g. copyRecursively("/source/path", "/target/path");
+	 */
+	protected function copyRecursively($source_path, $target_path) {
+	    $files_copied = array();
+	    $iterator = new \RecursiveIteratorIterator(
+	        new \RecursiveDirectoryIterator(
+	            $source_path,
+	            \RecursiveDirectoryIterator::SKIP_DOTS
+	        ),
+	        \RecursiveIteratorIterator::SELF_FIRST
+	    );
+	    foreach ($iterator as $item) {
+	        $path = $target_path . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
+	        if ($item->isDir()) {
+	            if (!file_exists($path)) mkdir($path);
+	        } else {
+	            copy($item, $path);
+	            $files_copied[] = ltrim(str_replace($target_path, '', $path), DIRECTORY_SEPARATOR);
+	        }
+	    }
+	    return $files_copied;
 	}
 }
