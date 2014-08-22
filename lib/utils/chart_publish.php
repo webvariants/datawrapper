@@ -206,7 +206,7 @@ function publish_css($user, $chart) {
     foreach ($assets as $asset) {
         $asset_src = ROOT_PATH . 'www/static/' . $asset;
         $asset_tgt = $static_path . '/assets/' . $asset;
-        create_missing_directories($asset_tgt);
+        mkdir($asset_tgt, 0777, true);
         copy($asset_src, $asset_tgt);
         $cdn_files[] = array($asset_src, $chart->getCDNPath() . 'assets/' . $asset);
     }
