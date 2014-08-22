@@ -22,7 +22,7 @@ class ChartController extends BaseController {
         $app  = $this->disableCache()->getApp();
         $self = $this;
 
-        check_chart_writable($chartID, function($user, $chart) use ($app, $self) {
+        ORM\Chart::ifIsWritable($chartID, function($user, $chart) use ($app, $self) {
             $page = array(
                 'title'     => $chart->getID().' :: '.__('Upload Data'),
                 'chartData' => $chart->loadData(),
@@ -47,7 +47,7 @@ class ChartController extends BaseController {
         $app  = $this->disableCache()->getApp();
         $self = $this;
 
-        check_chart_writable($chartID, function($user, $chart) use ($app, $self) {
+        ORM\Chart::ifIsWritable($chartID, function($user, $chart) use ($app, $self) {
             $page = array(
                 'title'     => $chart->getID().' :: '.__('Check & Describe'),
                 'chartData' => $chart->loadData(),
@@ -107,7 +107,7 @@ class ChartController extends BaseController {
         $debug = $this->getConfig('debug_export_test_cases');
         $self  = $this;
 
-        check_chart_writable($chartID, function($user, $chart) use ($app, $debug, $self) {
+        ORM\Chart::ifIsWritable($chartID, function($user, $chart) use ($app, $debug, $self) {
             $page = array(
                 'title'               => $chart->getID().' :: '.__('Visualize'),
                 'chartData'           => $chart->loadData(),
@@ -134,7 +134,7 @@ class ChartController extends BaseController {
         $app   = $this->disableCache()->getApp();
         $query = $app->request();
 
-        check_chart_public($chartID, function($user, $chart) use ($query) {
+        ORM\Chart::ifIsPublic($chartID, function($user, $chart) use ($query) {
             $w      = $query->params('w') ?: 300;
             $h      = $query->params('h') ?: 220;
             $format = $query->params('f') ?: 'png';
@@ -175,7 +175,7 @@ class ChartController extends BaseController {
         $phantom = !!$this->getConfig('phantomjs');
         $self    = $this;
 
-        check_chart_writable($chartID, function($user, $chart) use ($app, $phantom, $self) {
+        ORM\Chart::ifIsWritable($chartID, function($user, $chart) use ($app, $phantom, $self) {
             $page = array(
                 'title'             => $chart->getID().' :: '.__('Publish'),
                 'chartData'         => $chart->loadData(),
@@ -214,7 +214,7 @@ class ChartController extends BaseController {
         $app  = $this->disableCache()->getApp();
         $i18n = $this->getI18N();
 
-        check_chart_readable($chartID, function($user, $chart) use ($app, $i18n) {
+        ORM\Chart::ifIsReadable($chartID, function($user, $chart) use ($app, $i18n) {
             if ($chart->getLanguage() != '') {
                 $i18n->loadMessages($chart->getLanguage());
             }
@@ -236,7 +236,7 @@ class ChartController extends BaseController {
         $app  = $this->disableCache()->getApp();
         $i18n = $this->getI18N();
 
-        check_chart_public($chartID, function($user, $chart) use ($app, $i18n) {
+        ORM\Chart::ifIsPublic($chartID, function($user, $chart) use ($app, $i18n) {
             if ($chart->getLanguage() != '') {
                 $i18n->loadMessages($chart->getLanguage());
             }
@@ -318,7 +318,7 @@ class ChartController extends BaseController {
     public function editAction($chartID) {
         $app = $this->disableCache()->getApp();
 
-        check_chart_exists($chartID, function($chart) use ($app) {
+        ORM\Chart::ifExists($chartID, function($chart) use ($app) {
             $step = 'upload';
 
             switch ($chart->getLastEditStep()) {

@@ -10,9 +10,10 @@
 
 namespace Datawrapper\ORM;
 
+use BasePeer;
 use Datawrapper\Hooks;
 use Datawrapper\ORM\om\BaseChart;
-use BasePeer;
+use Datawrapper\Session;
 use PropelPDO;
 
 class Chart extends BaseChart {
@@ -356,5 +357,88 @@ class Chart extends BaseChart {
     public function getCDNPath($version = null) {
         if ($version === null) $version = $this->getPublicVersion();
         return $this->getID() . '/' . ($version > 0 ? $version . '/' : '');
+    }
+
+    public static function ifIsReadable($id, $callback = null) {
+        $chart = ChartQuery::create()->findPK($id);
+
+        if ($chart) {
+            $user = Session::getUser();
+
+            if ($chart->isReadable($user) === true) {
+                if ($callback) {
+                    call_user_func($callback, $user, $chart);
+                }
+                return true;
+            }
+            else {
+                // no such chart
+                error_chart_not_writable();
+                return false;
+            }
+        }
+        else {
+            // no such chart
+            error_chart_not_found($id);
+            return false;
+        }
+    }
+
+    public static function ifIsWritable($id, $callback = null) {
+        $chart = ChartQuery::create()->findPK($id);
+
+        if ($chart) {
+            $user = Session::getUser();
+
+            if ($chart->isWritable($user) === true) {
+                if ($callback) {
+                    call_user_func($callback, $user, $chart);
+                }
+                return true;
+            }
+            else {
+                // no such chart
+                error_chart_not_writable();
+                return false;
+            }
+        }
+        else {
+            // no such chart
+            error_chart_not_found($id);
+            return false;
+        }
+    }
+
+    public static function ifIsPublic($id, $callback) {
+        $chart = ChartQuery::create()->findPK($id);
+        if ($chart) {
+            $user = $chart->getUser();
+            if ($user->isAbleToPublish()) {
+                if ($chart->isPublic()) {
+                    call_user_func($callback, $user, $chart);
+                } else if ($chart->_isDeleted()) {
+                    error_chart_deleted();
+                } else {
+                    error_chart_not_published();
+                }
+            } else {
+                // no such chart
+                error_not_allowed_to_publish();
+            }
+        } else {
+            // no such chart
+            error_chart_not_found($id);
+        }
+    }
+
+
+    public static function ifExists($id, $callback) {
+        $chart = ChartQuery::create()->findPK($id);
+        if ($chart) {
+            call_user_func($callback, $chart);
+        } else {
+            // no such chart
+            error_chart_not_found($id);
+        }
     }
 }

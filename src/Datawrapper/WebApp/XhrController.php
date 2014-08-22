@@ -10,6 +10,7 @@
 
 namespace Datawrapper\WebApp;
 
+use Datawrapper\ORM\Chart;
 use Datawrapper\Session;
 use Datawrapper\Theme;
 use Datawrapper\Visualization;
@@ -55,7 +56,7 @@ class XhrController extends BaseController {
     public function visOptionsAction($id) {
         $app = $this->disableCache()->getApp();
 
-        check_chart_writable($id, function($user, $chart) use ($app) {
+        Chart::ifIsWritable($id, function($user, $chart) use ($app) {
             $page = array(
                 'vis'      => Visualization::get($chart->getType()),
                 'theme'    => Theme::get($chart->getTheme()),

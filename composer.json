@@ -21,7 +21,6 @@
             "lib/utils/add_header_vars.php",
             "lib/utils/chart_content.php",
             "lib/utils/chart_publish.php",
-            "lib/utils/check_chart.php",
             "lib/utils/check_server.php",
             "lib/utils/errors.php",
             "lib/utils/pagination.php",
