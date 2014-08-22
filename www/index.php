@@ -53,18 +53,18 @@ $app->post('/account/invite/:token',                  $ns.'Account\ActivateContr
 $app->post('/account/reset-password/:token',          $ns.'Account\ResetPasswordController:resetAction');
 $app->post('/account/set-password/:token',            $ns.'Account\SetPasswordController:setAction');
 
-$app->map ('/chart/create',                           $ns.'Chart\CreateController:createAction')->via('GET', 'POST');
-$app->get ('/chart/:id',                              $ns.'Chart\EmbedController:redirectAction');
-$app->get ('/chart/:id/',                             $ns.'Chart\EmbedController:getAction');
-$app->get ('/chart/:id/data(\.csv)?',                 $ns.'Chart\DataController:dataAction');
-$app->get ('/chart/:id/describe',                     $ns.'Chart\DescribeController:describeAction');
-$app->get ('/chart/:id/edit',                         $ns.'Chart\EditController:editAction');
-$app->get ('/chart/:id/preview/?',                    $ns.'Chart\PreviewController:previewAction');
-$app->get ('/chart/:id/nojs.png',                     $ns.'Chart\PreviewController:nojsAction');
-$app->get ('/chart/:id/publish',                      $ns.'Chart\PublishController:publishAction');
-$app->get ('/chart/:id/static',                       $ns.'Chart\StaticController:staticAction');
-$app->get ('/chart/:id/upload',                       $ns.'Chart\UploadController:uploadAction');
-$app->get ('/chart/:id/visualize',                    $ns.'Chart\VisualizeController:visualizeAction');
+$app->map ('/chart/create',                           $ns.'ChartController:createAction')->via('GET', 'POST');
+$app->get ('/chart/:id',                              $ns.'ChartController:redirectAction');
+$app->get ('/chart/:id/',                             $ns.'ChartController:getAction');
+$app->get ('/chart/:id/data(\.csv)?',                 $ns.'ChartController:dataAction');
+$app->get ('/chart/:id/describe',                     $ns.'ChartController:describeAction');
+$app->get ('/chart/:id/edit',                         $ns.'ChartController:editAction');
+$app->get ('/chart/:id/preview/?',                    $ns.'ChartController:previewAction');
+$app->get ('/chart/:id/nojs.png',                     $ns.'ChartController:nojsAction');
+$app->get ('/chart/:id/publish',                      $ns.'ChartController:publishAction');
+$app->get ('/chart/:id/static',                       $ns.'ChartController:staticAction');
+$app->get ('/chart/:id/upload',                       $ns.'ChartController:uploadAction');
+$app->get ('/chart/:id/visualize',                    $ns.'ChartController:visualizeAction');
 
 Hooks::execute(Hooks::GET_PLUGIN_CONTROLLER, $app);
 
