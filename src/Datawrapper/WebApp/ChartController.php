@@ -168,7 +168,6 @@ class ChartController extends BaseController {
 
     /**
      * PUBLISH STEP - shows progress of publishing action and thumbnail generation
-     * forwards to /chart/:id/finish
      */
     public function publishAction($chartID) {
         $app     = $this->disableCache()->getApp();
@@ -176,6 +175,21 @@ class ChartController extends BaseController {
         $self    = $this;
 
         ORM\Chart::ifIsWritable($chartID, function($user, $chart) use ($app, $phantom, $self) {
+            $chartActions = Hooks::execute(Hooks::GET_CHART_ACTIONS, $chart);
+
+            // add duplicate action
+            $chartActions[] = array(
+                'id'    => 'duplicate',
+                'icon'  => 'plus',
+                'title' => __('Duplicate this chart'),
+                'order' => 500
+            );
+
+            // sort actions
+            usort($chartActions, function($a, $b) {
+                return (isset($a['order']) ? $a['order'] : 999) - (isset($b['order']) ? $b['order'] : 999);
+            });
+
             $page = array(
                 'title'             => $chart->getID().' :: '.__('Publish'),
                 'chartData'         => $chart->loadData(),
@@ -186,22 +200,12 @@ class ChartController extends BaseController {
                 'chartUrlLocal'     => '/chart/'.$chart->getID().'/preview',
                 'themes'            => Theme::all(),
                 'exportStaticImage' => $phantom,
-                'chartActions'      => Hooks::execute(Hooks::GET_CHART_ACTIONS, $chart),
+                'chartActions'      => $chartActions,
                 'estExportTime'     => ceil(ORM\JobQuery::create()->estimatedTime('export') / 60)
             );
 
             add_header_vars($page, 'chart', 'chart-editor/publish.min.css');
             $self->addEditorNav($page, 4);
-
-            if ($user->isAbleToPublish() && ($chart->getLastEditStep() == 3 || $app->request()->get('republish') == 1)) {
-                // actual publish process
-                $chart->publish();
-                $page['chartUrl'] = $chart->getPublicUrl();
-
-                // generate thumbnails
-                $page['publish']   = true;
-                $page['republish'] = $app->request()->get('republish') == 1;
-            }
 
             $app->render('chart/publish.twig', $page);
         });

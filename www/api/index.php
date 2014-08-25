@@ -138,7 +138,7 @@ $app->post  ('/user/:id/products',                        $ns.'UserController:ad
 $app->get   ('/visualizations',                           $ns.'VisualizationController:indexAction');
 $app->get   ('/visualizations/:id',                       $ns.'VisualizationController:getAction');
 
-$pluginApiHooks = Hooks::execute(Hooks::PROVIDE_API);
+$pluginApiHooks = Hooks::execute(Hooks::PROVIDE_API, $app);
 
 if (!empty($pluginApiHooks)) {
     foreach ($pluginApiHooks as $hook) {

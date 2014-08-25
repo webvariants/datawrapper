@@ -14,6 +14,7 @@ use Datawrapper\ORM\PluginQuery;
 use \Criteria;
 
 class PluginManager {
+    protected static $init_queue = array();
     protected static $loaded = array();
     // instances of all (real) plugin classes
     protected static $instances = array();
@@ -79,10 +80,17 @@ class PluginManager {
                 }
             }
         }
+	
+        // now initialize all plugins
+        $app = Application::getInstance();
+
+        while (count(self::$init_queue) > 0) {
+            $pluginClass = array_shift(self::$init_queue);
+            $pluginClass->init($app);
+        }
     }
 
     public static function loadPlugin($plugin) {
-        $app = Application::getInstance();
         $plugin_path = ROOT_PATH . 'plugins/' . $plugin->getName() . '/plugin.php';
         if (file_exists($plugin_path)) {
             require_once $plugin_path;
@@ -96,7 +104,7 @@ class PluginManager {
         foreach ($pluginClass->getRequiredLibraries() as $lib) {
             require_once ROOT_PATH . 'plugins/' . $plugin->getName() . '/' . $lib;
         }
-        $pluginClass->init($app);
+        self::$init_queue[] = $pluginClass;
         return $pluginClass;
     }
 
