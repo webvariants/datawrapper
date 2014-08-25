@@ -12,6 +12,7 @@ namespace Datawrapper\WebApp;
 
 use \Propel;
 use Datawrapper\ORM;
+use Datawrapper\Pagination;
 use Datawrapper\Session;
 use Datawrapper\Theme;
 use Datawrapper\Visualization;
@@ -98,7 +99,7 @@ class MyChartsController extends BaseController {
         }
 
         add_header_vars($page, 'mycharts');
-        add_pagination_vars($page, $total, $curPage, $perPage, empty($q) ? '' : '&q='.$q);
+        $page = Pagination::addVars($page, $total, $curPage, $perPage, empty($q) ? '' : '&q='.$q);
 
         $app->render('mycharts.twig', $page);
     }

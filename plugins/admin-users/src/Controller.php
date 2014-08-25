@@ -9,6 +9,7 @@
  */
 
 use Datawrapper\ORM;
+use Datawrapper\Pagination;
 use Datawrapper\PluginManager;
 use Datawrapper\Session;
 use Datawrapper\WebApp\AdminController;
@@ -38,7 +39,7 @@ class DatawrapperPlugin_AdminUsers_Controller extends AdminController {
             $append .= '&sort='.$sort;
         }
 
-        add_pagination_vars($data, $total, $curPage, $perPage, $append);
+        $data = Pagination::addVars($data, $total, $curPage, $perPage, $append);
         $data['users'] = $this->getQuery($user)->limit($perPage)->offset($curPage * $perPage)->find();
 
         $this->render('/users', 'plugins/admin-users/admin-users.twig', $data);

@@ -23,7 +23,6 @@
             "lib/utils/chart_publish.php",
             "lib/utils/check_server.php",
             "lib/utils/errors.php",
-            "lib/utils/pagination.php",
             "lib/utils/twig-init.php"
         ],
         "psr-0": {
