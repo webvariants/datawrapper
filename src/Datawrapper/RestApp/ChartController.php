@@ -200,6 +200,7 @@ class ChartController extends BaseController {
 
     public function publishAction($chart_id) {
         if_chart_is_writable($chart_id, function($user, $chart) use ($app) {
+            $chart->publish();
             publish_chart($user, $chart);
             ok();
         });
