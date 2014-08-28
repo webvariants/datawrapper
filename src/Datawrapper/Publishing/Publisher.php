@@ -10,7 +10,6 @@
 
 namespace Datawrapper\Publishing;
 
-use \CSSmin;
 use Datawrapper\Hooks;
 use Datawrapper\Visualization;
 use Datawrapper\ORM\Chart;
@@ -200,10 +199,7 @@ class Publisher {
         }
 
         $all = implode("\n", $imports)."\n\n".$body;
-
-        $cssmin   = new CSSmin();
-        $minified = $all; // $cssmin->run($all); disabled minification - TODO: why?
-        file_put_contents($static_path.'/'.$chart->getID().'.all.css', $minified);
+        file_put_contents($static_path.'/'.$chart->getID().'.all.css', $all);
 
         $cdn_files[] = array(
             $static_path.'/'.$chart->getID().'.all.css',

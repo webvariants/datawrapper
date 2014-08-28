@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "72d6deff318d8a93234bd4da9d49eb2d",
+    "hash": "efad0c61e868014d3d5a038baae1f6a0",
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
@@ -374,22 +374,6 @@
                 "minifier"
             ],
             "time": "2014-05-05 20:44:19"
-        },
-        {
-            "name": "tubalmartin/cssmin",
-            "version": "2.4.8",
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/archive/v2.4.8-3.zip",
-                "reference": null,
-                "shasum": null
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "cssmin.php"
-                ]
-            }
         },
         {
             "name": "twig/extensions",
