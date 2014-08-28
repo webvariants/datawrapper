@@ -9,6 +9,7 @@ use Datawrapper\L10N;
 use Datawrapper\Session;
 use Datawrapper\SessionHandler\DatabaseHandler;
 use Datawrapper\PluginManager;
+use Datawrapper\HealthCheck;
 
 // must match with package.json
 define('DATAWRAPPER_VERSION', '2.0.0-alpha');
@@ -17,7 +18,8 @@ define('DATAWRAPPER_VERSION', '2.0.0-alpha');
 require_once ROOT_PATH.'vendor/autoload.php';
 
 if (!defined('NO_SLIM')) {
-    check_server();
+    $requirements = new HealthCheck();
+    $requirements->checkPulse();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

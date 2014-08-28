@@ -17,7 +17,7 @@ class Application extends Slim {
     public function __construct(array $userSettings = array()) {
         parent::__construct($userSettings);
 
-        $app->container->singleton('dw_publisher', function () {
+        $this->container->singleton('dw_publisher', function () {
             // determine best chart status holder
             if (isset($_GLOBALS['dw-config']['memcache'])) {
                 $statusHolder = new Publishing\MemcacheStatus($_GLOBALS['dw-config']['memcache']);
