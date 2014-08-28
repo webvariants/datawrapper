@@ -13,6 +13,7 @@ namespace Datawrapper\RestApp;
 use Datawrapper\ORM\ChartQuery;
 use Datawrapper\Hooks;
 use Datawrapper\Session;
+use Datawrapper\Publishing\Publisher;
 use qqFileUploader\Uploader;
 
 class ChartController extends BaseController {
@@ -200,15 +201,17 @@ class ChartController extends BaseController {
 
     public function publishAction($chart_id) {
         if_chart_is_writable($chart_id, function($user, $chart) use ($app) {
+            $publisher = $app->dw_publisher;
+
             $chart->publish();
-            publish_chart($user, $chart);
+            $publisher->publishChart($user, $chart);
             ok();
         });
     }
 
     public function publishStatusAction($chart_id) {
         if_chart_is_writable($chart_id, function($user, $chart) use ($app) {
-            echo _getPublishStatus($chart);
+            echo $app->dw_publisher->getStatus($chart);
         });
     }
 
@@ -220,7 +223,7 @@ class ChartController extends BaseController {
             try {
                 $imgurl = $app->request()->getBody();
                 $imgdata = base64_decode(substr($imgurl, strpos($imgurl, ",") + 1));
-                $static_path = get_static_path($chart);
+                $static_path = Publisher::getStaticPath($chart);
                 file_put_contents($static_path . "/" . $thumb . '.png', $imgdata);
                 Hooks::execute(Hooks::PUBLISH_FILES, array(
                     array(
