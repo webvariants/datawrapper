@@ -43,7 +43,7 @@ $tplDir = ROOT_PATH.'templates';
 $loader = new Twig_Loader_Filesystem($tplDir);
 $twig   = new CustomTwigEnvironment($loader);
 
-dwInitTwigEnvironment($twig);
+initTwigEnvironment($twig);
 date_default_timezone_set('Europe/Berlin');
 
 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tplDir, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {

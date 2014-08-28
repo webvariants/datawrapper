@@ -11,11 +11,22 @@
 namespace Datawrapper;
 
 use Datawrapper\Publishing;
+use HTMLPurifier;
+use HTMLPurifier_Config;
 use Slim\Slim;
 
 class Application extends Slim {
     public function __construct(array $userSettings = array()) {
         parent::__construct($userSettings);
+
+        $this->container->singleton('dw_htmlpurifier', function () {
+            // Twig Extension to clean HTML from malicious code
+            $config = HTMLPurifier_Config::createDefault();
+            $config->set('HTML.Allowed', 'a[href],p,b,div,span,strong,u,i,em,q,blockquote,*[style],br,small');
+            $config->set('Cache.SerializerPath', ROOT_PATH.'/tmp/');
+
+            return new HTMLPurifier($config);
+        });
 
         $this->container->singleton('dw_publisher', function () {
             // determine best chart status holder

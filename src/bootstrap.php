@@ -80,7 +80,7 @@ if (!defined('NO_SLIM')) {
 
         // setup our extensions and cache and stuff
         $view = $app->view()->getEnvironment();
-        dwInitTwigEnvironment($app->view()->getEnvironment());
+        initTwigEnvironment($app->view()->getEnvironment());
     }
     else {
         $app = new Application();

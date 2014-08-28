@@ -20,8 +20,7 @@
             "src/functions.php",
             "lib/utils/add_header_vars.php",
             "lib/utils/chart_content.php",
-            "lib/utils/errors.php",
-            "lib/utils/twig-init.php"
+            "lib/utils/errors.php"
         ],
         "psr-0": {
             "Datawrapper": "src"
