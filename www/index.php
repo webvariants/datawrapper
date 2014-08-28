@@ -79,7 +79,10 @@ Hooks::register(Hooks::GET_ACCOUNT_PAGES, function() {
 });
 
 $app->notFound(function() {
-    error_not_found();
+    error_page('',
+        __('404 - Page not found'),
+        __('The page you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly. If all else fails, you can visit our home page at the link below.')
+    );
 });
 
 if ($dw_config['debug']) {
