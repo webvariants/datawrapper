@@ -17,9 +17,11 @@ use Datawrapper\ORM\User;
 
 class Publisher {
     protected $status;
+    protected $chartView;
 
-    public function __construct($statusHolder) {
-        $this->status = $statusHolder;
+    public function __construct($statusHolder, ChartView $chartView) {
+        $this->status    = $statusHolder;
+        $this->chartView = $chartView;
     }
 
     public function publishChart(User $user, Chart $chart, $fromCli = false) {
@@ -115,7 +117,7 @@ class Publisher {
     protected function publishJS(User $user, Chart $chart) {
         $cdn_files   = array();
         $static_path = ROOT_PATH.'charts/static/lib/';
-        $data        = get_chart_content($chart, $user, false, '../');
+        $data        = $this->chartView->getData($chart, $user, false, false);
         $now         = date('c');
 
         ////////////////////////////////////////////////////////////////////////

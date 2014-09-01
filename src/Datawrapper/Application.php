@@ -19,6 +19,8 @@ class Application extends Slim {
     public function __construct(array $userSettings = array()) {
         parent::__construct($userSettings);
 
+        $app = $this;
+
         $this->container->singleton('dw_htmlpurifier', function () {
             // Twig Extension to clean HTML from malicious code
             $config = HTMLPurifier_Config::createDefault();
@@ -28,7 +30,7 @@ class Application extends Slim {
             return new HTMLPurifier($config);
         });
 
-        $this->container->singleton('dw_publisher', function () {
+        $this->container->singleton('dw_publisher', function () use ($app) {
             // determine best chart status holder
             if (isset($_GLOBALS['dw-config']['memcache'])) {
                 $statusHolder = new Publishing\MemcacheStatus($_GLOBALS['dw-config']['memcache']);
@@ -37,7 +39,18 @@ class Application extends Slim {
                 $statusHolder = new Publishing\FilesystemStatus();
             }
 
-            return new Publishing\Publisher($statusHolder);
+            return new Publishing\Publisher($statusHolder, $app->dw_chart_view);
+        });
+
+        $this->container->singleton('dw_chart_view', function () use ($app) {
+            $config = $app->getConfig();
+
+            return new Publishing\ChartView(
+                $config['domain'],
+                $config['asset_domain'],
+                $config['chart_domain'],
+                $config['debug']
+            );
         });
     }
 
