@@ -185,7 +185,7 @@ class ChartView {
                     array_reverse($theme_js),
                     array_reverse($vis_js),
                     $vis_libs,
-                    array('/static/js/dw/chart-base.min.js')
+                    array('/static/js/dw/chart.base.js')
                 )
             );
         }
@@ -260,7 +260,7 @@ class ChartView {
     }
 
     protected function get_chart_js() {
-        $js  = file_get_contents(ROOT_PATH.'www/static/js/dw/chart-base.min.js');
+        $js  = file_get_contents(ROOT_PATH.'www/static/js/dw/chart.base.js');
         $md5 = md5($js);
 
         return array('chart-'.$md5.'.min.js', $js);
