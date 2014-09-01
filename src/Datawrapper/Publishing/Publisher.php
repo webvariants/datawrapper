@@ -117,7 +117,7 @@ class Publisher {
     protected function publishJS(User $user, Chart $chart) {
         $cdn_files   = array();
         $static_path = ROOT_PATH.'charts/static/lib/';
-        $data        = $this->chartView->getData($chart, $user, false, false);
+        $data        = $this->chartView->getData($chart, $user, false, true);
         $now         = date('c');
 
         ////////////////////////////////////////////////////////////////////////
