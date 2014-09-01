@@ -182,7 +182,7 @@ class Publisher {
     protected function publishCSS(User $user, Chart $chart) {
         $cdn_files   = array();
         $static_path = self::getStaticPath($chart);
-        $data        = get_chart_content($chart, $user, false, '../');
+        $data        = $this->chartView->getData($chart, $user, false, true);
         $all         = '';
 
         foreach ($data['stylesheets'] as $css) {

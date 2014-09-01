@@ -223,7 +223,8 @@ class ChartController extends BaseController {
                 $i18n->loadMessages($chart->getLanguage());
             }
 
-            $page = get_chart_content($chart, $user, $app->request()->get('minify'), $app->request()->get('debug'));
+            $chartView = $app->dw_chart_view;
+            $page      = $chartView->getData($chart, $user, $app->request()->get('minify'), $app->request()->get('debug'));
 
             $page['plain']      = $app->request()->get('plain') == 1;
             $page['fullscreen'] = $app->request()->get('fs') == 1;
@@ -245,7 +246,8 @@ class ChartController extends BaseController {
                 $i18n->loadMessages($chart->getLanguage());
             }
 
-            $page = get_chart_content($chart, $user, $app->request()->get('minify') == 1);
+            $chartView = $app->dw_chart_view;
+            $page      = $chartView->getData($chart, $user, $app->request()->get('minify') == 1);
 
             $page['thumb']      = $app->request()->params('t') == 1;
             $page['innersvg']   = $app->request()->get('innersvg') == 1;
