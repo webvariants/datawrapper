@@ -52,6 +52,10 @@ class Application extends Slim {
                 $config['debug']
             );
         });
+
+        $this->container->singleton('dw_header', function () use ($app) {
+            return new Header($app);
+        });
     }
 
     public function getPlugin($id) {

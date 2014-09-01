@@ -1,16 +1,16 @@
 <?php
 
 function error_page($step, $title, $message, $options = false, $status = 500) {
-    global $app;
-
     $tmpl = array(
         'title'   => $title,
         'message' => $message,
         'options' => $options,
     );
 
+    $app = Datawrapper\Application::getInstance();
+
     $app->status($status);
-    add_header_vars($tmpl, $step);
+    $app->dw_header->addVars($tmpl, $step);
     $app->render('error.twig', $tmpl);
 }
 

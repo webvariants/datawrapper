@@ -31,7 +31,7 @@ class SetPasswordController extends AccountController {
             }
 
             $page = array();
-            add_header_vars($page, 'about');
+            $this->setupHeaderVars($page, 'about');
 
             $page['salt'] = DW_AUTH_SALT;
             $app->render('account/set-password.twig', $page);

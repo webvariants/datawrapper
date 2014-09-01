@@ -32,7 +32,7 @@ class HomeController extends BaseController {
             'recent_charts' => $charts
         );
 
-        add_header_vars($page, '');
+        $this->setupHeaderVars($page, '');
         $app->render('home.twig', $page);
     }
 }

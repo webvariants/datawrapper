@@ -30,7 +30,7 @@ class ChartController extends BaseController {
                 'datasets'  => Hooks::execute(Hooks::GET_DEMO_DATASETS)
             );
 
-            add_header_vars($page, 'chart');
+            $app->dw_header->addVars($page, 'chart');
             $self->addEditorNav($page, 1);
 
             $res = $app->response();
@@ -54,7 +54,7 @@ class ChartController extends BaseController {
                 'chart'     => $chart
             );
 
-            add_header_vars($page, 'chart', 'chart-editor/describe.min.css');
+            $app->dw_header->addVars($page, 'chart', 'chart-editor/describe.min.css');
             $self->addEditorNav($page, 2);
 
             switch (substr(Session::getLanguage(), 0, 2)) {
@@ -120,7 +120,7 @@ class ChartController extends BaseController {
                 'debug'               => $debug ? '1' : '0'
             );
 
-            add_header_vars($page, 'chart');
+            $app->dw_header->addVars($page, 'chart');
             $self->addEditorNav($page, 3);
 
             $app->render('chart/visualize.twig', $page);
@@ -204,7 +204,7 @@ class ChartController extends BaseController {
                 'estExportTime'     => ceil(ORM\JobQuery::create()->estimatedTime('export') / 60)
             );
 
-            add_header_vars($page, 'chart', 'chart-editor/publish.min.css');
+            $app->dw_header->addVars($page, 'chart', 'chart-editor/publish.min.css');
             $self->addEditorNav($page, 4);
 
             $app->render('chart/publish.twig', $page);

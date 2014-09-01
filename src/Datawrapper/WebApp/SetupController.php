@@ -30,7 +30,7 @@ class SetupController extends BaseController {
             'auth_salt' => DW_AUTH_SALT
         );
 
-        add_header_vars($page, '');
+        $this->setupHeaderVars($page, '');
         $app->render('setup.twig', $page);
     }
 

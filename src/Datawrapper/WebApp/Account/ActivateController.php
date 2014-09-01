@@ -20,7 +20,7 @@ class ActivateController extends AccountController {
         $params = '';
         $page   = array();
 
-        add_header_vars($page, 'about');
+        $this->setupHeaderVars($page, 'about');
 
         if (!empty($token)) {
             $users = ORM\UserQuery::create()->filterByActivateToken($token)->find();
@@ -53,7 +53,7 @@ class ActivateController extends AccountController {
                 'auth_salt' => DW_AUTH_SALT
             );
 
-            add_header_vars($page, 'about', 'account/invite.min.css');
+            $app->dw_header->addVars($page, 'about', 'account/invite.min.css');
             $app->render('account/invite.twig', $page);
         });
     }

@@ -30,7 +30,7 @@ class XhrController extends BaseController {
 
         $page = array();
 
-        add_header_vars($page, $active);
+        $this->setupHeaderVars($page, $active);
         $app->render('header.twig', $page);
     }
 
@@ -45,7 +45,7 @@ class XhrController extends BaseController {
 
         $page = array();
 
-        add_header_vars($page);
+        $this->setupHeaderVars($page);
         $app->render('home-login.twig', $page);
     }
 

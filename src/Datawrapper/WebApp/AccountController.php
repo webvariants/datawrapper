@@ -41,7 +41,7 @@ class AccountController extends BaseController {
         $pages = $this->getAccountPages();
 
         if (!isset($data['DW_DOMAIN'])) {
-            add_header_vars($data, 'account');
+            $this->setupHeaderVars($data, 'account');
         }
 
         foreach ($pages as $p) {

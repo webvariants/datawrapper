@@ -19,7 +19,7 @@ class ResetPasswordController extends AccountController {
         $pages = $this->getAccountPages();
         $page  = array();
 
-        add_header_vars($page, 'account');
+        $this->setupHeaderVars($page, 'account');
 
         if (!empty($token)) {
             $users = ORM\UserQuery::create()->filterByResetPasswordToken($token)->find();

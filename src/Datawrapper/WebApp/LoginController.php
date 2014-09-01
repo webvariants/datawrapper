@@ -28,7 +28,7 @@ class LoginController extends BaseController {
             'noSignup'  => true
         );
 
-        add_header_vars($page, '');
+        $this->setupHeaderVars($page, '');
         $app->render('login-page.twig', $page);
     }
 }

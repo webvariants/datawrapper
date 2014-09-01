@@ -33,7 +33,7 @@ class AdminController extends BaseController {
         $pages = $this->getAdminPages();
 
         if (!isset($data['DW_DOMAIN'])) {
-            add_header_vars($data, 'admin');
+            $this->setupHeaderVars($data, 'admin');
         }
 
         $data['adminmenu'] = array();

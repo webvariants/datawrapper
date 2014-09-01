@@ -98,7 +98,7 @@ class MyChartsController extends BaseController {
             $page['all_users']     = ORM\UserQuery::create()->filterByDeleted(false)->orderByEmail()->find();
         }
 
-        add_header_vars($page, 'mycharts');
+        $this->setupHeaderVars($page, 'mycharts');
         $page = Pagination::addVars($page, $total, $curPage, $perPage, empty($q) ? '' : '&q='.$q);
 
         $app->render('mycharts.twig', $page);

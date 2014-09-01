@@ -25,6 +25,10 @@ class BaseController {
         return $this->getApp()->getConfig($key);
     }
 
+    protected function setupHeaderVars(array &$vars, $active = null, $page_css = null) {
+        $this->getApp()->dw_header->addVars($vars, $active, $page_css);
+    }
+
     protected function disableCache() {
         $app = $this->getApp();
         disable_cache($app);
