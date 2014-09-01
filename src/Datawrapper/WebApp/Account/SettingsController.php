@@ -10,6 +10,7 @@
 
 namespace Datawrapper\WebApp\Account;
 
+use Datawrapper\ErrorPage;
 use Datawrapper\ORM;
 use Datawrapper\Session;
 use Datawrapper\WebApp\AccountController;
@@ -27,7 +28,7 @@ class SettingsController extends AccountController {
         $page  = array();
 
         if ($user->getRole() == 'guest') {
-            error_page('user',
+            ErrorPage::show('user',
                 __('Whoops! You need to be logged in.'),
                 __('Guess what, in order to edit your user profile, you need to either login or create yourself an account.')
             );

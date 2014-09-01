@@ -10,10 +10,11 @@
 
 namespace Datawrapper\RestApp;
 
-use Datawrapper\ORM\ChartQuery;
+use Datawrapper\ErrorPage;
 use Datawrapper\Hooks;
-use Datawrapper\Session;
+use Datawrapper\ORM\ChartQuery;
 use Datawrapper\Publishing\Publisher;
+use Datawrapper\Session;
 use qqFileUploader\Uploader;
 
 class ChartController extends BaseController {
@@ -299,11 +300,11 @@ class ChartController extends BaseController {
                 call_user_func($callback, $user, $chart);
             } else {
                 // no such chart
-                error_chart_not_writable();
+                ErrorPage::chartNotWritable();
             }
         } else {
             // no such chart
-            error_chart_not_found($id);
+            ErrorPage::chartNotFound($id);
         }
     }
 

@@ -11,6 +11,7 @@
 namespace Datawrapper\WebApp;
 
 use \Propel;
+use Datawrapper\ErrorPage;
 use Datawrapper\ORM;
 use Datawrapper\Pagination;
 use Datawrapper\Session;
@@ -26,7 +27,7 @@ class MyChartsController extends BaseController {
             $this->userCharts($app, $user, $key, $val);
         }
         else {
-            error_page('mycharts',
+            ErrorPage::show('mycharts',
                 __('Whoops! You need to be logged in.'),
                 __('Good news is, sign up is free and takes less than 20 seconds.')
             );
@@ -44,7 +45,7 @@ class MyChartsController extends BaseController {
                 $this->userCharts($app, $user2, $key, $val);
             }
             else {
-                error_page('mycharts',
+                ErrorPage::show('mycharts',
                     __('User not found!'),
                     __('There is no user with the given user id.')
                 );

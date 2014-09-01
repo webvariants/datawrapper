@@ -11,6 +11,7 @@
 namespace Datawrapper\ORM;
 
 use BasePeer;
+use Datawrapper\ErrorPage;
 use Datawrapper\Hooks;
 use Datawrapper\ORM\om\BaseChart;
 use Datawrapper\Session;
@@ -373,13 +374,13 @@ class Chart extends BaseChart {
             }
             else {
                 // no such chart
-                error_chart_not_writable();
+                ErrorPage::chartNotWritable();
                 return false;
             }
         }
         else {
             // no such chart
-            error_chart_not_found($id);
+            ErrorPage::chartNotFound($id);
             return false;
         }
     }
@@ -398,13 +399,13 @@ class Chart extends BaseChart {
             }
             else {
                 // no such chart
-                error_chart_not_writable();
+                ErrorPage::chartNotWritable();
                 return false;
             }
         }
         else {
             // no such chart
-            error_chart_not_found($id);
+            ErrorPage::chartNotFound($id);
             return false;
         }
     }
@@ -417,17 +418,17 @@ class Chart extends BaseChart {
                 if ($chart->isPublic()) {
                     call_user_func($callback, $user, $chart);
                 } else if ($chart->_isDeleted()) {
-                    error_chart_deleted();
+                    ErrorPage::chartDeleted();
                 } else {
-                    error_chart_not_published();
+                    ErrorPage::chartNotPublished();
                 }
             } else {
                 // no such chart
-                error_not_allowed_to_publish();
+                ErrorPage::notAllowedToPublish();
             }
         } else {
             // no such chart
-            error_chart_not_found($id);
+            ErrorPage::chartNotFound($id);
         }
     }
 
@@ -438,7 +439,7 @@ class Chart extends BaseChart {
             call_user_func($callback, $chart);
         } else {
             // no such chart
-            error_chart_not_found($id);
+            ErrorPage::chartNotFound($id);
         }
     }
 }

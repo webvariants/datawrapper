@@ -10,6 +10,7 @@
 
 namespace Datawrapper\WebApp\Account;
 
+use Datawrapper\ErrorPage;
 use Datawrapper\ORM;
 use Datawrapper\WebApp\AccountController;
 
@@ -30,7 +31,7 @@ class ResetPasswordController extends AccountController {
                     'message' => 'This activation token is invalid.'
                 );
 
-                error_page('user',
+                ErrorPage::show('user',
                     __('Something went horribly wrong'),
                     __('The password reset link you entered is invalid.'),
                     array(

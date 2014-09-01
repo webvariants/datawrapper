@@ -16,8 +16,7 @@
     },
     "autoload": {
         "files": [
-            "src/functions.php",
-            "lib/utils/errors.php"
+            "src/functions.php"
         ],
         "psr-0": {
             "Datawrapper": "src"

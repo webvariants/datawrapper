@@ -10,6 +10,7 @@
 
 namespace Datawrapper\WebApp;
 
+use Datawrapper\ErrorPage;
 use Datawrapper\Hooks;
 use Datawrapper\ORM;
 use Datawrapper\Session;
@@ -264,7 +265,7 @@ class ChartController extends BaseController {
         $user = Session::getUser();
 
         if (!$user->isLoggedIn() && isset($cfg['prevent_guest_charts']) && $cfg['prevent_guest_charts']) {
-            error_page('chart',
+            ErrorPage::show('chart',
                 __('Access denied.'),
                 __('You need to be signed in.')
             );
@@ -317,7 +318,7 @@ class ChartController extends BaseController {
             print $chart->loadData();
         }
         else {
-            error_chart_not_found($chartID);
+            ErrorPage::chartNotFound($chartID);
         }
     }
 
