@@ -62,6 +62,7 @@ module.exports = function (grunt) {
         copy: {
             dwjs: {
                 files: [
+                    { src: 'dw.js/dist/dw-2.0.js',     dest: 'www/static/js/dw-2.0.js'     }, // used for debug chart views
                     { src: 'dw.js/dist/dw-2.0.min.js', dest: 'www/static/js/dw-2.0.min.js' }
                 ]
             }
