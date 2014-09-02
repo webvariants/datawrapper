@@ -11,6 +11,7 @@
 use Datawrapper\Application;
 use Datawrapper\Hooks;
 use Datawrapper\ORM;
+use Datawrapper\Pagination;
 use Datawrapper\Plugin;
 use Datawrapper\Session;
 use Datawrapper\Visualization;
@@ -43,7 +44,7 @@ class DatawrapperPlugin_Gallery_Controller extends BaseController {
             'byvis'   => $this->nbChartsByType()
         ));
 
-        add_pagination_vars($data, $total, $curPage, $perPage);
+        $data = Pagination::addVars($data, $total, $curPage, $perPage);
         $this->setupHeaderVars($data, 'gallery');
 
         $app->render('plugins/gallery/gallery.twig', $data);
