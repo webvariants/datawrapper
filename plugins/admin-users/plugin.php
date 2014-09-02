@@ -15,16 +15,15 @@ use Datawrapper\Session;
 
 class DatawrapperPlugin_AdminUsers extends Plugin {
     public function init(Application $app) {
-        $user   = Session::getUser();
-        $plugin = $this;
+        $user = Session::getUser();
+        if (!$user || !$user->isAdmin()) return;
 
-        $app->get('/admin/users', 'DatawrapperPlugin_AdminUsers_Controller:indexAction');
-
-        if ($user && $user->isAdmin()) {
-            $app->get('/admin/users/:user_id', 'DatawrapperPlugin_AdminUsers_Controller:showAction');
-        }
+        $app->get('/admin/users',          'DatawrapperPlugin_AdminUsers_Controller:indexAction');
+        $app->get('/admin/users/:user_id', 'DatawrapperPlugin_AdminUsers_Controller:showAction');
 
         // register plugin controller
+        $plugin = $this;
+
         Hooks::register(Hooks::GET_ADMIN_PAGES, function() use ($plugin) {
             return array(
                 'url'   => '/users',

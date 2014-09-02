@@ -12,9 +12,13 @@ use Datawrapper\Application;
 use Datawrapper\Hooks;
 use Datawrapper\ORM;
 use Datawrapper\Plugin;
+use Datawrapper\Session;
 
 class DatawrapperPlugin_AdminJobs extends Plugin {
     public function init(Application $app) {
+        $user = Session::getUser();
+        if (!$user || !$user->isAdmin()) return;
+
         $app->get('/admin/jobs', 'DatawrapperPlugin_AdminJobs_Controller:jobsAction');
 
         // register plugin controller

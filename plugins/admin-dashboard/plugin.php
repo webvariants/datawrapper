@@ -16,21 +16,20 @@ use Datawrapper\Session;
 class DatawrapperPlugin_AdminDashboard extends Plugin {
     public function init(Application $app) {
         $user = Session::getUser();
+        if (!$user || !$user->isAdmin()) return;
 
-        if ($user && $user->isAdmin()) {
-            $app->get('/admin/?', 'DatawrapperPlugin_AdminDashboard_Controller:dashboardAction');
+        $app->get('/admin/?', 'DatawrapperPlugin_AdminDashboard_Controller:dashboardAction');
 
-            // register plugin controller
-            $pluginName = $this->getName();
+        // register plugin controller
+        $pluginName = $this->getName();
 
-            Hooks::register(Hooks::GET_ADMIN_PAGES, function() use ($pluginName) {
-                return array(
-                    'url'   => '/',
-                    'title' => __('Dashboard', $pluginName),
-                    'order' => '1'
-                );
-            });
-        }
+        Hooks::register(Hooks::GET_ADMIN_PAGES, function() use ($pluginName) {
+            return array(
+                'url'   => '/',
+                'title' => __('Dashboard', $pluginName),
+                'order' => '1'
+            );
+        });
     }
 
     public function getRequiredLibraries() {

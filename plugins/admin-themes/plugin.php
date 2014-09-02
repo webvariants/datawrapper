@@ -11,9 +11,13 @@
 use Datawrapper\Application;
 use Datawrapper\Hooks;
 use Datawrapper\Plugin;
+use Datawrapper\Session;
 
 class DatawrapperPlugin_AdminThemes extends Plugin {
     public function init(Application $app) {
+        $user = Session::getUser();
+        if (!$user || !$user->isAdmin()) return;
+
         $app->get('/admin/themes', 'DatawrapperPlugin_AdminThemes_Controller:themesAction');
 
         // register plugin controller
