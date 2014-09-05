@@ -8,11 +8,12 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+use Datawrapper\Application;
 use Datawrapper\Plugin;
 use Datawrapper\Theme;
 
 class DatawrapperPlugin_ThemeAutumn extends Plugin {
-    public function init() {
+    public function init(Application $app) {
         Theme::register($this, $this->getMeta());
     }
 
