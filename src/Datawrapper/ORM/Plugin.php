@@ -19,21 +19,17 @@ class Plugin extends BasePlugin {
         return $this->getId();
     }
 
-    public function getClassName() {
-        return 'DatawrapperPlugin_' . str_replace(' ', '', ucwords(str_replace('-', ' ', $this->getName())));
-    }
-
     public function getPath() {
-        return ROOT_PATH . 'plugins/' . $this->getName() . '/';
+        return ROOT_PATH.'plugins/'.$this->getName().'/';
     }
 
     public function getInfo() {
         if (!isset($this->packageInfo)) {
-            if (!file_exists($this->getPath() . 'package.json')) {
+            if (!file_exists($this->getPath().'package.json')) {
                 return false;
             }
             $this->packageInfo = json_decode(
-                file_get_contents($this->getPath() . 'package.json')
+                file_get_contents($this->getPath().'package.json')
             , true);
             if (!isset($this->packageInfo['dependencies'])) $this->packageInfo['dependencies'] = array();
         }

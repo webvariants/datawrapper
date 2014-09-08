@@ -19,7 +19,7 @@ use Datawrapper\HealthCheck;
 define('DATAWRAPPER_VERSION', '2.0.0-alpha');
 
 // if not done yet, include the autoloader
-require_once ROOT_PATH.'vendor/autoload.php';
+$loader = require_once ROOT_PATH.'vendor/autoload.php';
 
 if (!defined('NO_SLIM')) {
     $requirements = new HealthCheck();
@@ -89,6 +89,8 @@ if (!defined('NO_SLIM')) {
     else {
         $app = new Application();
     }
+
+    $app->dw_classloader = $loader;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

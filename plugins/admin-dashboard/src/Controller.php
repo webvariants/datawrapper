@@ -8,17 +8,19 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+namespace Datawrapper\Plugin\AdminDashboard;
+
 use Datawrapper\ORM;
 use Datawrapper\Session;
 use Datawrapper\Visualization;
 use Datawrapper\WebApp\AdminController;
 
-class DatawrapperPlugin_AdminDashboard_Controller extends AdminController {
+class Controller extends AdminController {
     /**
      * controller for admin dashboard
      */
     public function dashboardAction() {
-        $con = Propel::getConnection();
+        $con = \Propel::getConnection();
         $data = array();
 
         $publised_sql      = 'SELECT DATE_FORMAT(published_at, \'%Y-%m-%d\') pub_date, COUNT(*) pub_count FROM `chart` WHERE last_edit_step = 5 GROUP BY pub_date ORDER BY `pub_date` DESC LIMIT 1,90';

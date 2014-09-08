@@ -1,0 +1,13 @@
+{
+    "name": "jpp-cologne/plugin-admin-dashboard",
+    "autoload": {
+        "psr-4": {
+            "Datawrapper\\Plugin\\AdminDashboard\\": "src"
+        }
+    },
+    "extra": {
+        "datawrapper": {
+            "plugin-class": "Datawrapper\\Plugin\\AdminDashboard\\Plugin"
+        }
+    }
+}

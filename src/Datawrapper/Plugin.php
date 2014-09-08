@@ -18,9 +18,10 @@ use Datawrapper\ORM\PluginQuery;
 class Plugin {
 	private $__name;
 	private $__packageJson;
+	private $__composerJson;
 
-	public function __construct($name = null) {
-		if (isset($name)) $this->__name = $name;
+	public function __construct($name) {
+		$this->__name = $name;
 	}
 
 	/**
@@ -129,16 +130,36 @@ class Plugin {
 	}
 
 	/**
-	 * loads and caches the plugins package.json
+	 * returns the absolute path to the plugin root dir
+	 */
+	public function getBaseDir() {
+		return sprintf('%splugins/%s/', ROOT_PATH, $this->getName());
+	}
+
+	/**
+	 * loads and caches the plugin's package.json
 	 */
 	private function getPackageJSON() {
 		if (!empty($this->__packageJson)) return $this->__packageJson;
 
-		$reflector = new \ReflectionClass(get_class($this));
-		$dirname   = dirname($reflector->getFileName());
-		$meta      = json_decode(file_get_contents($dirname . '/package.json'), true);
+		$name = $this->getName();
+		$meta = json_decode(file_get_contents($this->getBaseDir().'package.json'), true);
 
 		$this->__packageJson = $meta;
+
+		return $meta;
+	}
+
+	/**
+	 * loads and caches the plugin's composer.json
+	 */
+	public function getComposerJSON() {
+		if (!empty($this->__composerJson)) return $this->__composerJson;
+
+		$name = $this->getName();
+		$meta = json_decode(file_get_contents($this->getBaseDir().'composer.json'), true);
+
+		$this->__composerJson = $meta;
 
 		return $meta;
 	}
@@ -155,12 +176,6 @@ class Plugin {
 	 * returns the name (id) of this plugin
 	 */
 	public function getName() {
-		if (!isset($this->__name)) {
-			$reflector = new \ReflectionClass(get_class($this));
-			$name = substr($reflector->name, 18); // 18 = strlen('DatawrapperPlugin_')
-			$this->__name = strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $name));
-		}
-
 		return $this->__name;
 	}
 

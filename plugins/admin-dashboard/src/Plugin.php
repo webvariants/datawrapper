@@ -8,17 +8,19 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+namespace Datawrapper\Plugin\AdminDashboard;
+
 use Datawrapper\Application;
 use Datawrapper\Hooks;
-use Datawrapper\Plugin;
+use Datawrapper\Plugin as BasePlugin;
 use Datawrapper\Session;
 
-class DatawrapperPlugin_AdminDashboard extends Plugin {
+class Plugin extends BasePlugin {
     public function init(Application $app) {
         $user = Session::getUser();
         if (!$user || !$user->isAdmin()) return;
 
-        $app->get('/admin/?', 'DatawrapperPlugin_AdminDashboard_Controller:dashboardAction');
+        $app->get('/admin/?', 'Datawrapper\Plugin\AdminDashboard\Controller:dashboardAction');
 
         // register plugin controller
         $pluginName = $this->getName();
@@ -30,9 +32,5 @@ class DatawrapperPlugin_AdminDashboard extends Plugin {
                 'order' => '1'
             );
         });
-    }
-
-    public function getRequiredLibraries() {
-        return array('src/Controller.php');
     }
 }

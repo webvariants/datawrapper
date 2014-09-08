@@ -45,10 +45,12 @@ class PluginManager {
         while (count($not_loaded_yet) > 0) {
             $try = $not_loaded_yet;
             $not_loaded_yet = array();
+
             while (count($try) > 0) {
                 $plugin = array_shift($try);
-                $id = $plugin->getId();
-                $deps = $plugin->getDependencies();
+                $id     = $plugin->getId();
+                $deps   = $plugin->getDependencies();
+
                 unset($deps['core']);  // ignore core dependency
                 $can_load = true;
 
@@ -65,14 +67,14 @@ class PluginManager {
                     }
                 }
 
+                // plugin already loaded by now?
                 if (isset(self::$loaded[$id]) && self::$loaded[$id]) {
-                    // plugin already loaded by now
                     continue;
                 }
 
                 if ($can_load) {
                     // load plugin
-                    self::$loaded[$id] = true;
+                    self::$loaded[$id]    = true;
                     self::$instances[$id] = static::loadPlugin($plugin);
                 }
                 elseif (!isset($could_not_install[$id])) {
@@ -80,7 +82,7 @@ class PluginManager {
                 }
             }
         }
-	
+
         // now initialize all plugins
         $app = Application::getInstance();
 
@@ -90,20 +92,64 @@ class PluginManager {
         }
     }
 
-    public static function loadPlugin($plugin) {
-        $plugin_path = ROOT_PATH . 'plugins/' . $plugin->getName() . '/plugin.php';
-        if (file_exists($plugin_path)) {
-            require_once $plugin_path;
+    public static function loadPlugin(ORM\Plugin $plugin) {
+        $name   = $plugin->getName();
+        $helper = new Plugin($name);
+        $root   = $helper->getBaseDir();
+        $autoload = true;
+
+        // load old-school plugin
+        if (file_exists($root.'plugin.php')) {
+            // manuload the plugin class
+            require $root.'plugin.php';
+
             // init plugin class
-            $className = $plugin->getClassName();
-            $pluginClass = new $className();
-        } else {
-            $pluginClass = new Plugin($plugin->getName());
+            $className   = 'DatawrapperPlugin_'.str_replace(' ', '', ucwords(str_replace('-', ' ', $name)));
+            $pluginClass = new $className($name);
         }
+
+        // load new-style plugin
+        elseif (file_exists($root.'composer.json')) {
+            $autoload = false;
+            $composer = $helper->getComposerJSON();
+
+            if (isset($composer['autoload'])) {
+                $def    = $composer['autoload'];
+                $loader = Application::getInstance()->dw_classloader;
+
+                if (isset($def['psr-4'])) {
+                    foreach ($def['psr-4'] as $prefix => $dir) {
+                        $loader->setPsr4($prefix, $root.$dir);
+                    }
+                }
+
+                if (isset($def['psr-0'])) {
+                    foreach ($def['psr-0'] as $prefix => $dir) {
+                        $loader->set($prefix, $dir);
+                    }
+                }
+            }
+
+            if (!isset($composer['extra']['datawrapper']['plugin-class'])) {
+                throw new \Exception('Plugin "'.$name.'" has no plugin-class defined in its composer.json!');
+            }
+
+            $className   = $composer['extra']['datawrapper']['plugin-class'];
+            $pluginClass = new $className($name);
+        }
+
+        // load generic plugin
+        else {
+            $pluginClass = new Plugin($name);
+        }
+
         // but before we load the libraries required by this lib
-        foreach ($pluginClass->getRequiredLibraries() as $lib) {
-            require_once ROOT_PATH . 'plugins/' . $plugin->getName() . '/' . $lib;
+        if ($autoload) {
+            foreach ($pluginClass->getRequiredLibraries() as $lib) {
+                require_once ROOT_PATH.'plugins/'.$plugin->getName().'/'.$lib;
+            }
         }
+
         self::$init_queue[] = $pluginClass;
         return $pluginClass;
     }
