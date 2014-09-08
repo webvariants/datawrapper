@@ -125,7 +125,7 @@ class PluginManager {
 
                 if (isset($def['psr-0'])) {
                     foreach ($def['psr-0'] as $prefix => $dir) {
-                        $loader->set($prefix, $dir);
+                        $loader->set($prefix, $root.$dir);
                     }
                 }
             }
