@@ -14,7 +14,7 @@ use Datawrapper\ORM;
 use Datawrapper\Session;
 use Datawrapper\WebApp\AccountController;
 
-class ActivateController extends AccountController {
+class AccountActivationController extends AccountController {
     public function activateAction($token) {
         $app    = $this->disableCache()->getApp();
         $params = '';

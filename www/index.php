@@ -47,13 +47,14 @@ $app->get ('/mycharts(/?|/by/:key/:val)',             $ns.'MyChartsController:my
 $app->get ('/admin/charts/:userid(/?|/by/:key/:val)', $ns.'MyChartsController:adminAction');
 
 $app->get ('/account/?',                              $ns.'AccountController:redirectAction');
-$app->get ('/account/settings/?',                     $ns.'Account\SettingsController:settingsAction');
-$app->get ('/account/delete/?',                       $ns.'Account\DeleteController:formAction');
-$app->get ('/account/activate/:token/?',              $ns.'Account\ActivateController:activateAction');
-$app->get ('/account/invite/:token/?',                $ns.'Account\ActivateController:inviteAction');
-$app->post('/account/invite/:token/?',                $ns.'Account\ActivateController:doInviteAction');
-$app->post('/account/reset-password/:token/?',        $ns.'Account\ResetPasswordController:resetAction');
-$app->post('/account/set-password/:token/?',          $ns.'Account\SetPasswordController:setAction');
+$app->get ('/account/settings/?',                     $ns.'AccountController:settingsAction');
+$app->get ('/account/delete/?',                       $ns.'AccountController:deleteFormAction');
+$app->get ('/account/password/?',                     $ns.'AccountController:passwordFormAction');
+$app->post('/account/set-password/:token/?',          $ns.'AccountController:setPasswordAction');
+$app->post('/account/reset-password/:token/?',        $ns.'AccountController:resetPasswordAction');
+$app->get ('/account/activate/:token/?',              $ns.'AccountActivationController:activateAction');
+$app->get ('/account/invite/:token/?',                $ns.'AccountActivationController:inviteAction');
+$app->post('/account/invite/:token/?',                $ns.'AccountActivationController:doInviteAction');
 
 $app->map ('/chart/create',                           $ns.'ChartController:createAction')->via('GET', 'POST');
 $app->get ('/chart/:id',                              $ns.'ChartController:redirectAction');
