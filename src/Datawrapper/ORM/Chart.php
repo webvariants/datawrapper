@@ -96,7 +96,7 @@ class Chart extends BaseChart {
      */
     protected function getDataPath() {
         $path = '../charts/data/' . $this->getCreatedAt('Ym');
-        if (substr(dirname($_SERVER['SCRIPT_FILENAME']), -4) == "/api") {
+        if (substr(dirname($_SERVER['SCRIPT_FILENAME']), -4) == '/api') {
             $path = '../' . $path;
         }
         return $path;
@@ -104,7 +104,7 @@ class Chart extends BaseChart {
 
     protected function getStaticPath() {
         $path = '../charts/static/' . $this->getID();
-        if (substr(dirname($_SERVER['SCRIPT_FILENAME']), -4) == "/api") {
+        if (substr(dirname($_SERVER['SCRIPT_FILENAME']), -4) == '/api') {
             $path = '../' . $path;
         }
         return $path;
@@ -138,11 +138,7 @@ class Chart extends BaseChart {
      */
     public function loadData() {
         $filename = $this->getDataPath() . '/' . $this->getDataFilename();
-        if (!file_exists($filename)) {
-            return '';
-        } else {
-            return file_get_contents($filename);
-        }
+        return file_exists($filename) ? file_get_contents($filename) : '';
     }
 
     /*
@@ -156,38 +152,36 @@ class Chart extends BaseChart {
                 (!empty($org) && $org->hasUser($user))) {
                 return true;
             }
-        } else if ($this->getGuestSession() == session_id()) {
+        }
+        elseif ($this->getGuestSession() == session_id()) {
             return true;
         }
+
         return $this->isPublic();
     }
 
     /**
      * checks if a chart is writeable by a user
      *
-     * @param user
+     * @param User $user
      */
     public function isWritable($user) {
         if ($user->isLoggedIn()) {
             $org = $this->getOrganization();
+
             // chart is writable if...
+            return
                 // this user is the chart author
-            if ($this->getAuthorId() == $user->getId()
+                $this->getAuthorId() == $user->getId()
                 // the user is a graphics editor and in the same organization
                 || (!empty($org) && $org->hasUser($user) && $user->isGraphicEditor())
                 // or the user is an admin
-                || $user->isAdmin()) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+                || $user->isAdmin()
+            ;
+        }
+        else {
             // check if the session matches
-            if ($this->getGuestSession() == session_id()) {
-                return true;
-            } else {
-                return false;
-            }
+            return $this->getGuestSession() == session_id();
         }
     }
 
@@ -206,7 +200,7 @@ class Chart extends BaseChart {
         return $p;
     }
 
-    /*
+    /**
      * update a part of the metadata
      */
     public function updateMetadata($key, $value) {
@@ -243,8 +237,8 @@ class Chart extends BaseChart {
     public static function defaultMetaData() {
         return array(
             'data' => array(
-                'transpose' => false,
-                'vertical-header' => true,
+                'transpose'         => false,
+                'vertical-header'   => true,
                 'horizontal-header' => true,
             ),
             'visualize' => array(
@@ -252,22 +246,22 @@ class Chart extends BaseChart {
                 'highlighted-values' => array()
             ),
             'describe' => array(
-                'source-name' => '',
-                'source-url' => '',
-                'number-format' => '-',
+                'source-name'    => '',
+                'source-url'     => '',
+                'number-format'  => '-',
                 'number-divisor' => 0,
-                'number-append' => '',
+                'number-append'  => '',
                 'number-prepend' => '',
-                'intro' => ''
+                'intro'          => ''
             ),
             'publish' => array(
-                'embed-width' => 600,
+                'embed-width'  => 600,
                 'embed-height' => 400
             )
         );
     }
 
-    /*
+    /**
      * increment the public version of a chart, which is used
      * in chart public urls to deal with cdn caches
      */
@@ -275,17 +269,20 @@ class Chart extends BaseChart {
         // increment public version
         $this->setPublicVersion($this->getPublicVersion() + 1);
         $published_urls = Hooks::execute(Hooks::GET_PUBLISHED_URL, $this);
+
         if (!empty($published_urls)) {
             // store public url from first publish module
             $this->setPublicUrl($published_urls[0]);
-        } else {
+        }
+        else {
             // fallback to local url
             $this->setPublicUrl($this->getLocalUrl());
         }
+
         $this->save();
     }
 
-    /*
+    /**
      * redirect previous chart versions to the most current one
      */
     public function redirectPreviousVersions() {
@@ -303,7 +300,7 @@ class Chart extends BaseChart {
     public function unpublish() {
         $path = $this->getStaticPath();
         if (file_exists($path)) {
-            array_map('unlink', glob($path . "/*"));
+            array_map('unlink', glob($path . '/*'));
             rmdir($path);
         }
 

@@ -27,4 +27,3 @@ class Action extends BaseAction {
         $action->save();
     }
 }
-
