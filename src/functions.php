@@ -145,6 +145,16 @@ function initTwigEnvironment(Twig_Environment $twig) {
         return json_encode($arr);
     }));
 
+    $twig->addFilter(new Twig_SimpleFilter('lettering', function($text) {
+        $out = array();
+
+        foreach (str_split($text) as $i => $char) {
+            $out[] = '<span class="char'.$i.'">'.$char.'</span>';
+        }
+
+        return implode('', $out);
+    }, array('is_safe' => array('html'))));
+
     $twig->addFunction(new Twig_SimpleFunction('hook', function() {
         call_user_func_array(array(Hooks::getInstance(), 'execute'), func_get_args());
     }));

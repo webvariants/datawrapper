@@ -22,6 +22,35 @@ class AccountController extends BaseController {
         $app->redirect('/account/'.$first['url']);
     }
 
+    public static function registerDefaultPages() {
+        Hooks::register(Hooks::GET_ACCOUNT_PAGES, function() {
+            return array(
+                'title' => __('Settings'),
+                'order' => 5,
+                'icon'  => 'fa-wrench',
+                'url'   => 'settings'
+            );
+        });
+
+        Hooks::register(Hooks::GET_ACCOUNT_PAGES, function() {
+            return array(
+                'title' => __('Delete account'),
+                'order' => 9999,
+                'icon'  => 'fa-frown-o',
+                'url'   => 'delete'
+            );
+        });
+
+        Hooks::register(Hooks::GET_ACCOUNT_PAGES, function() {
+            return array(
+                'title' => __('Change password'),
+                'order' => 10,
+                'icon'  => 'fa-lock',
+                'url'   => 'password'
+            );
+        });
+    }
+
     protected function getAccountPages() {
         $user  = Session::getUser();
         $pages = Hooks::execute(Hooks::GET_ACCOUNT_PAGES, $user);
@@ -37,16 +66,18 @@ class AccountController extends BaseController {
         return array_values($pages);
     }
 
-    protected function render($page, $template, array $data = array()) {
+    protected function render($activePage, $template, array $data = array()) {
         $pages = $this->getAccountPages();
 
         if (!isset($data['DW_DOMAIN'])) {
             $this->setupHeaderVars($data, 'account');
         }
 
+        $user = Session::getUser();
+
         foreach ($pages as $p) {
             // set title and adminactive if the controller code before us has not already set it
-            if ($p['url'] === $page) {
+            if ($p['url'] === $activePage) {
                 if (!isset($data['title'])) {
                     $data['title'] = $p['title'];
                 }
@@ -57,6 +88,14 @@ class AccountController extends BaseController {
 
                 if (!isset($data['url'])) {
                     $data['url'] = $p['url'];
+                }
+
+                if (!isset($data['gravatar'])) {
+                    $data['gravatar'] = md5(strtolower(trim($user->getEmail())));
+                }
+
+                if (!isset($data['user'])) {
+                    $data['user'] = $user;
                 }
 
                 break;

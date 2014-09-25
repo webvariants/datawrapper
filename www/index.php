@@ -47,12 +47,13 @@ $app->get ('/mycharts(/?|/by/:key/:val)',             $ns.'MyChartsController:my
 $app->get ('/admin/charts/:userid(/?|/by/:key/:val)', $ns.'MyChartsController:adminAction');
 
 $app->get ('/account/?',                              $ns.'AccountController:redirectAction');
-$app->get ('/account/settings',                       $ns.'Account\SettingsController:settingsAction');
-$app->get ('/account/activate/:token',                $ns.'Account\ActivateController:activateAction');
-$app->get ('/account/invite/:token',                  $ns.'Account\ActivateController:inviteAction');
-$app->post('/account/invite/:token',                  $ns.'Account\ActivateController:doInviteAction');
-$app->post('/account/reset-password/:token',          $ns.'Account\ResetPasswordController:resetAction');
-$app->post('/account/set-password/:token',            $ns.'Account\SetPasswordController:setAction');
+$app->get ('/account/settings/?',                     $ns.'Account\SettingsController:settingsAction');
+$app->get ('/account/delete/?',                       $ns.'Account\DeleteController:formAction');
+$app->get ('/account/activate/:token/?',              $ns.'Account\ActivateController:activateAction');
+$app->get ('/account/invite/:token/?',                $ns.'Account\ActivateController:inviteAction');
+$app->post('/account/invite/:token/?',                $ns.'Account\ActivateController:doInviteAction');
+$app->post('/account/reset-password/:token/?',        $ns.'Account\ResetPasswordController:resetAction');
+$app->post('/account/set-password/:token/?',          $ns.'Account\SetPasswordController:setAction');
 
 $app->map ('/chart/create',                           $ns.'ChartController:createAction')->via('GET', 'POST');
 $app->get ('/chart/:id',                              $ns.'ChartController:redirectAction');
@@ -67,17 +68,11 @@ $app->get ('/chart/:id/static',                       $ns.'ChartController:stati
 $app->get ('/chart/:id/upload',                       $ns.'ChartController:uploadAction');
 $app->get ('/chart/:id/visualize',                    $ns.'ChartController:visualizeAction');
 
-Hooks::execute(Hooks::GET_PLUGIN_CONTROLLER, $app);
-
 // provide the first, always available account page
-Hooks::register(Hooks::GET_ACCOUNT_PAGES, function() {
-    return array(
-        'title' => __('Settings'),
-        'order' => 5,
-        'icon'  => 'fa-wrench',
-        'url'   => 'settings'
-    );
-});
+Datawrapper\WebApp\Controller\AccountController::registerDefaultPages();
+
+// collect plugin controllers (if they haven't yet set them up in their init() call)
+Hooks::execute(Hooks::GET_PLUGIN_CONTROLLER, $app);
 
 $app->notFound(function() {
     ErrorPage::show('',

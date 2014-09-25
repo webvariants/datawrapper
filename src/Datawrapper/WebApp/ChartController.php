@@ -181,7 +181,7 @@ class ChartController extends BaseController {
             // add duplicate action
             $chartActions[] = array(
                 'id'    => 'duplicate',
-                'icon'  => 'plus',
+                'icon'  => 'code-fork',
                 'title' => __('Duplicate this chart'),
                 'order' => 500
             );

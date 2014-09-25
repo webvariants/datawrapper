@@ -67,7 +67,7 @@ class AccountController extends BaseController {
             $user->save();
 
             $mailer = new Mailer($dw_config);
-            $protocol = !empty($_SERVER['HTTPS']) ? "https" : "http";
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
             $passwordResetLink = $protocol . '://' . $dw_config['domain'] . '/account/reset-password/' . $token;
 
             $mailBody = $mailer->renderBody($app, 'password-reset.twig', array(
@@ -135,7 +135,7 @@ class AccountController extends BaseController {
 
             // send email with activation key
             $domain   = $dw_config['domain'];
-            $protocol = !empty($_SERVER['HTTPS']) ? "https" : "http";
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
             $activationLink = $protocol . '://' . $domain . '/account/activate/' . $token;
 
             $mailer   = new Mailer($dw_config);
@@ -172,7 +172,7 @@ class AccountController extends BaseController {
             }
 
             $domain         = $dw_config['domain'];
-            $protocol       = !empty($_SERVER['HTTPS']) ? "https" : "http";
+            $protocol       = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
             $invitationLink = $protocol . '://' . $domain . '/account/invite/' . $token;
 
             $mailer   = new Mailer($dw_config);

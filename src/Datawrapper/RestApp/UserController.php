@@ -102,7 +102,7 @@ class UserController extends BaseController {
         $mailer   = new Mailer($dw_config);
         $name     = $data->email;
         $domain   = $GLOBALS['dw_config']['domain'];
-        $protocol = !empty($_SERVER['HTTPS']) ? "https" : "http";
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 
         if ($invitation) {
             // send account invitation link

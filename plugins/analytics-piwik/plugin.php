@@ -14,7 +14,11 @@ use Datawrapper\ORM\Chart;
 use Datawrapper\Plugin;
 
 class DatawrapperPlugin_AnalyticsPiwik extends Plugin {
+	protected $app;
+	
     public function init(Application $app) {
+		$this->app = $app;
+
         Hooks::register(Hooks::CHART_AFTER_BODY, array($this, 'getTrackingCode'));
         Hooks::register(Hooks::CORE_AFTER_BODY,  array($this, 'getTrackingCode'));
     }
@@ -23,34 +27,11 @@ class DatawrapperPlugin_AnalyticsPiwik extends Plugin {
         $config = $this->getConfig();
         if (empty($config)) return false;
 
-        $url    = $config['url'];
-        $idSite = $config['idSite'];
-
-        print '<!-- Piwik -->
-<script type="text/javascript">
-  var _paq = _paq || [];
-  _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-  _paq.push(["setCookieDomain", "*.www.datawrapper.de"]);';
-
-        if ($chart && $chart->getUser()) {
-            print '
-  _paq.push(["setCustomVariable", 1, "Layout", "'.$chart->getTheme().'", "page"]);
-  _paq.push(["setCustomVariable", 2, "Author", "'.$chart->getUser()->getId().'", "page"]);
-  _paq.push(["setCustomVariable", 3, "Visualization", "'.$chart->getType().'", "page"]);';
-        }
-
-        print '
-  _paq.push(["trackPageView"]);
-  _paq.push(["enableLinkTracking"]);
-
-  (function() {
-    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://'.$url.'/";
-    _paq.push(["setTrackerUrl", u+"piwik.php"]);
-    _paq.push(["setSiteId", "1"]);
-    var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
-    g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
-  })();
-</script>
-<!-- End Piwik Code -->';
+        $this->app->render('plugins/analytics-piwik/piwik-code.twig', array(
+            'url'    => $config['url'],
+            'idSite' => $config['idSite'],
+            'chart'  => $chart,
+            'user'   => $chart ? $chart->getUser() : null
+		));
     }
 }

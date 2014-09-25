@@ -93,7 +93,7 @@ class Publisher {
         $cdn_files   = array();
         $static_path = self::getStaticPath($chart);
 
-        $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
         $url      = $protocol.'://'.$GLOBALS['dw_config']['domain'].'/chart/'.$chart->getID().'/preview?minify=1';
 
         $this->download($url,            $static_path.'/index.html');
