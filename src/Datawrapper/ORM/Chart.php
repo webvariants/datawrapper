@@ -51,7 +51,7 @@ class Chart extends BaseChart {
     }
 
     public function toJSON() {
-        return trim(addslashes(json_encode($this->serialize())));
+        return json_encode($this->serialize());
     }
 
     public function unserialize($json) {

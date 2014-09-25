@@ -42,7 +42,7 @@
 <script type="text/javascript">
 
     // initialize current chart
-    var chart = dw.backend.currentChart = dw.chart(JSON.parse("{{ chart.toJSON | raw }}"));
+    var chart = dw.backend.currentChart = dw.chart({{ chart.toJSON | raw }});
 
     chart
         .locale('{{ chartLocale }}')
