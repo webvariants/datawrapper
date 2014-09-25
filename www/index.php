@@ -72,9 +72,6 @@ $app->get ('/chart/:id/visualize',                    $ns.'ChartController:visua
 // provide the first, always available account page
 Datawrapper\WebApp\Controller\AccountController::registerDefaultPages();
 
-// collect plugin controllers (if they haven't yet set them up in their init() call)
-Hooks::execute(Hooks::GET_PLUGIN_CONTROLLER, $app);
-
 $app->notFound(function() {
     ErrorPage::show('',
         __('404 - Page not found'),
